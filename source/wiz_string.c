@@ -1,10 +1,10 @@
 
-
+#define _CRT_SECURE_NO_WARNINGS
 #include "wiz_string.h"
 
 
 // cstr cf) "" and NULL
-void init_wiz_string(wiz_string* str, char* cstr, int n)
+void init_wiz_string(wiz_string* str, const char* cstr, int n)
 {
 	if (0 == n) {
 		str->len = 0;

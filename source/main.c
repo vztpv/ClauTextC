@@ -8,6 +8,8 @@
 
 // wiz_string
 #include "wiz_string.h"
+// wiz_string_builder
+#include "wiz_string_builder.h"
 // wiz_any
 // wiz_vector for int, long long, long double, wiz_string, ItemType, UserType, Any?
 #include "wiz_vector.h"

@@ -2,7 +2,9 @@
 #ifndef WIZ_STRING_H
 #define WIZ_STRING_H
 
+#include <string.h>
 #include <stdlib.h>
+
 #define wiz_string_buffer_size 1024
 
 struct wiz_string
@@ -16,7 +18,7 @@ struct wiz_string
 typedef struct wiz_string wiz_string;
 
 // cstr cf) "" and NULL
-void init_wiz_string(wiz_string* str, char* cstr, int n);
+void init_wiz_string(wiz_string* str, const char* cstr, int n);
 
 void erase_wiz_string(wiz_string* str);
 
