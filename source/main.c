@@ -1,4 +1,4 @@
- 
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -88,8 +88,8 @@ wiz_string concat_wiz_string(wiz_string* str1, wiz_string* str2)
 	else {
 		if (temp.len > wiz_string_buffer_size) {
 			temp.str = malloc(sizeof(char)*(temp.len + 1));
-			strncpy(temp.str, str1->str, str1->len + 1);
-			strncpy(temp.str + str1->len, str2->str, str2->len + 1);
+			strncpy(temp.str, get_cstr_wiz_string(str1), str1->len + 1);
+			strncpy(temp.str + str1->len, get_cstr_wiz_string(str2), str2->len + 1);
 		}
 		else {
 			strncpy(temp.buffer, get_cstr_wiz_string(str1), str1->len + 1);
@@ -107,7 +107,7 @@ wiz_string substr_wiz_string(wiz_string* str, size_t begin, size_t end)
 	if (temp.len > wiz_string_buffer_size) {
 		temp.str = malloc(sizeof(char) * (temp.len + 1));
 
-		strncpy(temp.str, str->str + begin, end - begin);
+		strncpy(temp.str, get_cstr_wiz_string(str) + begin, end - begin);
 		temp.str[end] = '\0';
 	}
 	else {
