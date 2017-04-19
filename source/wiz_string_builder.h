@@ -15,7 +15,7 @@ struct wiz_string_builder
 typedef struct wiz_string_builder wiz_string_builder;
 
 void init_wiz_string_builder(wiz_string_builder* builder, const size_t buffer_size, const char* cstr, const int len);
-void erase_wiz_string_builder(wiz_string_builder* builder);
+void free_wiz_string_builder(wiz_string_builder* builder);
 
 wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const char* cstr, const int len);
 

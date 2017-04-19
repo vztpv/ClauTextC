@@ -20,7 +20,7 @@ typedef struct wiz_string wiz_string;
 // cstr cf) "" and NULL
 void init_wiz_string(wiz_string* str, const char* cstr, int n);
 
-void erase_wiz_string(wiz_string* str);
+void free_wiz_string(wiz_string* str);
 
 char* get_cstr_wiz_string(wiz_string* str);
 

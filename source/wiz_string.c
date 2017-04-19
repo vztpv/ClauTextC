@@ -24,7 +24,7 @@ void init_wiz_string(wiz_string* str, const char* cstr, int n)
 		}
 	}
 }
-void erase_wiz_string(wiz_string* str)
+void free_wiz_string(wiz_string* str)
 {
 	if (0 != str->len) {
 		if (str->len > wiz_string_buffer_size) {
@@ -92,7 +92,7 @@ void assign_wiz_string(wiz_string* str1, wiz_string* str2)
 {
 	// str1 != str2 
 	if (str1->len != str2->len) {
-		erase_wiz_string(str1);
+		free_wiz_string(str1);
 		str1->len = str2->len;
 		if (str2->len > wiz_string_buffer_size) {
 			str1->str = malloc(sizeof(char)*(str2->len + 1));
@@ -117,7 +117,7 @@ void concat_and_assign_wiz_string(wiz_string* str1, wiz_string* str2)
 		strncpy(get_cstr_wiz_string(&temp), get_cstr_wiz_string(str1), str1->len + 1);
 		strncpy(get_cstr_wiz_string(&temp) + str1->len, get_cstr_wiz_string(str2), str2->len + 1);
 
-		erase_wiz_string(str1);
+		free_wiz_string(str1);
 
 		*str1 = temp;
 	}
@@ -136,7 +136,7 @@ void substr_and_assign_wiz_string(wiz_string* str, size_t begin, size_t end)
 	strncpy(get_cstr_wiz_string(&temp), get_cstr_wiz_string(str) + begin, end - begin + 1);
 
 	//
-	erase_wiz_string(str);
+	free_wiz_string(str);
 
 	*str = temp;
 }

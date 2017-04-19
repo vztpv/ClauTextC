@@ -6,26 +6,43 @@
 #include <stdlib.h>
 
 
+
 // wiz_string
 #include "wiz_string.h"
 // wiz_string_builder
 #include "wiz_string_builder.h"
-// wiz_any
-// wiz_vector for int, long long, long double, wiz_string, ItemType, UserType, Any?
+
+// wiz_vector for int, long long, double, long double, wiz_string, ItemType, UserType, Any?
 #include "wiz_vector.h"
 
 // wiz_array
+
 // wiz_secondary_array : based wiz_array
+
+
 // wiz_array_stack : based wiz_array
-// wiz_array_deque( can random access ) : based wiz_array
-// wiz_list : double linked list? or wiz::Deck?
+// wiz_array_deque( can random access ) : based wiz_array -> ArrayQueue? (use pop_front and push_back! )
+// wiz_list : double linked list? or wiz::Deck? - removal?
 // wiz_set // using red_black tree? or sorting + binarysearch tree
 // wiz_map // using red_black tree? or sorting + binarysearch tree
 // iterator -> using idx?
 
+
+// ItemType
+// UserType
+
 void test_for_wiz_vector()
 {
+	wiz_vector_int test;
+	int i = 0;
+	init_wiz_vector_int(&test, 1);
 
+	for (i = 0; i < 100; ++i) {
+		push_back_wiz_vector_int(&test, &i);
+		printf("%d\n", *back_wiz_vector_int(&test));
+	}
+
+	free_wiz_vector_int(&test);
 }
 
 
@@ -54,17 +71,17 @@ void test_for_wiz_string()
 		concat_and_assign_wiz_string(&D, &_B);
 		concat_and_assign_wiz_string(&C, &D);
 
-		erase_wiz_string(&D);
+		free_wiz_string(&D);
 		init_wiz_string(&D, get_cstr_wiz_string(&C), C.len);
-		erase_wiz_string(&C);
+		free_wiz_string(&C);
 	}
 	b = clock();
 
 	printf("%d ms\n %s", b - a, get_cstr_wiz_string(&D));
 
-	erase_wiz_string(&D);
-	erase_wiz_string(&_A);
-	erase_wiz_string(&_B);
+	free_wiz_string(&D);
+	free_wiz_string(&_A);
+	free_wiz_string(&_B);
 }
 
 int main(void)
