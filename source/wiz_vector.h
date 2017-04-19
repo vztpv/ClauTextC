@@ -4,6 +4,7 @@
 
 #include "wiz_vector_int.h"
 #include "wiz_vector_double.h"
+#include "wiz_vector_wiz_string.h"
 
 
 #endif

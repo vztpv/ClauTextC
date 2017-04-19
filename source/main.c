@@ -9,16 +9,17 @@
 
 // wiz_string
 #include "wiz_string.h"
+
 // wiz_string_builder
 #include "wiz_string_builder.h"
 
-// wiz_vector for int, long long, double, long double, wiz_string, ItemType, UserType, Any?
+// ItemType
+#include "wiz_load_data_item_type.h"
+
+// wiz_vector for int, double, wiz_string, long long, long double, ItemType, UserType, Any?
 #include "wiz_vector.h"
 
-// wiz_array
-
-// wiz_secondary_array : based wiz_array
-
+// wiz_array : wiz_vector?
 
 // wiz_array_stack : based wiz_array
 // wiz_array_deque( can random access ) : based wiz_array -> ArrayQueue? (use pop_front and push_back! )
@@ -28,7 +29,7 @@
 // iterator -> using idx?
 
 
-// ItemType
+
 // UserType
 
 void test_for_wiz_vector()
