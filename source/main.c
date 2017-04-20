@@ -85,11 +85,121 @@ void test_for_wiz_string()
 	free_wiz_string(&_B);
 }
 
+size_t find(const char* cstr, const char x, const size_t before, const size_t n)
+{
+	size_t i = 0;
+
+	for (i = before+1; i < n; ++i) {
+		if (cstr[i] == x) {
+			return i;
+		}
+	}
+	return -1;
+}
+void test_for_wiz_string2(const char* fileName)
+{
+	const size_t line_max = 1000; // line_max = 1 is very slow?
+	const size_t num = 10240;
+	wiz_vector_wiz_string vec_of_str;
+	wiz_string_builder builder;
+	wiz_string_builder temp_builder;
+	FILE* file = fopen(fileName, "rt");
+	size_t real_count;
+	size_t find_idx; // find \n
+	size_t i;
+	size_t size;
+	char* builder_cstr;
+	wiz_string temp;
+	size_t temp2;
+	char* temp3;
+
+	init_wiz_vector_wiz_string(&vec_of_str, 1024);
+	init_wiz_string_builder(&builder, num * 10, "", 0);
+	
+	i = 0;
+	temp2 = -1;
+
+	while (1) {
+		init_wiz_string_builder(&temp_builder, num, "", 0);
+		real_count = fread((void*)(str_wiz_string_builder(&temp_builder, NULL)), sizeof(char), num, file);
+		temp_builder.len = real_count;
+		temp_builder.buffer[real_count] = '\0';
+
+
+		append_wiz_string_builder(&builder, str_wiz_string_builder(&temp_builder, NULL), size_wiz_string_builder(&temp_builder));
+		
+		free_wiz_string_builder(&temp_builder);
+
+		builder_cstr = str_wiz_string_builder(&builder, &size);
+		//printf("chk %d %d\n", strlen(builder_cstr), size);
+		
+		find_idx = -1;
+		for (; i < line_max; ++i) {
+			temp2 = find(builder_cstr, '\n', temp2, size);
+			if (temp2 != (size_t)-1) {
+				find_idx = temp2;
+			}
+			else {
+				break;
+			}
+		}
+		if (i == line_max || real_count != num) {
+			if (find_idx != (size_t)-1) {
+				divide_wiz_string_builder(&builder, find_idx);
+				
+				temp3 = str_wiz_string_builder(&builder, NULL);
+				
+			//	printf("\n%d %d\n", strlen(temp3), find_idx);
+
+				init_wiz_string(&temp, temp3, find_idx);
+
+
+				push_back_wiz_vector_wiz_string(&vec_of_str, &temp);
+ 
+				left_shift_wiz_string_builder(&builder, find_idx + 1);
+
+				free_wiz_string(&temp);
+				
+				i = 0;
+				temp2 = -1;
+			}
+		}
+		else {
+			continue;
+		}
+
+		if (real_count != num) {
+			temp3 = str_wiz_string_builder(&builder, &size);
+			init_wiz_string(&temp, temp3, size);
+			push_back_wiz_vector_wiz_string(&vec_of_str, &temp);
+			break;
+		}
+	}
+
+	
+
+	free_wiz_string(&temp);
+	free_wiz_string_builder(&builder);
+
+	fclose(file);
+	/*
+	file = fopen("test.txt", "wt");
+
+	for (i = 0; i < size_wiz_vector_wiz_string(&vec_of_str); ++i) {
+		fprintf(file, "%s", get_cstr_wiz_string(get_wiz_vector_wiz_string(&vec_of_str, i)));
+	}
+	fclose(file);
+	*/
+	free_wiz_vector_wiz_string(&vec_of_str);
+
+}
+
 int main(void)
 {
-	test_for_wiz_string();
-	test_for_wiz_vector();
+	//test_for_wiz_string();
+	//test_for_wiz_vector();
+	test_for_wiz_string2("input.eu4");
 
-	getchar();
+	///getchar();
 	return 0;
 }

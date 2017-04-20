@@ -1,4 +1,5 @@
 
+#define _CRT_SECURE_NO_WARNINGS
 #include "wiz_vector_wiz_string.h"
 
 #define FORM(A, B) A##B
@@ -46,7 +47,9 @@ void FORM(push_back_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec
 	if (vec->capacity == vec->num) {
 		FORM(expand_wiz_vector_, wiz_string) (vec);
 	}
-	vec->vec[vec->num] = *pval;
+
+	init_wiz_string(&(vec->vec[vec->num]), get_cstr_wiz_string(pval), size_wiz_string(pval));
+	
 	vec->num++;
 }
 void FORM(pop_back_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
@@ -64,7 +67,7 @@ int FORM(empty_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
 	return 0 == vec->num;
 }
 
-int FORM(size_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
+size_t FORM(size_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
 {
 	return vec->num;
 }

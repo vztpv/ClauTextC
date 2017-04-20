@@ -25,5 +25,5 @@ void FORM(pop_back_wiz_vector_, double) (FORM(wiz_vector_, double)* vec);
 double* FORM(back_wiz_vector_, double) (FORM(wiz_vector_, double)* vec);
 
 int FORM(empty_wiz_vector_, double) (FORM(wiz_vector_, double)* vec);
-int FORM(size_wiz_vector_, double) (FORM(wiz_vector_, double)* vec);
+size_t FORM(size_wiz_vector_, double) (FORM(wiz_vector_, double)* vec);
 #endif

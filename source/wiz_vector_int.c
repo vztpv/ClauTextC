@@ -64,7 +64,7 @@ int FORM(empty_wiz_vector_, int) (FORM(wiz_vector_, int)* vec)
 	return 0 == vec->num;
 }
 
-int FORM(size_wiz_vector_, int) (FORM(wiz_vector_, int)* vec)
+size_t FORM(size_wiz_vector_, int) (FORM(wiz_vector_, int)* vec)
 {
 	return vec->num;
 }

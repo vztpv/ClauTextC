@@ -8,8 +8,9 @@ char* end(wiz_string_builder* builder)
 	return builder->buffer_first + builder->capacity;
 }
 
-void init_wiz_string_builder(wiz_string_builder* builder, const size_t buffer_size, const char* cstr, const int len)
+void init_wiz_string_builder(wiz_string_builder* builder, const size_t buffer_size, const char* cstr, const size_t len)
 {
+
 	builder->buffer = (char*)malloc(sizeof(char) * (buffer_size + 1)); // 1 for '\0'
 	builder->len = len;
 	builder->capacity = buffer_size;
@@ -17,15 +18,15 @@ void init_wiz_string_builder(wiz_string_builder* builder, const size_t buffer_si
 	builder->buffer[builder->len] = '\0';
 	builder->buffer_first = builder->buffer;
 }
-void erase_wiz_string_builder(wiz_string_builder* builder)
+void free_wiz_string_builder(wiz_string_builder* builder)
 {
-	free(builder->buffer);
+	free(builder->buffer_first);
 	builder->len = 0;
 	builder->buffer = NULL;
 	builder->buffer_first = NULL;
 }
 
-wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const char* cstr, const int len)
+wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const char* cstr, const size_t len)
 {
 	if (builder->buffer + builder->len + len < end(builder))
 	{
@@ -42,25 +43,27 @@ wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const
 			builder->len = builder->len + len;
 		}
 		else {
+			int new_len = builder->len + len;
 			char* new_buffer = (char*)malloc(sizeof(char) * (builder->len + len + 1));
 			memcpy(new_buffer, builder->buffer, builder->len);
 			memcpy(new_buffer + builder->len, cstr, len);
 			new_buffer[builder->len + len] = '\0';
-			free(builder->buffer);
-			builder->buffer = new_buffer;
-			builder->buffer_first = builder->buffer;
-			builder->len = builder->len + len;
+			//free(builder->buffer);
+			free_wiz_string_builder(builder);
+
+			init_wiz_string_builder(builder, new_len, new_buffer, new_len);
+			free(new_buffer);
 		}
 	}
 	return builder;
 }
 
-char* divide_wiz_string_builder(wiz_string_builder* builder, const int idx) // need to rename!l, chk idx range!
+char* divide_wiz_string_builder(wiz_string_builder* builder, const size_t idx) // need to rename!l, chk idx range!
 {
 	builder->buffer[idx] = '\0';
 	return builder->buffer;
 }
-char* str_wiz_string_builder(wiz_string_builder* builder, int* size)
+char* str_wiz_string_builder(wiz_string_builder* builder, size_t* size)
 {
 	if (size) { *size = builder->len; }
 	return builder->buffer;
@@ -78,18 +81,26 @@ size_t size_wiz_string_builder(wiz_string_builder* builder)
 	return builder->len;
 }
 
-wiz_string_builder* left_shift_wiz_string_builder(wiz_string_builder* builder, const int offset)
+wiz_string_builder* left_shift_wiz_string_builder(wiz_string_builder* builder, const size_t offset)
 {
+	int i;
+
 	if (offset < 1) { return builder; }
 
 	if (builder->buffer + offset < end(builder)) {
 		builder->buffer = builder->buffer + offset;
+		
+	//	printf("chk2 %d %d\n", strlen(builder->buffer), builder->len - offset);
+	//	for (i = 0; i < 10; ++i) {
+	//		printf("%d ", builder->buffer[i]);
+	//	}
 	}
 	else {
 		memmove(builder->buffer_first, builder->buffer + offset, builder->len - offset);
 		builder->buffer = builder->buffer_first;
 		builder->buffer[builder->len - offset] = '\0';
 	}
+
 	builder->len = builder->len - offset;
 	return builder;
 }

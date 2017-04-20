@@ -6,6 +6,11 @@
 // cstr cf) "" and NULL
 void init_wiz_string(wiz_string* str, const char* cstr, int n)
 {
+	// debug..
+	//if (strlen(cstr) != n) {
+	//	printf("Error");
+	//}
+
 	if (0 == n) {
 		str->len = 0;
 		str->str = "";
