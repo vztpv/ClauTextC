@@ -18,7 +18,7 @@ typedef struct FORM(wiz_vector_, int) FORM(wiz_vector_, int);
 void FORM(init_wiz_vector_, int) (FORM(wiz_vector_, int)* vec, const size_t capacity);
 void FORM(free_wiz_vector_, int) (FORM(wiz_vector_, int)* vec);
 int* FORM(get_wiz_vector_, int) (FORM(wiz_vector_, int)* vec, size_t idx);
-void FORM(set_wiz_vector_, int) (FORM(wiz_vector_, int)* vec, size_t idx, int* pval);
+void FORM(set_wiz_vector_, int) (FORM(wiz_vector_, int)* vec, size_t idx, int* pval); // const int*?
 
 void FORM(push_back_wiz_vector_, int) (FORM(wiz_vector_, int)* vec, int* pval);
 void FORM(pop_back_wiz_vector_, int) (FORM(wiz_vector_, int)* vec);

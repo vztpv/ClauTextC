@@ -85,11 +85,11 @@ wiz_string substr_wiz_string(wiz_string* str, size_t begin, size_t end)
 		temp.str = malloc(sizeof(char) * (temp.len + 1));
 
 		strncpy(temp.str, get_cstr_wiz_string(str) + begin, end - begin);
-		temp.str[end] = '\0';
+		temp.str[end - begin] = '\0';
 	}
 	else {
-		strncpy(temp.buffer, get_cstr_wiz_string(str), end - begin);
-		temp.buffer[end] = '\0';
+		strncpy(temp.buffer, get_cstr_wiz_string(str) + begin, end - begin);
+		temp.buffer[end - begin] = '\0';
 	}
 	return temp;
 }

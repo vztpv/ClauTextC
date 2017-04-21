@@ -83,8 +83,6 @@ size_t size_wiz_string_builder(wiz_string_builder* builder)
 
 wiz_string_builder* left_shift_wiz_string_builder(wiz_string_builder* builder, const size_t offset)
 {
-	int i;
-
 	if (offset < 1) { return builder; }
 
 	if (builder->buffer + offset < end(builder)) {
