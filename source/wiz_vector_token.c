@@ -1,5 +1,6 @@
 
 #include "wiz_vector_token.h"
+#include <stdio.h>
 
 #define FORM(A, B) A##B
 
@@ -23,6 +24,7 @@ void FORM(init_wiz_vector_, token) (FORM(wiz_vector_, token)* vec, const size_t 
 	vec->num = 0;
 	vec->capacity = capacity;
 	vec->vec = malloc(sizeof(token) * capacity);
+	
 
 	if (NULL == vec->vec) {
 		printf("vec->vec is NULL\n"); // chk for debug?

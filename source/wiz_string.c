@@ -10,6 +10,7 @@ void init_wiz_string(wiz_string* str, const char* cstr, int n)
 	//if (strlen(cstr) != n) {
 	//	printf("Error");
 	//}
+	str->moved = 0;
 
 	if (0 == n) {
 		str->len = 0;
@@ -32,12 +33,20 @@ void init_wiz_string(wiz_string* str, const char* cstr, int n)
 void free_wiz_string(wiz_string* str)
 {
 	if (0 != str->len) {
-		if (str->len > wiz_string_buffer_size) {
+		if (str->len > wiz_string_buffer_size && 0 == str->moved) {
 			free(str->str);
+			
+			str->buffer[0] = '\0';
+			str->str = "";
+			str->len = 0;
+			str->moved = 0;
 		}
-		str->buffer[0] = '\0';
-		str->str = "";
-		str->len = 0;
+		else if (0 == str->moved) {
+			str->buffer[0] = '\0';
+			str->str = "";
+			str->len = 0;
+			str->moved = 0;
+		}
 	}
 }
 char* get_cstr_wiz_string(wiz_string* str)
@@ -57,6 +66,7 @@ wiz_string concat_wiz_string(wiz_string* str1, wiz_string* str2)
 	wiz_string temp;
 
 	temp.len = str1->len + str2->len;
+	temp.moved = 0;
 
 	if (temp.len == 0) {
 		temp.buffer[0] = '\0';
@@ -80,6 +90,7 @@ wiz_string substr_wiz_string(wiz_string* str, size_t begin, size_t end)
 	wiz_string temp;
 
 	temp.len = (end - 1) - begin + 1;
+	temp.moved = 0;
 
 	if (temp.len > wiz_string_buffer_size) {
 		temp.str = malloc(sizeof(char) * (temp.len + 1));
@@ -96,13 +107,14 @@ wiz_string substr_wiz_string(wiz_string* str, size_t begin, size_t end)
 void assign_wiz_string(wiz_string* str1, wiz_string* str2)
 {
 	// str1 != str2 
-	if (str1->len != str2->len) {
+	if (str1->len != str2->len || 1 == str1->moved) {
 		free_wiz_string(str1);
 		str1->len = str2->len;
 		if (str2->len > wiz_string_buffer_size) {
 			str1->str = malloc(sizeof(char)*(str2->len + 1));
 		}
 	}
+	str1->moved = 0;
 	strncpy(get_cstr_wiz_string(str1), get_cstr_wiz_string(str2), str2->len + 1);
 }
 // concat_and_assign_wiz_string  A = A + B
@@ -110,6 +122,7 @@ void concat_and_assign_wiz_string(wiz_string* str1, wiz_string* str2)
 {
 	const int len = str1->len + str2->len;
 	wiz_string temp;
+	temp.moved = 0;
 
 	if (empty_wiz_string(str1)) {
 		assign_wiz_string(str1, str2);
@@ -134,6 +147,7 @@ void substr_and_assign_wiz_string(wiz_string* str, size_t begin, size_t end)
 	wiz_string temp;
 	char x = str->str[end - 1];
 	temp.len = (end - 1) - begin + 1;
+	temp.moved = 0;
 
 	if (temp.len > wiz_string_buffer_size) {
 		temp.str = malloc(sizeof(char) * (temp.len + 1));

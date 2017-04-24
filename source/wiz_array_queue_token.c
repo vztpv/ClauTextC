@@ -43,8 +43,9 @@ void FORM(push_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que, tok
 	{
 		FORM(expand_wiz_array_queue_, token)(que);
 	}
-	FORM(set_wiz_vector_, token)(&(que->que), (que->start + que->num) & (FORM(size_wiz_array_queue_, token)(que) - 1), val);
+	FORM(set_wiz_vector_, token)(&(que->que), (que->start + que->num) & (FORM(get_num_max_wiz_array_queue_, token)(que) - 1), val);
 	que->num++;
+	que->que.num++;
 }
 token* FORM(pop_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que)
 {
@@ -52,9 +53,9 @@ token* FORM(pop_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que)
 
 	//que[start] = T();
 
-	que->start = (que->start + 1) & (FORM(size_wiz_array_queue_, token) (que) - 1); // % que.size(), 2^n.
+	que->start = (que->start + 1) & (FORM(get_num_max_wiz_array_queue_, token) (que) - 1); // % que.size(), 2^n.
 	que->num--;
-
+	que->que.num--;
 	return temp;
 }
 token* FORM(pop_back_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que)
@@ -62,13 +63,26 @@ token* FORM(pop_back_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* qu
 	token* temp = (FORM(get_wiz_array_queue_, token) (que, que->num - 1));
 
 	que->num--;
+	que->que.num--;
 
 	return temp;
 }
 
+token* FORM(back_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que)
+{
+	token* temp = (FORM(get_wiz_array_queue_, token) (que, que->num - 1));
+
+	return temp;
+}
+token* FORM(front_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que)
+{
+	token* temp = (FORM(get_wiz_array_queue_, token) (que, 0));
+
+	return temp;
+}
 token* FORM(get_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que, const size_t idx)
 {
-	return (FORM(get_wiz_vector_, token)(&(que->que), (que->start + idx) & (FORM(size_wiz_array_queue_, token)(que) - 1)));
+	return (FORM(get_wiz_vector_, token)(&(que->que), (que->start + idx) & (FORM(get_num_max_wiz_array_queue_, token)(que) - 1)));
 }
 
 int FORM(is_full_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que)

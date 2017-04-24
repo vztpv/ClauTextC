@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define wiz_string_buffer_size 20
+#define wiz_string_buffer_size 10
 
 struct wiz_string
 {
@@ -14,7 +14,9 @@ struct wiz_string
 	size_t len;
 	// int chk; // for DEBUG?
 	// size_t capacity; // ?
+	int moved; // if 1 == moved, then do not free data!
 };
+
 typedef struct wiz_string wiz_string;
 
 // cstr cf) "" and NULL

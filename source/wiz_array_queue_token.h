@@ -22,6 +22,8 @@ void FORM(free_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que);
 void  FORM(push_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que, token* val);
 token*  FORM(pop_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que);
 token*  FORM(pop_back_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que);
+token*  FORM(back_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que);
+token*  FORM(front_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que);
 
 token*  FORM(get_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que, const size_t idx);
 
