@@ -97,7 +97,6 @@ wiz_string item_list_names_to_string_in_user_type(user_type* ut);
 wiz_vector_wiz_string userType_list_names_to_string_array_in_user_type(user_type* ut);
 wiz_string user_type_list_names_to_string_in_user_type(user_type* ut);
 wiz_string to_string_in_user_type(user_type* ut);
-pair_int_and_wiz_vector_user_type_ptr find_user_type_in_user_type(user_type* ut, user_type* global,  wiz_string* _position, wiz_string_builder* builder);
-
+pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* ut, user_type* global,  wiz_string* _position, wiz_string_builder* builder);
 
 #endif

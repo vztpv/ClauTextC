@@ -35,5 +35,6 @@ size_t  FORM(get_num_max_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)
 size_t  FORM(get_num_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* que);
 
 
+void FORM(erase_in_wiz_array_queue_, token)(FORM(wiz_array_queue_, token)* token_vec, size_t idx);
 
 #endif

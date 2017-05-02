@@ -19,9 +19,12 @@ void free_wiz_string_builder(wiz_string_builder* builder);
 
 wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const char* cstr, const size_t len);
 
+wiz_string_builder* append_char_wiz_string_builder(wiz_string_builder* builder, char ch);
+
 char* divide_wiz_string_builder(wiz_string_builder* builder, const size_t idx); // need to rename!l, chk idx range!
 
 char* str_wiz_string_builder(wiz_string_builder* builder, size_t* size);
+
 
 void clear_wiz_string_builder(wiz_string_builder* builder);
 

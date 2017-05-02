@@ -4,8 +4,9 @@
 
 #include "wiz_vector.h"
 #include "wiz_load_data_token.h"
+#include "wiz_string.h"
 
-struct pair_int_and_wiz_vector_user_type_ptr
+struct pair_int_and_wiz_vector_any
 {
 	int first;
 	wiz_vector_any second;
@@ -23,11 +24,36 @@ struct pair_int_and_token
 	token second;
 };
 
-typedef struct pair_int_and_wiz_vector_user_type_ptr 
-		pair_int_and_wiz_vector_user_type_ptr;
+struct pair_user_type_ptr_and_int
+{
+	void* first;
+	int second;
+};
+
+struct pair_wiz_string_and_wiz_string
+{
+	wiz_string first;
+	wiz_string second;
+};
+
+struct pair_wiz_string_and_user_type
+{
+	wiz_string first;
+	void* second;
+};
+
+
+typedef struct pair_int_and_wiz_vector_any pair_int_and_wiz_vector_any;
 
 typedef struct pair_bool_and_token pair_bool_and_token;
 
 typedef struct pair_int_and_token pair_int_and_token;
+
+typedef struct pair_user_type_ptr_and_int pair_user_type_ptr_and_int;
+
+typedef struct pair_wiz_string_and_wiz_string pair_wiz_string_and_wiz_string;
+
+typedef struct pair_wiz_string_and_user_type pair_wiz_string_and_user_type;
+
 
 #endif

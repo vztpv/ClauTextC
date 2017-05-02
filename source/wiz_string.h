@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define wiz_string_buffer_size 10
+#define wiz_string_buffer_size 5
 
 struct wiz_string
 {
@@ -35,11 +35,24 @@ wiz_string concat_wiz_string(wiz_string* str1, wiz_string* str2);
 wiz_string substr_wiz_string(wiz_string* str, size_t begin, size_t end);
 
 void assign_wiz_string(wiz_string* str1, wiz_string* str2);
+
 // concat_and_assign_wiz_string  A = A + B
 void concat_and_assign_wiz_string(wiz_string* str1, wiz_string* str2);
 
 // substr_and_assign_wiz_string  A = A.substring();
 void substr_and_assign_wiz_string(wiz_string* str, size_t begin, size_t end);
 
+char back_wiz_string(wiz_string* str);
+
+// erase(shift, num--)_wiz_string
+void erase_wiz_string(wiz_string* str, size_t idx);
+// starts_with_wiz_string
+int starts_with_wiz_string(wiz_string* str, wiz_string* start_str);
+// ends_with_wiz_string
+int lasts_with_wiz_string(wiz_string* str, wiz_string* last_string);
+// equal_wiz_string
+int equal_wiz_string(wiz_string* str1, wiz_string* str2);
+
+void reverse_wiz_string(wiz_string* str);
 
 #endif

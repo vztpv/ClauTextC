@@ -1,7 +1,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "wiz_string.h"
-
+#include <string.h>
 
 // cstr cf) "" and NULL
 void init_wiz_string(wiz_string* str, const char* cstr, int n)
@@ -39,13 +39,13 @@ void free_wiz_string(wiz_string* str)
 			str->buffer[0] = '\0';
 			str->str = "";
 			str->len = 0;
-			str->moved = 0;
+			str->moved = -1;
 		}
 		else if (0 == str->moved) {
 			str->buffer[0] = '\0';
 			str->str = "";
 			str->len = 0;
-			str->moved = 0;
+			str->moved = -2;
 		}
 	}
 }
@@ -159,3 +159,90 @@ void substr_and_assign_wiz_string(wiz_string* str, size_t begin, size_t end)
 
 	*str = temp;
 }
+
+// erase(shift, num--)_wiz_string
+void erase_wiz_string(wiz_string* str, size_t idx)
+{
+	size_t i;
+
+	for (i = idx; i < str->len - 1; ++i) {
+		get_cstr_wiz_string(str)[i] = get_cstr_wiz_string(str)[i + 1];
+	}
+	get_cstr_wiz_string(str)[str->len - 1] = '\0';
+	str->len--;
+
+	if (str->len == wiz_string_buffer_size) {
+		strncpy(str->buffer, str->str, wiz_string_buffer_size + 1);
+	}
+}
+// starts_with_wiz_string
+int starts_with_wiz_string(wiz_string* str, wiz_string* start_str)
+{
+	int result = 1;
+	size_t i;
+
+	if (str->len < start_str->len) {
+		return 0;
+	}
+
+	for (i = 0; i < start_str->len; ++i) {
+		if (get_cstr_wiz_string(str)[i] == get_cstr_wiz_string(start_str)[i]) {
+			//
+		}
+		else {
+			result = 0;
+			break;
+		}
+	}
+
+	return result;
+}
+// ends_with_wiz_string
+int lasts_with_wiz_string(wiz_string* str, wiz_string* last_str)
+{
+	int result = 1;
+	size_t i, j;
+
+	if (str->len < last_str->len) {
+		return 0;
+	}
+
+	j = last_str->len - 1;
+	for (i = str->len - 1; i >= 0 && j >= 0; --i) {
+		if (get_cstr_wiz_string(str)[i] == get_cstr_wiz_string(last_str)[j]) {
+			--j;
+		}
+		else {
+			result = 0;
+			break;
+		}
+	}
+
+	return result;
+}
+// equal_wiz_string
+int equal_wiz_string(wiz_string* str1, wiz_string* str2)
+{
+	if (str1->len != str2->len) { return 0; }
+	return 0 == strcmp(get_cstr_wiz_string(str1), get_cstr_wiz_string(str2));
+}
+
+char back_wiz_string(wiz_string* str)
+{
+	return get_cstr_wiz_string(str)[str->len - 1];
+}
+
+
+void reverse_wiz_string(wiz_string* str)
+{
+	char ch;
+	size_t i;
+
+	for (i = 0; i <= str->len / 2; ++i) {
+		ch = get_cstr_wiz_string(str)[i];
+		get_cstr_wiz_string(str)[i] = get_cstr_wiz_string(str)[str->len - 1 - i];
+		get_cstr_wiz_string(str)[str->len - 1 - i] = ch;
+	}
+}
+
+

@@ -110,3 +110,14 @@ size_t  FORM(get_num_wiz_array_queue_, token) (FORM(wiz_array_queue_, token)* qu
 	return que->num;
 }
 
+void FORM(erase_in_wiz_array_queue_, token)(FORM(wiz_array_queue_, token)* token_vec, size_t idx)
+{
+	size_t i;
+
+	for (i = idx; i < token_vec->num - 1; ++i) {
+		*get_wiz_array_queue_token(token_vec, i) = *get_wiz_array_queue_token(token_vec, i + 1);
+	}
+	token_vec->num--;
+	token_vec->que.num--;
+}
+

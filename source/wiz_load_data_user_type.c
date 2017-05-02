@@ -1,10 +1,13 @@
 
 #include "wiz_load_data_user_type.h"
+#include "wiz_string_tokenizer.h"
+#include "wiz_deck_pair_user_type_ptr_and_int.h"
 
 
 void push_comment_in_user_type(user_type* ut, wiz_string* comment)
 {
 	push_back_wiz_vector_wiz_string(&(ut->comment_list), comment);
+	//free_wiz_string(comment);
 }
 size_t get_comment_list_size_in_user_type(user_type* ut)
 { 
@@ -76,7 +79,8 @@ void _remove_in_user_type(user_type* ut)
 	free_wiz_vector_int(&(ut->ilist));
 
 	for (i = 0; i < size_wiz_vector_wiz_string(&(ut->comment_list)); ++i) {
-		free_wiz_string(get_wiz_vector_wiz_string(&(ut->comment_list), i));
+		wiz_string* temp = get_wiz_vector_wiz_string(&(ut->comment_list), i);
+		free_wiz_string(temp);
 	}
 	free_wiz_vector_wiz_string(&(ut->comment_list));
 
@@ -223,7 +227,21 @@ void add_item_at_front_in_user_type(user_type* ut, wiz_string* name, wiz_string*
 void add_user_type_item_at_front_in_user_type(user_type* ut, user_type* item){ }
 
 
-wiz_vector_item_type get_item_in_user_type(user_type* ut, wiz_string* name){ }
+wiz_vector_item_type get_item_in_user_type(user_type* ut, wiz_string* name)
+{
+	wiz_vector_item_type vec;
+	size_t i;
+
+	init_wiz_vector_item_type(&vec, 1);
+
+	for (i = 0; i < size_wiz_vector_item_type(&(ut->item_list)); ++i) {
+		if (equal_wiz_string(&get_wiz_vector_item_type(&(ut->item_list), i)->name, name)) {
+			push_back_wiz_vector_item_type(&vec, get_wiz_vector_item_type(&ut->item_list, i));
+		}
+	}
+
+	return vec;
+}
 
 // regex to SetItem?
 int set_item_in_user_type(user_type* ut, wiz_string* name, wiz_string* value){ }
@@ -231,7 +249,21 @@ int set_item_in_user_type(user_type* ut, wiz_string* name, wiz_string* value){ }
 // add set Data
 int set_item_by_name_in_user_type(user_type* ut, size_t var_idx, wiz_string* value){ }
 
-wiz_vector_any get_user_type_item_in_user_type(user_type* ut, wiz_string* name){ }
+wiz_vector_any get_user_type_item_in_user_type(user_type* ut, wiz_string* name)
+{
+	wiz_vector_any result;
+	size_t i;
+
+	init_wiz_vector_any(&result, 1);
+
+	for (i = 0; i < get_user_type_list_size_in_user_type(ut); ++i) {
+		if (equal_wiz_string(&((user_type*)get_user_type_list_in_user_type(ut, i))->name, name)) {
+			push_back_wiz_vector_any(&result, get_user_type_list_in_user_type(ut, i));
+		}
+	}
+
+	return result;
+}
 // deep copy.
 wiz_vector_any get_copy_user_type_item_in_user_type(user_type* ut, wiz_string* name){ }
 int get_user_type_item_ref_in_user_type(user_type* ut, size_t idx, user_type* ref){ }
@@ -292,7 +324,7 @@ void save1_in_user_type(FILE* stream, user_type* ut, int depth)
 			itemListCount++;
 		}
 		else if (2 == *get_wiz_vector_int(&(ut->ilist), i)) { // user_type
-			// std::cout << "UserTypeList" << endl;
+			// cout << "UserTypeList" << endl;
 			for (int k = 0; k < depth; ++k) {
 				fputc('\t', stream);
 			}
@@ -323,7 +355,72 @@ void save1_in_user_type(FILE* stream, user_type* ut, int depth)
 }
 
 // todo?
-void save2_in_user_type(FILE* stream, user_type* ut, int depth) { }
+void save2_in_user_type(FILE* stream, user_type* ut, int depth) 
+{
+	int itemListCount = 0;
+	int userTypeListCount = 0;
+
+	size_t i;
+	const size_t commentListSize = get_comment_list_size_in_user_type(ut);
+
+	for (i = 0; i < commentListSize; ++i) {
+		for (int k = 0; k < depth; ++k) {
+			fputc('\t', stream);
+		}
+		fputs(get_cstr_wiz_string(get_wiz_vector_wiz_string(&(ut->comment_list), i)), stream);
+
+		if (i < commentListSize - 1 || 0 == empty_wiz_vector_int(&(ut->ilist))) {
+			fputc('\n', stream);
+		}
+	}
+
+	for (i = 0; i < get_ilist_size_in_user_type(ut); ++i) {
+		if (1 == *get_wiz_vector_int(&(ut->ilist), i)) { // item_type
+			for (int j = 0; j < 1; j++) {
+				for (int k = 0; k < depth; ++k) {
+					fputc('\t', stream);
+				}
+				if (0 != strcmp(get_cstr_wiz_string(&(get_wiz_vector_item_type(&(ut->item_list), itemListCount))->name), "")) {
+					fputs(get_cstr_wiz_string(&get_wiz_vector_item_type(&(ut->item_list), itemListCount)->name), stream);
+					fputs(" = ", stream);
+				}
+				fputs(get_cstr_wiz_string(&get_wiz_vector_item_type(&(ut->item_list), itemListCount)->value), stream);
+			}
+			if (i != get_ilist_size_in_user_type(ut) - 1) {
+				fputc('\n', stream);
+			}
+			itemListCount++;
+		}
+		else if (2 == *get_wiz_vector_int(&(ut->ilist), i)) { // user_type
+															  // cout << "UserTypeList" << endl;
+			for (int k = 0; k < depth; ++k) {
+				fputc('\t', stream);
+			}
+
+			if (0 != strcmp(get_cstr_wiz_string(&((user_type*)get_wiz_vector_any2(&(ut->user_type_list), userTypeListCount))->name), "")) {
+				fputs(get_cstr_wiz_string(&((user_type*)get_wiz_vector_any2(&(ut->user_type_list), userTypeListCount))->name), stream);
+				fputs(" = ", stream);
+			}
+
+			fputc('{', stream);
+			fputc('\n', stream);
+
+			save2_in_user_type(stream, (user_type*)get_wiz_vector_any2(&(ut->user_type_list), userTypeListCount), depth + 1);
+
+			fputc('\n', stream);
+
+			for (int k = 0; k < depth; ++k) {
+				fputc('\t', stream);
+			}
+			fputc('}', stream);
+			if (i != get_ilist_size_in_user_type(ut) - 1) {
+				fputc('\n', stream);
+			}
+
+			userTypeListCount++;
+		}
+	}
+}
 
 // todo
 //wiz_string item_list_to_string_in_user_type(user_type* ut){ }
@@ -331,5 +428,214 @@ void save2_in_user_type(FILE* stream, user_type* ut, int depth) { }
 //wiz_vector_wiz_string userType_list_names_to_string_array_in_user_type(user_type* ut){ }
 //wiz_string user_type_list_names_to_string_in_user_type(user_type* ut){ }
 //wiz_string to_string_in_user_type(user_type* ut){ }
-//pair_int_and_wiz_vector_user_type_ptr find_user_type_in_user_type(user_type* ut, user_type* global, wiz_string* _position, wiz_string_builder* builder){ }
 
+pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* ut, user_type* global, wiz_string* _position, wiz_string_builder* builder)
+{
+	int exist = 0;
+	int chk = 0; // for break?
+
+	pair_int_and_wiz_vector_any result; // pair<bool, vector<UserType*>>
+	wiz_string delim, start, EMPTY, UT;
+	wiz_vector_wiz_string delim_vec;
+	wiz_string_tokenizer tokenizer;// (position, "/", builder, 1);
+	wiz_vector_wiz_string strVec;
+	wiz_deck_pair_user_type_ptr_and_int utDeck;
+	pair_user_type_ptr_and_int utTemp;
+	wiz_string* position = _position;
+	wiz_vector_any temp;
+	wiz_vector_any temp2;
+
+	init_wiz_string(&delim, "/", 1);
+	init_wiz_string(&start, "/./", 3);
+	init_wiz_string(&EMPTY, "", 0);
+	init_wiz_string(&UT, "$ut", 3);
+	init_wiz_vector_wiz_string(&delim_vec, 1);
+	push_back_wiz_vector_wiz_string(&delim_vec, &delim);
+	init_wiz_string_tokenizer(&tokenizer, position, &delim_vec, builder, 1); // option : 1
+	init_wiz_vector_wiz_string(&strVec, 1);
+	init_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
+	init_wiz_vector_any(&temp, 1);
+	init_wiz_vector_any(&temp2, 1);
+
+	while (1) { // it is a just trick!
+		if (!empty_wiz_string(position) && get_cstr_wiz_string(position)[0] == '@') { 
+			//position.erase(position.begin()); 
+			erase_wiz_string(position, 0);
+		}
+		if (empty_wiz_string(position)) { 
+			//temp.push_back(global); 
+			push_back_wiz_vector_any(&temp, (void*)global);
+			break; 
+		}
+		if (0 == strcmp(get_cstr_wiz_string(position), ".")) { 
+			//temp.push_back(global); 
+			push_back_wiz_vector_any(&temp, (void*)global);
+			break;
+		}
+		if (0 == strcmp(get_cstr_wiz_string(position), "/./")) { 
+			//temp.push_back(global); 
+			push_back_wiz_vector_any(&temp, (void*)global);
+			break;
+		} // chk..
+		if (0 == strcmp(get_cstr_wiz_string(position), "/.")) {
+			//temp.push_back(global); 
+			push_back_wiz_vector_any(&temp, (void*)global);
+			break; 
+		}
+		
+		if (starts_with_wiz_string(position, &start))
+		{
+			substr_and_assign_wiz_string(position, 3, size_wiz_string(position));
+		}
+
+		utTemp.first = global;
+		utTemp.second = 0;
+
+		for (int i = 0; i < count_tokens_wiz_string_tokenizer(&tokenizer); ++i) {
+			wiz_string* strTemp = next_token_wiz_string_tokenizer(&tokenizer);
+			if (0 == strcmp(get_cstr_wiz_string(strTemp), "root") && i == 0) {
+			}
+			else {
+				//strVec.push_back(strTemp);
+				push_back_wiz_vector_wiz_string(&strVec, strTemp);
+			}
+
+			if ((size_wiz_vector_wiz_string(&strVec) >= 1) && 
+				(0 == strcmp(" ", get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, 
+													size_wiz_vector_wiz_string(&strVec)  - 1))))
+				)
+			{
+				assign_wiz_string(get_wiz_vector_wiz_string(&strVec, size_wiz_vector_wiz_string(&strVec)  - 1), &EMPTY);
+			}
+			else if ((size_wiz_vector_wiz_string(&strVec)  >= 1) &&
+				(0 == strcmp("_", get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, 
+																	size_wiz_vector_wiz_string(&strVec)  - 1))))
+				)
+			{
+				assign_wiz_string(get_wiz_vector_wiz_string(&strVec, size_wiz_vector_wiz_string(&strVec) - 1), &EMPTY);
+			}
+		}
+
+		// maybe, has bug!
+		{
+			int count = 0;
+			size_t i;
+			chk = 0;
+
+			for (i = 0; i < size_wiz_vector_wiz_string(&strVec) ; ++i) {
+				if (0 == strcmp(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, i)), "..")) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+
+			//reverse(strVec.begin(), strVec.end());
+			reverse_wiz_vector_wiz_string(&strVec);
+
+			for (int i = 0; i < count; ++i) {
+				if (utTemp.first == NULL) {
+					chk = 1;
+					// return{ 0, vector< UserType* >() };
+				}
+				//utTemp.first = utTemp.first->GetParent();
+				utTemp.first = get_parent_in_user_type((user_type*)utTemp.first);
+				//strVec.pop_back();
+				pop_back_wiz_vector_wiz_string(&strVec);
+			}
+			if (chk) { break; }
+			//reverse(strVec.begin(), strVec.end());
+			reverse_wiz_vector_wiz_string(&strVec);
+		}
+
+		//utDeck.push_front(utTemp);
+		push_front_wiz_deck_pair_user_type_ptr_and_int(&utDeck, &utTemp);
+
+		while (0 == empty_wiz_deck_pair_user_type_ptr_and_int(&utDeck)) {
+			utTemp = *front_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
+			pop_front_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
+
+			if (utTemp.second < size_wiz_vector_wiz_string(&strVec)  &&
+				starts_with_wiz_string(get_wiz_vector_wiz_string(&strVec, utTemp.second), &UT) // "$ut")
+				)
+			{
+				wiz_string str_temp;
+				int idx;
+				wiz_string* pstr = get_wiz_vector_wiz_string(&strVec, utTemp.second);
+				pair_user_type_ptr_and_int pair_temp;
+				str_temp = substr_wiz_string(pstr, 3, size_wiz_string(pstr));
+				idx = atoi(get_cstr_wiz_string(&str_temp));
+				free_wiz_string(&str_temp);
+				if (idx < 0 || idx >= get_user_type_list_size_in_user_type(utTemp.first)) {
+					break;
+				}
+				pair_temp.first = get_user_type_list_in_user_type(utTemp.first, idx);
+				pair_temp.second = utTemp.second + 1;
+				
+				push_front_wiz_deck_pair_user_type_ptr_and_int(&utDeck, &pair_temp);
+			}
+			else if (utTemp.second < size_wiz_vector_wiz_string(&strVec)  && 
+				0 == strcmp(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, utTemp.second)), "$"))
+			{
+				for (int j = get_user_type_list_size_in_user_type(utTemp.first) - 1; j >= 0; --j) {
+					user_type* x = get_user_type_list_in_user_type(utTemp.first, j);
+					pair_user_type_ptr_and_int pair_temp;
+					
+					pair_temp.first = x;
+					pair_temp.second = utTemp.second + 1;
+					push_back_wiz_deck_pair_user_type_ptr_and_int(&utDeck, &pair_temp);
+				}
+			}
+			else if (utTemp.second < size_wiz_vector_wiz_string(&strVec))
+			{
+				free_wiz_vector_any(&temp2);
+
+				temp2 = get_user_type_item_in_user_type((user_type*)utTemp.first,
+					get_wiz_vector_wiz_string(&strVec, utTemp.second));
+				if (temp2.num == 0) {
+					wiz_vector_any x = get_user_type_item_in_user_type(utTemp.first, get_wiz_vector_wiz_string(&strVec, utTemp.second));
+					for (int j = size_wiz_vector_any(&x) - 1; j >= 0; --j) {
+						pair_user_type_ptr_and_int pair_temp;
+						pair_temp.first = get_wiz_vector_any(&x, j);
+						pair_temp.second = utTemp.second + 1;
+
+						push_front_wiz_deck_pair_user_type_ptr_and_int(&utDeck, &pair_temp);
+					}
+					free_wiz_vector_any(&x);
+				}
+			}
+
+			if (utTemp.second == size_wiz_vector_wiz_string(&strVec) ) {
+				exist = 1;
+
+				push_back_wiz_vector_any(&temp, utTemp.first);
+			}
+		}
+		
+		break;
+	}
+
+	if (0 == exist) { 
+		result.first = 0;
+		// free
+		free_wiz_vector_any(&temp);
+	}
+	else {
+		result.first = 1;
+		result.second = temp;
+	}
+
+	// free
+	free_wiz_vector_any(&temp2);
+	free_wiz_vector_wiz_string(&delim_vec);
+	free_wiz_string(&delim);
+	free_wiz_string(&start);
+	free_wiz_string(&EMPTY);
+	free_wiz_string(&UT);
+	free_wiz_string_tokenizer(&tokenizer);
+	free_wiz_vector_wiz_string(&strVec);
+	free_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
+	
+	return result;
+}

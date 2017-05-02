@@ -48,8 +48,8 @@ void FORM(push_back_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec
 		FORM(expand_wiz_vector_, wiz_string) (vec);
 	}
 
-	init_wiz_string(&(vec->vec[vec->num]), get_cstr_wiz_string(pval), size_wiz_string(pval));
-	
+	//init_wiz_string(&(vec->vec[vec->num]), get_cstr_wiz_string(pval), size_wiz_string(pval));
+	vec->vec[vec->num] = *pval;
 	vec->num++;
 }
 void FORM(pop_back_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
@@ -71,3 +71,16 @@ size_t FORM(size_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
 {
 	return vec->num;
 }
+
+void FORM(reverse_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
+{
+	size_t i;
+	wiz_string temp;
+
+	for (i = 0; i < vec->num / 2; ++i) {
+		temp = vec->vec[i];
+		vec->vec[i] = vec->vec[vec->num - 1 - i];
+		vec->vec[vec->num - 1 - i] = temp;
+	}
+}
+

@@ -57,6 +57,14 @@ wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const
 	}
 	return builder;
 }
+wiz_string_builder* append_char_wiz_string_builder(wiz_string_builder* builder, char ch)
+{
+	char temp[2];
+	temp[0] = ch;
+	temp[1] = '\0';
+
+	return append_wiz_string_builder(builder, temp, 1);
+}
 
 char* divide_wiz_string_builder(wiz_string_builder* builder, const size_t idx) // need to rename!l, chk idx range!
 {

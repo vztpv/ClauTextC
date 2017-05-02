@@ -27,4 +27,9 @@ wiz_string* FORM(back_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* v
 
 int FORM(empty_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec);
 size_t FORM(size_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec);
+
+// todo
+// reverse
+void FORM(reverse_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec);
+
 #endif
