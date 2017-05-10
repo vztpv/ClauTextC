@@ -69,3 +69,9 @@ size_t FORM(size_wiz_vector_, int) (FORM(wiz_vector_, int)* vec)
 	return vec->num;
 }
 
+void FORM(decrease_size_wiz_vector_, int) (FORM(wiz_vector_, int)* vec)
+{
+	if (vec->num > 0) {
+		vec->num--;
+	}
+}

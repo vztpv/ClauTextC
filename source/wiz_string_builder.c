@@ -110,4 +110,3 @@ wiz_string_builder* left_shift_wiz_string_builder(wiz_string_builder* builder, c
 	builder->len = builder->len - offset;
 	return builder;
 }
-

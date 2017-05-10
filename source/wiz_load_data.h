@@ -49,13 +49,16 @@ int save_data_in_load_data(wiz_string* fileName, user_type* global, int option);
 // search_item
 // search_user_type
 // add_data_at_afront
-// add_data
+//// add_data
+int add_data_in_load_data(user_type* global, wiz_string* position, wiz_string* data, wiz_string* condition, ExcuteData* excuteData, wiz_string_builder* builder);
+
 // insert
 // add_no_name_user_type
 // set_data (by_name)
 // set_data_by_index
-// get_data
-// get_item_list_data
+//// get_data
+wiz_string get_item_list_data_in_load_data(user_type* global, wiz_string* position, wiz_string* condition, ExcuteData* excuteData, wiz_string_builder* builder);
+
 // get_item_list_names_data
 // get_user_type_list_names_data
 // get_data_by_var_name

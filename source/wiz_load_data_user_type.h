@@ -29,6 +29,9 @@ wiz_string* get_comment_list_in_user_type(user_type* ut, size_t idx);
 size_t get_ilist_size_in_user_type(user_type* ut);
 size_t get_item_list_size_in_user_type(user_type* ut);
 size_t get_user_type_list_size_in_user_type(user_type* ut);
+int get_ilist_in_user_type(user_type* ut, size_t idx);
+void set_ilist_in_user_type(user_type* ut, size_t idx, int val);
+
 item_type* get_item_list_in_user_type(user_type* ut, size_t idx);
 user_type* get_user_type_list_in_user_type(user_type* ut, size_t idx);
 
@@ -55,7 +58,7 @@ size_t _get_user_type_index_from_ilist_index_in_user_type(user_type* ut, wiz_vec
 /// type : 1 or 2
 size_t _get_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t index, int type);
 void remove_item_list_by_idx_in_user_type(user_type* ut, size_t idx);//
-void remove_user_type_list_by_idx_in_user_type(user_type* ut,  size_t idx, int chk);// chk
+void remove_user_type_list_by_idx_in_user_type(user_type* ut,  size_t idx);// chk
 void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName);
 void remove_item_list_in_user_type(user_type* ut);//
 void remove_empty_item_in_user_type(user_type* ut);
@@ -92,11 +95,11 @@ int get_user_type_item_ref_in_user_type(user_type* ut,  size_t idx, user_type* r
 int get_last_user_type_item_ref_in_user_type(user_type* ut,  wiz_string* name, user_type** ref);
 void save1_in_user_type(FILE* stream,  user_type* ut,  int depth);
 void save2_in_user_type( FILE* stream,  user_type* ut,  int depth);
-wiz_string item_list_to_string_in_user_type(user_type* ut);
+wiz_string item_list_to_string_in_user_type(user_type* ut, wiz_string_builder* builder);
 wiz_string item_list_names_to_string_in_user_type(user_type* ut);
 wiz_vector_wiz_string userType_list_names_to_string_array_in_user_type(user_type* ut);
 wiz_string user_type_list_names_to_string_in_user_type(user_type* ut);
-wiz_string to_string_in_user_type(user_type* ut);
-pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* ut, user_type* global,  wiz_string* _position, wiz_string_builder* builder);
+wiz_string to_string_in_user_type(user_type* ut, wiz_string_builder* builder);
+pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global,  wiz_string* _position, wiz_string_builder* builder);
 
 #endif

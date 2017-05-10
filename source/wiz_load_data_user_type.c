@@ -37,7 +37,10 @@ user_type* get_user_type_list_in_user_type(user_type* ut, size_t idx)
 {
 	return (user_type*)get_wiz_vector_any2(&(ut->user_type_list), idx);
 }
-
+int get_ilist_in_user_type(user_type* ut, size_t idx)
+{
+	return *get_wiz_vector_int(&ut->ilist, idx);
+}
 int is_item_list_in_user_type(user_type* ut, size_t idx)
 {
 	return 1 == *get_wiz_vector_int(&(ut->ilist), idx);
@@ -45,6 +48,12 @@ int is_item_list_in_user_type(user_type* ut, size_t idx)
 int is_user_type_List_in_user_type(user_type* ut, size_t idx)
 {
 	return 2 == *get_wiz_vector_int(&(ut->ilist), idx);
+}
+
+
+void set_ilist_in_user_type(user_type* ut, size_t idx, int val)
+{
+	*get_wiz_vector_int(&ut->ilist, idx) = val;
 }
 
 // remove? - void add_item_list_in_user_type(user_type* ut, item_type* item)
@@ -173,8 +182,60 @@ size_t _get_item_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_i
 size_t _get_user_type_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t ilist_idx){ }
 // type : 1 or 2
 size_t _get_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t index, int type){ }
-void remove_item_list_by_idx_in_user_type(user_type* ut, size_t idx){ }//
-void remove_user_type_list_by_idx_in_user_type(user_type* ut, size_t idx, int chk){ }// chk
+void remove_item_list_by_idx_in_user_type(user_type* ut, size_t idx)
+{
+	int count = 0;
+	size_t i, k;
+	// left shift start idx, to end, at itemList. and resize!
+	free_item_value_in_item_type(get_item_list_in_user_type(ut, idx));
+
+	for (i = idx + 1; i < get_item_list_size_in_user_type(ut); ++i) {
+		*get_item_list_in_user_type(ut, i - 1) = *get_item_list_in_user_type(ut, i);
+	}
+
+	// resize - todo make! or decrease size?
+	decrease_size_wiz_vector_item_type(&ut->item_list);
+
+	//  ilist left shift and resize - count itemType!
+	for (i = 0; i < get_ilist_size_in_user_type(ut); ++i) {
+		if (get_ilist_in_user_type(ut, i) == 1) { count++; }
+		if (count == idx + 1) {
+			// left shift!and resize!
+			for (k = i + 1; k < get_ilist_size_in_user_type(ut); ++k) {
+				set_ilist_in_user_type(ut, k - 1, get_ilist_in_user_type(ut, k));
+			}
+			decrease_size_wiz_vector_int(&ut->ilist);
+			break;
+		}
+	}
+
+}//
+void remove_user_type_list_by_idx_in_user_type(user_type* ut, size_t idx)
+{
+	int count = 0;
+	size_t i, k;
+
+	free_user_type_in_user_type(get_user_type_list_in_user_type(ut, idx));
+	
+	// left shift start idx, to end, and resize!
+	for (i = idx + 1; i < get_user_type_list_size_in_user_type(ut); ++i) {
+		*get_user_type_list_in_user_type(ut, i - 1) = *get_user_type_list_in_user_type(ut, i);
+	}
+	decrease_size_wiz_vector_any2(&ut->user_type_list);
+
+	//  ilist left shift and resize - count itemType!
+	for (i = 0; i < size_wiz_vector_int(&ut->ilist); ++i) {
+		if (get_ilist_in_user_type(ut, i) == 2) { count++; }
+		if (count == idx + 1) {
+			// left shift!and resize!
+			for (k = i + 1; k < size_wiz_vector_int(&ut->ilist); ++k) {
+				set_ilist_in_user_type(ut, k - 1, get_ilist_in_user_type(ut, k));
+			}
+			decrease_size_wiz_vector_int(&ut->ilist);
+			break;
+		}
+	}
+}
 void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName){ }
 void remove_item_list_in_user_type(user_type* ut){ }//
 void remove_empty_item_in_user_type(user_type* ut){ }
@@ -423,13 +484,108 @@ void save2_in_user_type(FILE* stream, user_type* ut, int depth)
 }
 
 // todo
-//wiz_string item_list_to_string_in_user_type(user_type* ut){ }
 //wiz_string item_list_names_to_string_in_user_type(user_type* ut){ }
 //wiz_vector_wiz_string userType_list_names_to_string_array_in_user_type(user_type* ut){ }
 //wiz_string user_type_list_names_to_string_in_user_type(user_type* ut){ }
-//wiz_string to_string_in_user_type(user_type* ut){ }
+wiz_string to_string_in_user_type(user_type* ut, wiz_string_builder* builder) 
+{
+	wiz_string temp;
+	int itemListCount = 0;
+	int userTypeListCount = 0;
+	size_t i;
 
-pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* ut, user_type* global, wiz_string* _position, wiz_string_builder* builder)
+	clear_wiz_string_builder(builder);
+
+	for (i = 0; i < get_ilist_size_in_user_type(ut); ++i) {
+		if (get_ilist_in_user_type(ut, i) == 1) {
+			wiz_string* name = &get_item_list_in_user_type(ut, itemListCount)->name;
+			wiz_string* value = &get_item_list_in_user_type(ut, itemListCount)->value;
+
+			if (0 != strcmp(get_cstr_wiz_string(name), "")) {
+				append_wiz_string_builder(builder, get_cstr_wiz_string(name), size_wiz_string(name));
+				append_char_wiz_string_builder(builder, ' ');
+				append_char_wiz_string_builder(builder, '=');
+				append_char_wiz_string_builder(builder, ' ');
+			}
+
+			append_wiz_string_builder(builder, get_cstr_wiz_string(value), size_wiz_string(value));
+			
+			if (i != get_ilist_size_in_user_type(ut) - 1) {
+				append_char_wiz_string_builder(builder, ' ');
+			}
+			itemListCount++;
+		}
+		else if (get_ilist_in_user_type(ut, i) == 2) {
+			wiz_string* name = &get_user_type_list_in_user_type(ut, userTypeListCount)->name;
+			wiz_string data;
+			wiz_string_builder tempBuilder;
+			
+			if (strcmp(get_cstr_wiz_string(name), "") != 0) {
+				append_wiz_string_builder(builder, get_cstr_wiz_string(name), size_wiz_string(name));
+
+				append_char_wiz_string_builder(builder, ' ');
+				append_char_wiz_string_builder(builder, '=');
+				append_char_wiz_string_builder(builder, ' ');
+			}
+			append_char_wiz_string_builder(builder, ' ');
+			append_char_wiz_string_builder(builder, '{');
+			append_char_wiz_string_builder(builder, ' ');
+
+			init_wiz_string_builder(&tempBuilder, 1024, "", 0);
+			data = to_string_in_user_type(ut, &tempBuilder);
+			
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&data), size_wiz_string(&data));
+
+			free_wiz_string(&data);
+			free_wiz_string_builder(&tempBuilder);
+
+			append_char_wiz_string_builder(builder, ' ');
+			append_char_wiz_string_builder(builder, '}');
+
+			if (i != get_ilist_size_in_user_type(ut) - 1) {
+				append_char_wiz_string_builder(builder, ' ');
+			}
+
+			userTypeListCount++;
+		}
+	} 
+
+	init_wiz_string(&temp, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+	return temp;
+}
+
+wiz_string item_list_to_string_in_user_type(user_type* ut, wiz_string_builder* builder)
+{
+	wiz_string result;
+	size_t itemListCount = 0;
+	size_t i, j;
+
+	clear_wiz_string_builder(builder);
+
+	for (i = 0; i < get_item_list_size_in_user_type(ut); ++i) {
+		for (j = 0; j < 1; j++) {
+			if (0 != strcmp(get_cstr_wiz_string(&get_item_list_in_user_type(ut, itemListCount)->name), "")) {
+				wiz_string* name = &get_item_list_in_user_type(ut, itemListCount)->name;
+				append_wiz_string_builder(builder, get_cstr_wiz_string(name), size_wiz_string(name));
+				append_char_wiz_string_builder(builder, ' ');
+				append_char_wiz_string_builder(builder, '=');
+				append_char_wiz_string_builder(builder, ' ');
+			}
+			wiz_string* value = &get_item_list_in_user_type(ut, itemListCount)->value;
+			append_wiz_string_builder(builder, get_cstr_wiz_string(value), size_wiz_string(value));
+		}
+		if (i != get_item_list_size_in_user_type(ut) - 1)
+		{
+			append_char_wiz_string_builder(builder, ' '); // '/' -> ' '
+		}
+		itemListCount++;
+	}
+
+	init_wiz_string(&result, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+	return result;
+}
+
+pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_string* _position, wiz_string_builder* builder)
 {
 	int exist = 0;
 	int chk = 0; // for break?

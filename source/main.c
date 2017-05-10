@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <time.h>
 
 
 // wiz_string
@@ -62,9 +62,6 @@ void test_for_wiz_vector()
 }
 
 
-#include <stdlib.h>
-#include <time.h>
-
 void test_for_wiz_string()
 {
 	const int SIZE = 1000000;
@@ -100,9 +97,9 @@ void test_for_wiz_string()
 	free_wiz_string(&_B);
 }
 
-
-int main(void)
+void test()
 {
+	srand(time(NULL));
 	//test_for_wiz_string();
 	//test_for_wiz_vector();
 	{
@@ -127,10 +124,10 @@ int main(void)
 	{
 		user_type global;
 		wiz_string str;
-		
+
 		init_wiz_string(&str, "test=3", 6);
 		global = load_data_from_string_in_load_data(&str);
-		
+
 		free_wiz_string(&str);
 		free_user_type_in_user_type(&global);
 	}
@@ -140,6 +137,23 @@ int main(void)
 		// to_bool3
 		// map
 	}
+}
+int main(void)
+{
+	const char* text = "$OR = { "
+		" $EQ = { 3 0 } "
+		" $EQ = { 4 $add = { 1 5 } } } ";
+	wiz_string str;
+	user_type ut;
+	size_t i;
+
+	init_wiz_string(&str, text, strlen(text));
+
+	for (i = 0; i < 50000; ++i) {
+		ut = load_data_from_string_in_load_data(&str);
+		free_user_type_in_user_type(&ut);
+	}
+	free_wiz_string(&str);
 
 	return 0;
 }

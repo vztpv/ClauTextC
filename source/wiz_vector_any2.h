@@ -28,6 +28,6 @@ void* FORM(back_wiz_vector_, any2) (FORM(wiz_vector_, any2)* vec);
 int FORM(empty_wiz_vector_, any2) (FORM(wiz_vector_, any2)* vec);
 size_t FORM(size_wiz_vector_, any2) (FORM(wiz_vector_, any2)* vec);
 
-
+void FORM(decrease_size_wiz_vector_, any2) (FORM(wiz_vector_, any2)* vec);
 
 #endif

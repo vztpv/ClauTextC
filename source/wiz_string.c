@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "wiz_string.h"
 #include <string.h>
+#include "wiz_string_builder.h"
 
 // cstr cf) "" and NULL
 void init_wiz_string(wiz_string* str, const char* cstr, int n)
@@ -231,7 +232,10 @@ char back_wiz_string(wiz_string* str)
 {
 	return get_cstr_wiz_string(str)[str->len - 1];
 }
-
+char front_wiz_string(wiz_string* str)
+{
+	return get_cstr_wiz_string(str)[0];
+}
 
 void reverse_wiz_string(wiz_string* str)
 {

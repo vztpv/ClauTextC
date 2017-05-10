@@ -31,5 +31,6 @@ size_t FORM(size_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec);
 // todo
 // reverse
 void FORM(reverse_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec);
+void FORM(push_back_cstr_wiz_vector_, wiz_string)(FORM(wiz_vector_, wiz_string)* vec, const char* cstr);
 
 #endif

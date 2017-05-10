@@ -11,24 +11,21 @@
 
 struct condition {
 	int braceNum;
-	wiz_vector_wiz_string tokenVec;
-	wiz_stack_wiz_string tokenStack;
-	wiz_string condition;
+	wiz_vector_wiz_string token_vec; 
+	wiz_stack_wiz_string token_stack; // chk
+	wiz_string cond;
 	size_t i;
 	user_type* position; // need set, get ter!!
 	user_type* global;
-	int option;
 	wiz_string_builder* builder;
 };
 
 typedef struct condition condition;
 
-void init_in_condition(condition* cond, wiz_string* cond_str, user_type* position, user_type* global, wiz_string_builder* builder, int option);
+void init_in_condition(condition* cond, wiz_string* cond_str, user_type* position, user_type* global, wiz_string_builder* builder);
 void free_in_condition(condition* cond);
 int next_in_condition(condition* cond);
-size_t now_index_in_condtion(condition* cond);
 wiz_stack_wiz_string* now_in_condition(condition* cond);
-int is_now_important_in_condition(condition* cond);
 
 
 #endif

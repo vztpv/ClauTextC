@@ -84,3 +84,19 @@ void FORM(reverse_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec)
 	}
 }
 
+void FORM(push_back_cstr_wiz_vector_, wiz_string)(FORM(wiz_vector_, wiz_string)* vec, const char* cstr)
+{
+	if (vec->capacity == vec->num) {
+		FORM(expand_wiz_vector_, wiz_string) (vec);
+	}
+
+	wiz_string temp;
+	init_wiz_string(&temp, cstr, strlen(cstr));
+
+	assign_wiz_string(&vec->vec[vec->num], &temp);
+
+	free_wiz_string(&temp);
+
+	vec->num++;
+}
+

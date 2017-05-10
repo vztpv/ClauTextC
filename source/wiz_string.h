@@ -44,6 +44,8 @@ void substr_and_assign_wiz_string(wiz_string* str, size_t begin, size_t end);
 
 char back_wiz_string(wiz_string* str);
 
+char front_wiz_string(wiz_string* str);
+
 // erase(shift, num--)_wiz_string
 void erase_wiz_string(wiz_string* str, size_t idx);
 // starts_with_wiz_string
@@ -55,4 +57,6 @@ int equal_wiz_string(wiz_string* str1, wiz_string* str2);
 
 void reverse_wiz_string(wiz_string* str);
 
+
 #endif
+

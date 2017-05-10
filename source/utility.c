@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include "utility.h"
 #include "wiz_string_builder.h"
 #include "wiz_string_tokenizer.h"
@@ -18,7 +19,15 @@ wiz_string make_empty_wiz_string()
 	return make_wiz_string("", 0);
 }
 
-///////////////////////////////////
+wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
+{
+	wiz_string result;
+
+	init_wiz_string(&result, get_cstr_wiz_string(other), size_wiz_string(other));
+
+	return result;
+}
+//////////////////////////////////////////////////////////////////////////
  int is_integer(wiz_string* str) {
 	int state = 0;
 	size_t i;
@@ -300,6 +309,17 @@ wiz_string make_empty_wiz_string()
 	return empty_wiz_string(str) == 0 && get_cstr_wiz_string(str)[0] == '-';
 }
 
+
+int comp(const char* str1, const char* str2, const size_t n) /// isSameData
+{
+	size_t i;
+	for (i = 0; i < n; ++i)
+	{
+		if (str1[i] != str2[i]) { return 0; }
+	}
+	return 1;
+}
+////////////////////////////////////////////////////////////////////////////
 int get_type(wiz_string* str) {
 	if (is_integer(str)) { return 1; }
 	else if (is_double(str)) { return 2; }
@@ -308,7 +328,7 @@ int get_type(wiz_string* str) {
 	else if (is_date(str)) { return 4; }
 	else return 3; // STRING
 }
-//////////////////////////////////////////////////////////
+
 int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string_builder* builder, int type) // type = 0
 {
 	int result = -1;
@@ -620,4 +640,135 @@ void add_space(wiz_string* str, wiz_string* temp, wiz_string_builder* builder)
 	free_wiz_string(&result);
 	
 	//return temp;
+}
+
+wiz_string replace_wiz_string(wiz_string* origin, wiz_string* mark, wiz_string* changed, wiz_string_builder* builder)
+{	
+	size_t i;
+	const char* pStr = get_cstr_wiz_string(origin);
+	wiz_string result;
+
+	clear_wiz_string_builder(builder);
+
+	// chk??
+	if (empty_wiz_string(mark)) { 
+		init_wiz_string(&result, "", 0); // chk..
+		return result; 
+	}
+
+	for (i = 0; i < size_wiz_string(origin); i++) {
+		if (strlen(pStr + i) >= size_wiz_string(mark)
+			&& comp(pStr + i, get_cstr_wiz_string(mark), size_wiz_string(mark)))
+		{
+			append_wiz_string_builder(builder, get_cstr_wiz_string(changed), size_wiz_string(changed));
+			i = i + size_wiz_string(mark) - 1;
+		}
+		else
+		{
+			append_char_wiz_string_builder(builder, get_cstr_wiz_string(origin)[i]);
+		}
+	}
+
+	init_wiz_string(&result, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
+	return result;
+}
+
+wiz_string wiz_ll_to_string(long long x)
+{
+	wiz_string result;
+	wiz_string_builder temp;
+	int size = 1024;
+	init_wiz_string_builder(&temp, size, "", 0);
+
+	while (1) {
+		if (0 > snprintf(str_wiz_string_builder(&temp, NULL), size, "%lld", x)) {
+			size = size * 2;
+			free_wiz_string_builder(&temp);
+			init_wiz_string_builder(&temp, size, "", 0);
+		}
+		else {
+			break;
+		}
+	}
+
+	free_wiz_string_builder(&temp);
+	init_wiz_string(&result, str_wiz_string_builder(&temp, NULL), size_wiz_string_builder(&temp));
+	return result;
+}
+wiz_string wiz_ld_to_string(long double x)
+{
+	wiz_string result;
+	wiz_string_builder temp;
+	int size = 1024;
+	init_wiz_string_builder(&temp, size, "", 0);
+
+	while (1) {
+		if (0 > snprintf(str_wiz_string_builder(&temp, NULL), size, "%f", x)) {
+			size = size * 2;
+			free_wiz_string_builder(&temp);
+			init_wiz_string_builder(&temp, size, "", 0);
+		}
+		else {
+			break;
+		}
+	}
+
+	free_wiz_string_builder(&temp);
+	init_wiz_string(&result, str_wiz_string_builder(&temp, NULL), size_wiz_string_builder(&temp));
+	return result;
+}
+
+
+int rand_int() // 0~int_max
+{
+	size_t byteSize = sizeof(int);
+	int val = 0;
+
+	// char단위로 rand()호출,
+	val = val | rand() % 0x7F;  // 0111 1111
+	for (size_t i = 1; i < byteSize; i++)
+	{
+		val = val << 8; // left shift 1 byte(8bits)
+
+		val = val | (rand() % 0xFF);
+	}
+
+	return val;
+}
+
+// clear
+void clear_now_condition(condition* cond)
+{
+	size_t i;
+
+	for (i = 0; i < size_wiz_stack_wiz_string(&cond->token_stack); ++i) {
+		free_wiz_string(get_wiz_stack_wiz_string(&cond->token_stack, i));
+	}
+	free_wiz_stack_wiz_string(&cond->token_stack);
+}
+
+int ChkExist(wiz_string* str) // for \"
+{
+	int state = -1;
+	size_t i;
+
+	for (i = 0; i < size_wiz_string(str); ++i)
+	{
+		if (0 >= state && i == 0 && '\"' == get_cstr_wiz_string(str)[i]) {
+			state = 1;
+		}
+		else if (0 >= state && i > 0 && '\"' == get_cstr_wiz_string(str)[i] && '\\' != get_cstr_wiz_string(str)[i - 1])
+		{
+			state = 1;
+		}
+		else if (1 == state && i > 0 && '\\' != get_cstr_wiz_string(str)[i - 1] && '\"' == get_cstr_wiz_string(str)[i]) {
+			state = 0;
+		}
+		else if (0 >= state && get_cstr_wiz_string(str)[i] == '#') {
+			break;
+		}
+	}
+
+	return 0 == state; // exist and valid !! chk - todo!
 }

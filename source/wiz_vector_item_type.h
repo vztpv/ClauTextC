@@ -28,5 +28,6 @@ item_type* FORM(back_wiz_vector_, item_type) (FORM(wiz_vector_, item_type)* vec)
 int FORM(empty_wiz_vector_, item_type) (FORM(wiz_vector_, item_type)* vec);
 size_t FORM(size_wiz_vector_, item_type) (FORM(wiz_vector_, item_type)* vec);
 
+void FORM(decrease_size_wiz_vector_, item_type) (FORM(wiz_vector_, item_type)* vec);
 
 #endif
