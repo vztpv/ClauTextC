@@ -22,6 +22,8 @@ void FORM(init_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, size
 void FORM(free_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack);
 
 void FORM(push_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, wiz_string* val);
+void FORM(push_cstr_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, char* val);
+
 void FORM(pop_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack);
 
 wiz_string* FORM(top_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack);

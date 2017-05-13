@@ -47,6 +47,14 @@
 
 // user_type
 
+
+
+wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* excuteData)
+{
+	// todo!
+}
+
+
 void test_for_wiz_vector()
 {
 	wiz_vector_int test;

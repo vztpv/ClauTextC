@@ -44,6 +44,17 @@ void FORM(push_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, wiz_
 	FORM(push_back_wiz_vector_, wiz_string)(&(stack->stack), val);
 	stack->count++;
 }
+
+void FORM(push_cstr_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, char* val)
+{
+	if (FORM(is_full_wiz_stack_, wiz_string)(stack))
+	{
+		FORM(expand_wiz_stack_, wiz_string)(stack);
+	}
+	FORM(push_back_cstr_wiz_vector_, wiz_string)(&(stack->stack), val);
+	stack->count++;
+}
+
 void FORM(pop_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack)
 {
 	pop_back_wiz_vector_wiz_string(&(stack->stack));

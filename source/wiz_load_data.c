@@ -1,6 +1,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#include <conio.h>
+
 #include "wiz_load_data.h"
 #include "wiz_array_queue_token.h"
 #include "wiz_load_data_condition.h"
@@ -19,7 +21,7 @@ size_t find( char* cstr,  char x,  size_t before,  size_t n)
 	return -1;
 }
 
-// move to global.h?
+//  to global.h?
 int is_whitespace( char ch)
 {
 	return ' ' == ch || '\t' == ch || '\r' == ch || '\n' == ch;
@@ -139,7 +141,7 @@ wiz_vector_any GetUserType(user_type* ut, wiz_string* name)
 	return get_user_type_item_in_user_type(ut, name);
 }
 wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
-{ // string 대신 vector<string> ??
+{ // string 대신 wiz_vector_wiz_string ??
 	int count = 0;
 	int idx = -1;
 	wiz_string result;
@@ -264,10 +266,10 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 else {
 			 value = make_empty_wiz_string();
 		 }
+		 free_wiz_string(&data.first);
 	}
 
 	free_wiz_string(&parameter_text);
-	free_wiz_string(&data.first);
 
 	return value;
 }
@@ -296,7 +298,6 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 /// remove /, parameter chk!!
  wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  ExcuteData* excuteData, wiz_string_builder* builder);
 
- /*
  
  int operation(user_type* now, user_type* global, wiz_string* str,
 	 wiz_stack_wiz_string* operandStack, ExcuteData* excuteData, wiz_string_builder* builder)
@@ -339,7 +340,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 }
 	 free_wiz_string(&empty);
 
-	 if ("$EQ" == str) {
+	 if (strcmp("$EQ", get_cstr_wiz_string(str)) == 0) {
 		 wiz_string* x;
 		 wiz_string* y;
 		 int idx = -1;
@@ -358,13 +359,13 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
-	 else if ("$NOTEQ" == str)
+	 else if (strcmp("$NOTEQ" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
-		 if (compare_wiz_string_in_utility(x, y, builder, 0) != "== 0") {
+		 if (compare_wiz_string_in_utility(x, y, builder, 0) != 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -376,13 +377,13 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
-	 else if ("$AND" == str)
+	 else if (strcmp("$AND" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
-		 if (x == "TRUE" && y == "TRUE") {
+		 if (0 == strcmp(get_cstr_wiz_string(x), "TRUE") && 0 == strcmp(get_cstr_wiz_string(y), "TRUE")) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -394,7 +395,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
-	 else if ("$AND_ALL" == str) {
+	 else if (strcmp("$AND_ALL" , get_cstr_wiz_string(str)) == 0) {
 		 wiz_vector_wiz_string store;
 
 		 init_wiz_vector_wiz_string(&store, 1);
@@ -419,13 +420,13 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 		 }
 	 }
-	 else if ("$OR" == str)
+	 else if (strcmp("$OR" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
-		 if (x == "TRUE" || y == "TRUE") {
+		 if (0 == strcmp(get_cstr_wiz_string(x), "TRUE") || 0 == strcmp(get_cstr_wiz_string(y), "TRUE")) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -436,7 +437,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
-	 else if ("$OR_ALL" == str)
+	 else if (strcmp("$OR_ALL" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_vector_wiz_string store;
 
@@ -444,7 +445,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_back_wiz_vector_wiz_string(&store, top_wiz_stack_wiz_string(operandStack));  pop_wiz_stack_wiz_string(operandStack);
 		 }
 		 for (i = 0; i < size_wiz_vector_wiz_string(&store); ++i) {
-			 if ("TRUE" == get_wiz_vector_wiz_string(&store, i)) {
+			 if (0 == strcmp("TRUE", get_cstr_wiz_string(get_wiz_vector_wiz_string(&store, i)))) {
 				 wiz_string TRUE_TEXT;
 				 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 				 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -458,12 +459,12 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
-	 else if ("$NOT" == str)
+	 else if (strcmp("$NOT" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
-		 if (x == "TRUE") {
+		 if (0 == strcmp(get_cstr_wiz_string(x), "TRUE")) {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
@@ -476,13 +477,13 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 }
 	 }
-	 else if ("$COMP<" == str)
+	 else if (strcmp("$COMP<" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
-		 if (compare_wiz_string_in_utility(x, y, builder, 0) == "< 0") {
+		 if (compare_wiz_string_in_utility(x, y, builder, 0) < 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -496,13 +497,13 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 }
 	 }
-	 else if ("$COMP>" == str)
+	 else if (strcmp("$COMP>" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
-		 if (compare_wiz_string_in_utility(x, y, builder, 0) == "> 0") {
+		 if (compare_wiz_string_in_utility(x, y, builder, 0) > 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -516,7 +517,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 }
 	 }
-	 else if ("$COMP<EQ" == str)
+	 else if (strcmp("$COMP<EQ" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
@@ -537,7 +538,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 }
 	 }
-	 else if ("$COMP>EQ" == str)
+	 else if (strcmp("$COMP>EQ" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
@@ -557,7 +558,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 }
 	 }
-	 else if ("$add" == str) // todo! = int operator double => double operator double!
+	 else if (strcmp("$add" , get_cstr_wiz_string(str)) == 0) // todo! = int operator double => double operator double!
 	 {
 		 wiz_string* x; wiz_string* y;
 		 int typex, typey;
@@ -587,7 +588,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
-	 else if ("$multiple" == str) // todo! = int operator double => double operator double!
+	 else if (strcmp("$multiple" , get_cstr_wiz_string(str)) == 0) // todo! = int operator double => double operator double!
 	 {
 		 wiz_string* x; wiz_string* y;
 		 int typex, typey;
@@ -617,7 +618,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
-	 else if ("$divide" == str) // todo! = int operator double => double operator double!
+	 else if (strcmp("$divide" , get_cstr_wiz_string(str)) == 0) // todo! = int operator double => double operator double!
 	 {
 		 wiz_string* x; wiz_string* y;
 		 int typex, typey;
@@ -646,7 +647,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
-	 else if ("$modular" == str)
+	 else if (strcmp("$modular" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 int typex, typey;
@@ -669,7 +670,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
-	 else if ("$rand" == str)
+	 else if (strcmp("$rand" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x; wiz_string* y;
 		 int typex, typey;
@@ -700,7 +701,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
-	 else if ("$concat" == str)
+	 else if (strcmp("$concat" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string temp;
 		 int total_size = 0;
@@ -718,7 +719,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 temp = make_wiz_string(str_wiz_string_builder(builder, NULL), total_size);
 		 push_wiz_stack_wiz_string(operandStack, &temp);
 	 }
-	 else if ("$concat2" == str) /// with space
+	 else if (strcmp("$concat2" , get_cstr_wiz_string(str)) == 0) /// with space
 	 {
 		 wiz_string* x; wiz_string* y;
 		 wiz_string temp;
@@ -740,7 +741,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 free_wiz_string(x);
 		 free_wiz_string(y);
 	 }
-	 else if ("$concat_all" == str)
+	 else if (strcmp("$concat_all" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 int total_size = 0;
 		 wiz_string temp;
@@ -758,7 +759,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 temp = make_wiz_string(str_wiz_string_builder(builder, NULL), total_size);
 		 push_wiz_stack_wiz_string(operandStack, &temp);
 	 }
-	 else if ("$concat_all2" == str)
+	 else if (strcmp("$concat_all2" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string result;
 
@@ -776,7 +777,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 result = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 		 push_wiz_stack_wiz_string(operandStack, &result);
 	 }
-	 else if ("$concat3" == str) { // for special case? "abc" "def" "ghi" -> "abcdefghi"
+	 else if (strcmp("$concat3" , get_cstr_wiz_string(str)) == 0) { // for special case? "abc" "def" "ghi" -> "abcdefghi"
 		 wiz_string result;
 
 		 init_wiz_string(&result, "", 0);
@@ -815,7 +816,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 init_wiz_string(&result, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 		 push_wiz_stack_wiz_string(operandStack, &result);
 	 }
-	 else if ("$return_value" == str)
+	 else if (strcmp("$return_value" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string result = make_wiz_string(get_cstr_wiz_string(&excuteData->info.return_value),
 			 size_wiz_string(&excuteData->info.return_value));
@@ -824,7 +825,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 }
 	 // cf) empty test!!
 	 ///ToDo - GetList -> // GetItemListIdxByIListIdx, GetUserTypeLisIdxtByIListIdx ?
-	 else if ("$back" == str) // ex) for x  = { 0 get_item_list_in_user_type1 2 3 .. }, for usertaypelist? and mixed? and need more test!
+	 else if (strcmp("$back" , get_cstr_wiz_string(str)) == 0) // ex) for x  = { 0 get_item_list_in_user_type1 2 3 .. }, for usertaypelist? and mixed? and need more test!
 	 {
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
 		 wiz_string TRUE_TEXT;
@@ -871,7 +872,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 free_user_type_in_user_type(&ut);
 	 }
 	 // pop_back or front - remove this function?
-	 else if ("$pop_back" == str) // and for usertypelist? and mixed?, usertype-> "~"
+	 else if (strcmp("$pop_back" , get_cstr_wiz_string(str)) == 0) // and for usertypelist? and mixed?, usertype-> "~"
 	 {
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
 		 user_type* ut;
@@ -922,7 +923,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 free_wiz_vector_any(&finded.second);
 		 }
 	 }
-	 else if ("$front" == str)
+	 else if (strcmp("$front" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
 		 wiz_string TRUE_TEXT;
@@ -956,7 +957,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
-	 else if ("$pop_front" == str)
+	 else if (strcmp("$pop_front" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 size_t i;
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
@@ -1000,7 +1001,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 remove_user_type_list_by_idx_in_user_type(ut, 0);
 		 }
 	 }
-	 else if ("$get" == str)
+	 else if (strcmp("$get" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
 		 wiz_string NOW_TEXT;
@@ -1055,7 +1056,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 push_wiz_stack_wiz_string(operandStack, x);
 	 }
-	 else if ("$size" == str)
+	 else if (strcmp("$size" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string x = *top_wiz_stack_wiz_string(operandStack);
 		 pop_wiz_stack_wiz_string(operandStack);
@@ -1079,7 +1080,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 push_wiz_stack_wiz_string(operandStack, &x);
 	 }
-	 else if ("$size2" == str)
+	 else if (strcmp("$size2" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string x = *top_wiz_stack_wiz_string(operandStack);
 		 pop_wiz_stack_wiz_string(operandStack);
@@ -1104,7 +1105,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 push_wiz_stack_wiz_string(operandStack, &x);
 	 }
-	 else if ("$element" == str) // for list
+	 else if (strcmp("$element" , get_cstr_wiz_string(str)) == 0) // for list
 	 {
 		 wiz_string x = *top_wiz_stack_wiz_string(operandStack);
 		 wiz_string* y;
@@ -1135,7 +1136,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 push_wiz_stack_wiz_string(operandStack, &x);
 	 }
-	 else if ("$eval" == str) { // $eval = ""   -  more think!
+	 else if (strcmp("$eval" , get_cstr_wiz_string(str)) == 0) { // $eval = ""   -  more think!
 		 wiz_string str = *top_wiz_stack_wiz_string(operandStack);
 		 int chk = ChkExist(&str); // chk "" >
 
@@ -1162,7 +1163,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 push_wiz_stack_wiz_string(operandStack, &result);
 		 }
 	 }
-	 else if ("$toQuotedStr" == str) {
+	 else if (strcmp("$toQuotedStr" , get_cstr_wiz_string(str)) == 0) {
 		 wiz_string str = *top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 clear_wiz_string_builder(builder);
@@ -1175,7 +1176,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 str = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 		 push_wiz_stack_wiz_string(operandStack, &str);
 	 }
-	 else if ("$addSmallQuoted" == str) {
+	 else if (strcmp("$addSmallQuoted" , get_cstr_wiz_string(str)) == 0) {
 		 wiz_string str = *top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 clear_wiz_string_builder(builder);
@@ -1188,7 +1189,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 str = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 		 push_wiz_stack_wiz_string(operandStack, &str);
 	 }
-	 else if ("$removeQuoted" == str) { // chk "" string problem?
+	 else if (strcmp("$removeQuoted" , get_cstr_wiz_string(str)) == 0) { // chk "" string problem?
 		 wiz_string str = *top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 if (size_wiz_string(&str) > 0 && front_wiz_string(&str) == back_wiz_string(&str)
@@ -1200,11 +1201,12 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 push_wiz_stack_wiz_string(operandStack, &str);
 	 }
-	 else if ("$getObjectStr" == str) {
+	 else if (strcmp("$getObjectStr" , get_cstr_wiz_string(str)) == 0) {
 		 wiz_string object_name = *top_wiz_stack_wiz_string(operandStack);
 		 wiz_string event_id;
 		 pair_wiz_string_and_user_type val;
 		 user_type* ut;
+		 size_t i, j;
 
 		 substr_and_assign_wiz_string(&object_name, 1, size_wiz_string(&object_name) - 1);
 		 pop_wiz_stack_wiz_string(operandStack);
@@ -1219,7 +1221,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 			 int pass = 0;
 			 for (i = 0; i < get_user_type_list_size_in_user_type(ut); ++i) {
-				 for (int j = 0; j < get_item_list_size_in_user_type(get_user_type_list_in_user_type(ut, i)); ++j) {
+				 for (j = 0; j < get_item_list_size_in_user_type(get_user_type_list_in_user_type(ut, i)); ++j) {
 					 if (0 == strcmp("id", get_cstr_wiz_string(&get_item_list_in_user_type(get_user_type_list_in_user_type(ut, i), j)->name))
 						 && equal(&event_id, &get_item_list_in_user_type(get_user_type_list_in_user_type(ut, i), j)->value)
 						 ) {
@@ -1255,332 +1257,645 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 }
 	 }
 
-	else if ("$add_paren" == str) { // removal?
-		wiz_string* temp = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
+	else if (strcmp("$add_paren" , get_cstr_wiz_string(str)) == 0) { // removal?
+		wiz_string temp = *top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		
-		push_wiz_stack_wiz_string(operandStack, " { " + temp + " } ");
+		clear_wiz_string_builder(builder);
+
+		append_char_wiz_string_builder(builder, ' ');
+		append_char_wiz_string_builder(builder, '{');
+		append_char_wiz_string_builder(builder, ' ');
+
+		append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+
+		append_char_wiz_string_builder(builder, ' ');
+		append_char_wiz_string_builder(builder, '}');
+		append_char_wiz_string_builder(builder, ' ');
+
+		free_wiz_string(&temp);
+
+		temp = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
+		push_wiz_stack_wiz_string(operandStack, &temp);
 	}
-	else if ("$get_item_name" == str) {
-		user_type* ut;
+	else if (strcmp("$get_item_name" , get_cstr_wiz_string(str)) == 0) { // chk : by idx?
+		user_type ut;
 		wiz_string statement;
+		size_t i;
+
+		clear_wiz_string_builder(builder);
 
 		for (i = 0; i < operandNum; ++i) {
-			statement = statement + top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
+			wiz_string temp = *top_wiz_stack_wiz_string(operandStack); 
+			
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+
+			pop_wiz_stack_wiz_string(operandStack);
+			free_wiz_string(&temp);
 		}
-		load_data_from_string_in_load_data(statement, ut);
 
-		push_wiz_stack_wiz_string(operandStack, ut.GetItemList(0).GetName());
+		statement = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+		ut = load_data_from_string_in_load_data(&statement);
+
+		free_wiz_string(&statement);
+		statement = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(&ut, 0)->name);
+		free_user_type_in_user_type(&ut);
+		push_wiz_stack_wiz_string(operandStack, &statement);
 	}
-	else if ("$get_item_value" == str) {
-		user_type* ut;
+	else if (strcmp("$get_item_value" , get_cstr_wiz_string(str)) == 0) { // by idx?
+		user_type ut;
 		wiz_string statement;
-		int idx = 0;
+		size_t idx = 0;
+		size_t i;
 
-		for (i = 0; i < operandNum - 1; ++i) {
-			statement = statement + top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
-		}
-		idx = stoi(top_wiz_stack_wiz_string(operandStack));  pop_wiz_stack_wiz_string(operandStack);
-
-		load_data_from_string_in_load_data(statement, ut);
-
-		push_wiz_stack_wiz_string(operandStack, ut.GetItemList(idx).Get(0));
-	}
-	else if ("$get_item_size" == str) {
-		user_type* ut;
-		wiz_string statement;
+		clear_wiz_string_builder(builder);
 
 		for (i = 0; i < operandNum; ++i) {
-			statement = statement + top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
-		}
-		load_data_from_string_in_load_data(statement, ut);
+			wiz_string temp = *top_wiz_stack_wiz_string(operandStack);
 
-		push_wiz_stack_wiz_string(operandStack, wiz_toString(ut.GetItem(ut.GetItemList(0).GetName()).size()));
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+
+			pop_wiz_stack_wiz_string(operandStack);
+			free_wiz_string(&temp);
+		}
+		{
+			wiz_string temp = *top_wiz_stack_wiz_string(operandStack);
+			idx = atoll(get_cstr_wiz_string(&temp));
+			pop_wiz_stack_wiz_string(operandStack);
+			free_wiz_string(&temp);
+		}
+		statement = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+		ut = load_data_from_string_in_load_data(&statement);
+
+		free_wiz_string(&statement);
+		statement = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(&ut, idx)->value);
+
+		free_user_type_in_user_type(&ut);
+		push_wiz_stack_wiz_string(operandStack, &statement);
 	}
-	else if ("$is_empty_string" == str) {
-		push_wiz_stack_wiz_string(operandStack, operandStack.pop().empty() ? "TRUE" : "FALSE");
-	}
-	else if ("$event_result" == str) {
-		vector<wiz_string> eventVec;
+	else if (strcmp("$get_item_size" , get_cstr_wiz_string(str)) == 0) { // change to $get_item_name_size?
+		user_type ut;
+		wiz_string statement;
+		size_t i;
+		size_t k;
+
+		clear_wiz_string_builder(builder);
+
 		for (i = 0; i < operandNum; ++i) {
-			eventVec.push_back(top_wiz_stack_wiz_string(operandStack));  pop_wiz_stack_wiz_string(operandStack);
+			wiz_string temp = *top_wiz_stack_wiz_string(operandStack);
+
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+
+			pop_wiz_stack_wiz_string(operandStack);
+			free_wiz_string(&temp);
 		}
 
-		wiz_string statements2 = "Event = { id = NONE" + wiztoStr(excuteData->depth + 1) + " $call = { ";
-		for (i = 0; i < eventVec.size(); ++i) {
-			statements2 = statements2 + eventVec[i] + " ";
+		statement = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+		ut = load_data_from_string_in_load_data(&statement);
+
+		free_wiz_string(&statement);
+		k = size_wiz_string(&get_item_list_in_user_type(&ut, 0)->name);
+		free_user_type_in_user_type(&ut);
+		{
+			wiz_string temp = wiz_ll_to_string(k);
+			push_wiz_stack_wiz_string(operandStack, &temp);
 		}
-		statements2 = statements2 + " } }";
-		user_type* eventsTemp = excuteData->pEvents;
-		wizload_dataLoadDataAddData(*eventsTemp, "/root", statements2, "TRUE", ExcuteData(), builder);
-		//cout << " chk " << statements2 << endl;
+		// push_wiz_stack_wiz_string(operandStack, wiz_toString(ut.GetItem(ut.GetItemList(0).GetName()).size()));
+	}
+	else if (strcmp("$is_empty_string" , get_cstr_wiz_string(str)) == 0) {
+		wiz_string poped = *top_wiz_stack_wiz_string(operandStack);
+		
+		pop_wiz_stack_wiz_string(operandStack);
+		
+		if (empty_wiz_string(&poped)) {
+			wiz_string temp = make_wiz_string("TRUE", 4);
+			push_wiz_stack_wiz_string(operandStack, &temp);
+		}
+		else {
+			wiz_string temp = make_wiz_string("FALSE", 5);
+			push_wiz_stack_wiz_string(operandStack, &temp);
+		}
+
+		free_wiz_string(&poped);
+		//push_wiz_stack_wiz_string(operandStack, operandStack.pop().empty() ? "TRUE" : "FALSE");
+	}
+	else if (strcmp("$event_result" , get_cstr_wiz_string(str)) == 0) {
+		wiz_vector_wiz_string eventVec;	
+		user_type* eventsTemp;
 		ExcuteData _excuteData;
-		_excuteData->pModule = excuteData->pModule;
-		_excuteData->pObjectMap = excuteData->pObjectMap;
-		_excuteData->pEvents = eventsTemp;
-		_excuteData->depth = excuteData->depth + 1;
+		wiz_string statements2;
+		size_t i;
 
-		push_wiz_stack_wiz_string(operandStack, excute_module("Main = { $call = { id = NONE" + wiztoStr(_excuteData->depth) + " } }", &global, _excuteData));
+		init_wiz_vector_wiz_string(&eventVec, 1);
+
+
+		for (i = 0; i < operandNum; ++i) {
+			wiz_string temp = *top_wiz_stack_wiz_string(operandStack);
+
+			push_back_wiz_vector_wiz_string(&eventVec, &temp);  
+
+			pop_wiz_stack_wiz_string(operandStack);
+			free_wiz_string(&temp);
+		}
+
+		clear_wiz_string_builder(builder);
+		{
+			char* first = "Event = { id = NONE";
+			char* last =  " $call = { ";
+			wiz_string middle = wiz_ll_to_string(excuteData->depth + 1);
+
+			append_wiz_string_builder(builder, first, strlen(first));
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&middle), size_wiz_string(&middle));
+			append_wiz_string_builder(builder, last, strlen(last));
+
+			free_wiz_string(&middle);
+		}
+
+		for (i = 0; i < size_wiz_vector_wiz_string(&eventVec); ++i) {
+			wiz_string data = *get_wiz_vector_wiz_string(&eventVec, i);
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&data), size_wiz_string(&data));
+			append_char_wiz_string_builder(builder, ' ');
+		}
 
 		{
-			for (int idx = 0; idx < eventsTemp->GetUserTypeListSize(); ++idx) {
-				if (eventsTemp->GetUserTypeList(idx)->GetItem("id")[0].Get(0) == "NONE" + wiztoStr(_excuteData->depth)) {
-					eventsTemp->RemoveUserTypeList(idx);
+			char* last = " } }";
+			append_wiz_string_builder(builder, last, strlen(last));
+		}
+
+		eventsTemp = excuteData->pEvents;
+
+		statements2 = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+		{
+			wiz_string ROOT_TEXT = make_wiz_string("/root", 5);
+			wiz_string TRUE_TEXT = make_wiz_string("TRUE", 4);
+			ExcuteData temp;
+			temp.valid = 0;
+
+			add_data_in_load_data(eventsTemp, &ROOT_TEXT, &statements2, &TRUE_TEXT, &temp, builder);
+			
+			free_wiz_string(&ROOT_TEXT);
+			free_wiz_string(&TRUE_TEXT);
+		}
+		free_wiz_string(&statements2);
+		_excuteData.pModule = excuteData->pModule;
+		_excuteData.pObjectMap = excuteData->pObjectMap;
+		_excuteData.pEvents = eventsTemp;
+		_excuteData.depth = excuteData->depth + 1;
+		_excuteData.valid = 1;
+		
+		{
+			char* first = "Main = { $call = { id = NONE";
+			char* last = " } }";
+			wiz_string middle = wiz_ll_to_string(excuteData->depth + 1);
+			wiz_string data;
+			wiz_string return_value;
+
+			clear_wiz_string_builder(builder);
+
+			append_wiz_string_builder(builder, first, strlen(first));
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&middle), size_wiz_string(&middle));
+			append_wiz_string_builder(builder, last, strlen(last));
+
+			free_wiz_string(&middle);
+			data = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+			return_value = excute_module(&data, global, &_excuteData);
+
+			push_wiz_stack_wiz_string(operandStack, &return_value);
+
+			free_wiz_string(&data);
+			free_wiz_string(&return_value);
+		}
+
+		{
+			wiz_string ID_TEXT;
+			wiz_string NONE_TEXT;
+			wiz_string depth_TEXT;
+
+			init_wiz_string(&ID_TEXT, "id", 2);
+			init_wiz_string(&NONE_TEXT, "NONE", 4);
+
+			depth_TEXT = wiz_ll_to_string(_excuteData.depth);
+			concat_and_assign_wiz_string(&NONE_TEXT, &depth_TEXT);
+
+			for (int idx = 0; idx < get_user_type_list_size_in_user_type(eventsTemp); ++idx) {
+				wiz_vector_item_type vec = get_item_in_user_type(get_user_type_list_in_user_type(eventsTemp, idx), &ID_TEXT);
+				if (equal_wiz_string(&get_wiz_vector_item_type(&vec, 0)->value, &NONE_TEXT)) {
+					remove_user_type_list_by_idx_in_user_type(eventsTemp, idx);
 					break;
 				}
 			}
+
+			free_wiz_string(&ID_TEXT);
+			free_wiz_string(&NONE_TEXT);
+			free_wiz_string(&depth_TEXT);
 		}
+		free_wiz_vector_wiz_string(&eventVec);
 	}
-	else if ("$get_item_value2" == str) {
-		 i = stoi(top_wiz_stack_wiz_string(operandStack));  pop_wiz_stack_wiz_string(operandStack);
+	else if (strcmp("$get_item_value2" , get_cstr_wiz_string(str)) == 0) { // by idx?
+		wiz_string temp = *top_wiz_stack_wiz_string(operandStack);
+		size_t i = atoll(get_cstr_wiz_string(&temp));  
+		
+		pop_wiz_stack_wiz_string(operandStack); 
+		free_wiz_string(&temp);
 
 		if (now) {
-			push_wiz_stack_wiz_string(operandStack, now->GetItemList(i).Get(0)); //chk
+			push_wiz_stack_wiz_string(operandStack, &get_item_list_in_user_type(now, i)->value); //chk
 			return 1;
 		}
 		else {
-			wiz_string temp = make_wiz_string("ERROR", 5); push_wiz_stack_wiz_string(operandStack, &temp);
+			wiz_string temp = make_wiz_string("ERROR", 5); 
+			push_wiz_stack_wiz_string(operandStack, &temp);
 			return 0;
 		}
 	}
-	else if ("$space" == str) {
-		push_wiz_stack_wiz_string(operandStack, " ");
+	else if (strcmp("$space" , get_cstr_wiz_string(str)) == 0) {
+		wiz_string temp = make_wiz_string(" ", 1);
+		push_wiz_stack_wiz_string(operandStack, &temp);
 		return 1;
 	}
-	else if ("$empty" == str) {
-		push_wiz_stack_wiz_string(operandStack, "");
+	else if (strcmp("$empty" , get_cstr_wiz_string(str)) == 0) {
+		wiz_string temp = make_wiz_string("", 0);
+		push_wiz_stack_wiz_string(operandStack, &temp);
 		return 1;
 	}
-	else if ("$move_up" == str) {
+	else if (strcmp("$move_up" , get_cstr_wiz_string(str)) == 0) {
 		wiz_string dir;
+		size_t i;
+
+		clear_wiz_string_builder(builder);
 
 		for (i = 0; i < operandNum; ++i) {
-			string temp = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
-			dir = dir + temp;
-			//	cout << "temp is " << temp << endl;
+			wiz_string temp = *top_wiz_stack_wiz_string(operandStack); 
+			pop_wiz_stack_wiz_string(operandStack);
+
+			append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+			
+			free_wiz_string(&temp);
 		}
 
-		//cout << " dir is  " << dir << endl;
-		if (StringstartsWith(dir, "/."))
+		dir = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
 		{
-			dir = Stringsubstring(dir, 3);
-		}
+			wiz_string TEXT;
+			init_wiz_string(&TEXT, "/./", 3);
 
-		StringTokenizer tokenizer(dir, "/", builder, 1);
-		vector<string> tokenVec;
-		while (tokenizer.hasMoreTokens()) {
-			tokenVec.push_back(tokenizer.nextToken());
+			if (starts_with_wiz_string(&dir, &TEXT))
+			{
+				substr_and_assign_wiz_string(&dir, 3, size_wiz_string(&dir));
+			}
+
+			free_wiz_string(&TEXT);
 		}
-		dir = "/./";
-		if (tokenVec.empty()) { push_wiz_stack_wiz_string(operandStack, dir); return 1; }
-		for (i = 0; i < tokenVec.size() - 1; ++i) {
-			dir = dir + tokenVec[i] + "/";
+		{
+			wiz_string TEXT;
+			wiz_vector_wiz_string separator;
+			wiz_string_tokenizer tokenizer; // (dir, "/", builder, 1);
+			wiz_vector_wiz_string tokenVec;
+			
+			init_wiz_string(&TEXT, "/", 1);
+			init_wiz_vector_wiz_string(&separator, 1);
+			push_back_wiz_vector_wiz_string(&separator, &TEXT);
+			init_wiz_string_tokenizer(&tokenizer, &dir, &separator, builder, 1);
+			init_wiz_vector_wiz_string(&tokenVec, 1);
+
+			while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
+				wiz_string* x = next_token_wiz_string_tokenizer(&tokenizer);
+				push_back_wiz_vector_wiz_string(&tokenVec, x);
+			}
+
+			free_wiz_string(&TEXT);
+
+			clear_wiz_string_builder(builder);
+			append_char_wiz_string_builder(builder, '/');
+			append_char_wiz_string_builder(builder, '.');
+			append_char_wiz_string_builder(builder, '/');
+
+			for (i = 0; i < size_wiz_vector_wiz_string(&tokenVec) - 1; ++i) {
+				wiz_string* temp = get_wiz_vector_wiz_string(&tokenVec, i);
+				append_wiz_string_builder(builder, get_cstr_wiz_string(temp), size_wiz_string(temp));
+				append_char_wiz_string_builder(builder, '/');
+				
+				free_wiz_string(temp);
+			}
+
+			free_wiz_string(&dir);
+			init_wiz_string(&dir, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
+			push_wiz_stack_wiz_string(operandStack, &dir);
+
+			free_wiz_vector_wiz_string(&tokenVec);
+			free_wiz_vector_wiz_string(&separator);
+			free_wiz_string_tokenizer(&tokenizer);
 		}
-		push_wiz_stack_wiz_string(operandStack, dir);
+		free_wiz_string(&dir);
 		return 1;
 	}
 	else {
 		return 0;
 	}
 	return 1;
-	// cf)
-	// remove "
 }
 
 
-wiz_string ToBool3(user_type* global, wiz_map_wiz_string_and_wiz_string* parameters,  wiz_string* temp,
+wiz_string ToBool3(user_type* global, wiz_string* temp,
 	EventInfo* info, wiz_string_builder* builder) /// has bug!
 {
-	wiz_string_tokenizer tokenizer(temp, wiz_vector_wiz_string{ "/" }, builder, 1);
+	wiz_string PARAMTER_TEXT;
+	wiz_string LOCAL_TEXT;
+	wiz_string_tokenizer tokenizer; // temp, wiz_vector_wiz_string{ "/" }, builder, 1);
 	wiz_vector_wiz_string tokenVec;
+	wiz_vector_wiz_string separator;
 	wiz_string result;
+	size_t i, j;
+	
+	wiz_string delim = make_wiz_string("/", 1);
 
-	while (tokenizer.hasMoreTokens()) {
-		tokenVec.push_back(tokenizer.nextToken());
+	init_wiz_string(&PARAMTER_TEXT, "$parameter.", strlen("$parameter."));
+	init_wiz_string(&LOCAL_TEXT, "$local.", strlen("$local."));
+
+	init_wiz_vector_wiz_string(&separator, 1);
+	push_back_wiz_vector_wiz_string(&separator, &delim);
+	
+	init_wiz_string_tokenizer(&tokenizer, temp, &separator, builder, 1);
+	init_wiz_vector_wiz_string(&tokenVec, 1);
+
+	clear_wiz_string_builder(builder);
+
+	while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
+		push_back_wiz_vector_wiz_string(&tokenVec, next_token_wiz_string_tokenizer(&tokenizer));
 	}
 
-	for (i = 0; i < tokenVec.size(); ++i)
+	for (i = 0; i < size_wiz_vector_wiz_string(&tokenVec); ++i)
 	{
-		result = result + "/";
-		if (wizStringstartsWith(tokenVec[i], "$parameter.")) {
+		append_char_wiz_string_builder(builder, '/');
+
+		if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &PARAMTER_TEXT)) {
 			int last = -1;
-			for (int j = 0; j < tokenVec[i].size(); ++j)
+			for (j = 0; j < size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)); ++j)
 			{
-				if (tokenVec[i][j] == ' ' || tokenVec[i][j] == '{' || tokenVec[i][j] == '}' || tokenVec[i][j] == '=') {
+				if (get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == ' ' 
+					|| get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == '{' 
+					|| get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == '}' 
+					|| get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == '=') {
 					last = j - 1;
 					break;
 				}
 			}
 			if (last != -1)
 			{
-				wiz_string temp = FindParameters(parameters, wizStringsubstring(tokenVec[i], 0, last));
+				wiz_string sub = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), 0, last);
+				wiz_string temp = FindParameters(&info->parameters, &sub);
 
-				if (!temp.empty()) {
-					tokenVec[i] = wizStringreplace(wizStringsubstring(tokenVec[i], 0, last), wizStringsubstring(tokenVec[i], 0, last), temp)
-						+ wizStringsubstring(tokenVec[i], last + 1);
+				if (!empty_wiz_string(&temp)) {
+					wiz_string param1 = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), 0, last);
+					wiz_string param2 = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), 0, last);
+					wiz_string param3_2 = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), last + 1, 
+															size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)));
+					
+					wiz_string param3 = replace_wiz_string(&param1, &param2, &temp, builder);
+					
+					*get_wiz_vector_wiz_string(&tokenVec, i) = union_wiz_string(&param3, &param3_2);
+
+					free_wiz_string(&param1);
+					free_wiz_string(&param2);
+					free_wiz_string(&param3_2);
+					free_wiz_string(&param3);
 				}
+				free_wiz_string(&sub);
+				free_wiz_string(&temp);
 			}
 			else
 			{
-				wiz_string temp = FindParameters(parameters, tokenVec[i]);
-				if (!temp.empty()) {
-					tokenVec[i] = temp;
+				wiz_string temp = FindParameters(&info->parameters, get_wiz_vector_wiz_string(&tokenVec, i));
+				if (!empty_wiz_string(&temp)) {
+					*get_wiz_vector_wiz_string(&tokenVec, i) = temp;
 				}
 			}
 		}
-		else if (wizStringstartsWith(tokenVec[i], "$local.")) {
+		else if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &LOCAL_TEXT)) {
 			int last = -1;
-			for (int j = 0; j < tokenVec[i].size(); ++j)
+			for (j = 0; j < size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)); ++j)
 			{
-				if (tokenVec[i][j] == ' ' || tokenVec[i][j] == '{' || tokenVec[i][j] == '}' || tokenVec[i][j] == '=') {
+				if (get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == ' ' 
+					|| get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == '{' 
+					|| get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == '}' 
+					|| get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[j] == '=') {
 					last = j - 1;
 					break;
 				}
 			}
 			if (last != -1)
 			{
-				wiz_string temp = FindLocals(info.locals, wizStringsubstring(tokenVec[i], 0, last));
+				wiz_string sub = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), 0, last);
+				wiz_string temp = FindLocals(&info->locals, &sub);
 
-				if (!temp.empty()) {
-					tokenVec[i] = wizStringreplace(wizStringsubstring(tokenVec[i], 0, last), wizStringsubstring(tokenVec[i], 0, last), temp)
-						+ wizStringsubstring(tokenVec[i], last + 1);
+				if (!empty_wiz_string(&temp)) {
+					wiz_string param1 = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), 0, last);
+					wiz_string param2 = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), 0, last);
+					wiz_string param3_2 = substr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), last + 1,
+						size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)));
+
+					wiz_string param3 = replace_wiz_string(&param1, &param2, &temp, builder);
+
+					*get_wiz_vector_wiz_string(&tokenVec, i) = union_wiz_string(&param3, &param3_2);
+
+					free_wiz_string(&param1);
+					free_wiz_string(&param2);
+					free_wiz_string(&param3_2);
+					free_wiz_string(&param3);
 				}
+				free_wiz_string(&sub);
+				free_wiz_string(&temp);
 			}
 			else
 			{
-				string temp = FindLocals(info.locals, tokenVec[i]);
-				if (!temp.empty()) {
-					tokenVec[i] = temp;
+				wiz_string temp = FindLocals(&info->locals, get_wiz_vector_wiz_string(&tokenVec, i));
+				if (!empty_wiz_string(&temp)) {
+					*get_wiz_vector_wiz_string(&tokenVec, i) = temp;
 				}
 			}
 		}
 
-		result = result + tokenVec[i];
+		{
+			wiz_string* temp = get_wiz_vector_wiz_string(&tokenVec, i);
+			append_wiz_string_builder(builder, get_cstr_wiz_string(temp), size_wiz_string(temp));
+			free_wiz_string(temp);
+		}
 	}
+
+	result = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
+	free_wiz_string(&PARAMTER_TEXT);
+	free_wiz_string(&LOCAL_TEXT);
+	free_wiz_string_tokenizer(&tokenizer); // temp, wiz_vector_wiz_string{ "/" }, builder, 1);
+	free_wiz_vector_wiz_string(&tokenVec);
+	free_wiz_vector_wiz_string(&separator);
+	free_wiz_string(&delim);
+
 	return result;
 }
+
 wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  ExcuteData* excuteData, wiz_string_builder* builder)
 {
-	wiz_string result = temp;
-
-	wizArrayStack<string> resultStack;
-	user_type* ut;
+	size_t i, j;
+	wiz_string result; //  = *temp;
+	wiz_vector_wiz_string tokenVec;
+	wiz_stack_wiz_string resultStack;
+	user_type ut;
 	int chk = 0;
 	int count_change = 0;
-
+	wiz_stack_wiz_string operandStack;
+	wiz_stack_wiz_string operatorStack;
 	int flag_A = 0;
-	if (result.size() > 1 && result[0] == '/')
+
+	if (size_wiz_string(&result) > 1 && get_cstr_wiz_string(&result)[0] == '/')
 	{
 		flag_A = 1;
 	}
-	result = ToBool3(global, excuteData->info.parameters, result, excuteData->info, builder);
-	if (result.empty()) { return ""; }
+	result = ToBool3(global, &result, &excuteData->info, builder);
+	if (empty_wiz_string(&result)) { return result; }
 	if (!flag_A) {
-		result = string(result.c_str() + 1);
+		substr_and_assign_wiz_string(&result, 1, size_wiz_string(&result));
 	}
-	load_data_from_string_in_load_data(result, ut);
-	result = ut.ToString();
-	if (result.empty()) { return result; }
+	ut = load_data_from_string_in_load_data(&result);
+	free_wiz_string(&result);
+	result = to_string_in_user_type(&ut, builder);
+	if (empty_wiz_string(&result)) { free_user_type_in_user_type(&ut);  return result; }
 
-	if (ut.empty()) {
-		return "";
+	if (empty_in_user_type(&ut)) {
+		return result;
 	}
-	if (get_user_type_list_size(&ut) == 0 && get_item_list_size_in_user_type(&ut) == 1) /// chk
+
+	init_wiz_vector_wiz_string(&tokenVec, 1);
+	init_wiz_stack_wiz_string(&resultStack, 1);
+	init_wiz_stack_wiz_string(&operandStack, 1);
+	init_wiz_stack_wiz_string(&operatorStack, 1);
+
+	if (get_user_type_list_size_in_user_type(&ut) == 0 && get_item_list_size_in_user_type(&ut) == 1) /// chk
 	{
-		if ('/' == result[0] && result.size() > 1)
+		if ('/' == get_cstr_wiz_string(&result)[0] && size_wiz_string(&result) > 1)
 		{
-			string temp = Find(&global, result, builder);
+			wiz_string temp = Find(global, &result, builder);
 
-			if (!temp.empty()) {
-				result = move(temp);
-			}return result;
+			if (!empty_wiz_string(&temp)) {
+				free_wiz_string(&result);
+				result = (temp);
+			}
+			free_user_type_in_user_type(&ut);
+			return result;
 		}
-		else if (wizStringstartsWith(result, "$local.")) {
-			string _temp = FindLocals(excuteData->info.locals, result);
-			if (!_temp.empty()) {
-				result = move(_temp);
-			}return result;
+		else if (starts_with_wiz_string2(&result, "$local.")) {
+			wiz_string _temp = FindLocals(&excuteData->info.locals, &result);
+			if (!empty_wiz_string(&_temp)) {
+				free_wiz_string(&result);
+				result = (_temp);
+			}
+			free_user_type_in_user_type(&ut); 
+			return result;
 		}
-		else if (wizStringstartsWith(result, "$parameter.")) {
-			string _temp = FindParameters(excuteData->info.parameters, result);
-			if (!_temp.empty()) {
-				result = move(_temp);
-			}return result;
+		else if (starts_with_wiz_string2(&result, "$parameter.")) {
+			wiz_string _temp = FindParameters(&excuteData->info.parameters, &result);
+			if (!empty_wiz_string(&_temp)) {
+				free_wiz_string(&result);
+				result = (_temp);
+			}
+			free_user_type_in_user_type(&ut); 
+			return result;
 		}
-
 	}
 
-	vector<string> tokenVec;
 	{
-		wizStringTokenizer tokenizer(result, { " ", "\n", "\t", "\r" }, builder, 1); // , "{", "=", "}" }); //
-																					   //wizStringTokenizer tokenizer2(result, { " ", "\n", "\t", "\r" } ); //
+		wiz_string_tokenizer tokenizer; //  (result, { " ", "\n", "\t", "\r" }, builder, 1); // , "{", "=", "}" }); //
+																					   //wizwiz_string_tokenizer tokenizer2(result, { " ", "\n", "\t", "\r" } ); //
 
-																					   //vector<string> tokenVec2;
+																					   //wiz_vector_wiz_string tokenVec2;
+		wiz_vector_wiz_string separator;
 
-		while (tokenizer.hasMoreTokens()) {
-			tokenVec.push_back(tokenizer.nextToken());
+		init_wiz_vector_wiz_string(&separator, 1);
+		
+		push_back_cstr_wiz_vector_wiz_string(&separator, " ");
+		push_back_cstr_wiz_vector_wiz_string(&separator, "\t");
+		push_back_cstr_wiz_vector_wiz_string(&separator, "\r");
+		push_back_cstr_wiz_vector_wiz_string(&separator, "\n");
+
+		init_wiz_string_tokenizer(&tokenizer, &result, &separator, builder, 1);
+
+		while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
+			push_back_wiz_vector_wiz_string(&tokenVec, next_token_wiz_string_tokenizer(&tokenizer));
 		}
 
-		for (i = tokenVec.size() - 1; i >= 0; --i)
+		for (i = size_wiz_vector_wiz_string(&tokenVec) - 1; i >= 0; --i)
 		{
-			string before = tokenVec[i];
-			if ('/' == tokenVec[i][0] && tokenVec[i].size() > 1)
+			wiz_string before = *get_wiz_vector_wiz_string(&tokenVec, i);
+			if ('/' == get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[0] 
+				&& size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)) > 1)
 			{
-				string _temp = Find(&global, tokenVec[i], builder);
+				wiz_string _temp = Find(global, get_wiz_vector_wiz_string(&tokenVec, i), builder);
 
-				if ("" != _temp) {
-					tokenVec[i] = move(_temp);
+				if (!empty_wiz_string(&_temp)) { // "" == temp
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
+					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
 			}
-			else if (wizStringstartsWith(tokenVec[i], "$local.")) { // && length?
-				string _temp = FindLocals(excuteData->info.locals, tokenVec[i]);
-				if (!_temp.empty()) {
-					tokenVec[i] = move(_temp);
+			else if (starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$local.")) { // && length?
+				wiz_string _temp = FindLocals(&excuteData->info.locals, get_wiz_vector_wiz_string(&tokenVec, i));
+				if (!empty_wiz_string(&_temp)) {
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
+					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
 			}
-			else if (wizStringstartsWith(tokenVec[i], "$parameter.")) { // && length?
-				string _temp = FindParameters(excuteData->info.parameters, tokenVec[i]);
-				if (!_temp.empty()) {
-					tokenVec[i] = move(_temp);
+			else if (starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$parameter.")) { // && length?
+				wiz_string _temp = FindParameters(&excuteData->info.parameters, get_wiz_vector_wiz_string(&tokenVec, i));
+				if (!empty_wiz_string(&_temp)) {
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
+					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
 			}
 		}
+	
+		for (i = 0; i < size_wiz_vector_wiz_string(&separator); ++i) {
+			free_wiz_string(get_wiz_vector_wiz_string(&separator, i));
+		}
+		free_wiz_vector_wiz_string(&separator);
+		free_wiz_string_tokenizer(&tokenizer);
 	}
 	//cout << "result is " << result << endl;
 	//
-	wizArrayStack<string> operandStack;
-	wizArrayStack<string> operatorStack;
 
-
-	for (i = tokenVec.size() - 1; i >= 0; --i) {
-
-		if (StringstartsWith(tokenVec[i], "$parameter.") ||
-			StringstartsWith(tokenVec[i], "$local.") ||
-			'$' != tokenVec[i][0] || ('$' == tokenVec[i][0] && tokenVec[i].size() == 1)
+	for (i = size_wiz_vector_wiz_string(&tokenVec) - 1; i >= 0; --i) {
+		if (starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$parameter.") ||
+			starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$local.") ||
+			'$' != get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[0] 
+			|| ('$' == get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[0]
+				&& size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)) == 1)
 			) {
-			push_wiz_stack_wiz_string(operandStack, tokenVec[i]);
+			push_wiz_stack_wiz_string(&operandStack, get_wiz_vector_wiz_string(&tokenVec, i));
 		}
 		else
 		{
-			// cout << tokenVec[i] << endl;
-			top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack); // =
-			top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack); // {
-			operatorStack.push(tokenVec[i]);
+			// cout << get_wiz_vector_wiz_string(&tokenVec, i) << endl;
+			free_wiz_string(top_wiz_stack_wiz_string(&operandStack));
+			pop_wiz_stack_wiz_string(&operandStack); // =
+			free_wiz_string(top_wiz_stack_wiz_string(&operandStack));
+			pop_wiz_stack_wiz_string(&operandStack); // {
+			push_wiz_stack_wiz_string(&operatorStack, get_wiz_vector_wiz_string(&tokenVec, i));
 
-			if (0 == operation(now, global, tokenVec[i], operandStack, excuteData, builder)) // chk!!
+			if (0 == operation(now, global, get_wiz_vector_wiz_string(&tokenVec, i), &operandStack, excuteData, builder)) // chk!!
 			{
-				// chk removal here?
-				cout << " 0 " << endl;
+				printf("error");
 				_getch();
 				//
-				operatorStack.pop();
-				push_wiz_stack_wiz_string(operandStack, "{");
-				push_wiz_stack_wiz_string(operandStack, "=");
-				push_wiz_stack_wiz_string(operandStack, tokenVec[i]);
-				continue;
+				pop_wiz_stack_wiz_string(&operatorStack);
+				push_cstr_wiz_stack_wiz_string(&operandStack, "{");
+				push_cstr_wiz_stack_wiz_string(&operandStack, "=");
+				push_wiz_stack_wiz_string(&operandStack, get_wiz_vector_wiz_string(&tokenVec, i));
+				exit(-100);
 			}
 
-			operandStack[size_wiz_stack_wiz_string(operandStack) - 2] = operandStack[size_wiz_stack_wiz_string(operandStack) - 1];
-			top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack); // } ?
+			*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2) = 
+											*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 1);
+			free_wiz_string(top_wiz_stack_wiz_string(&operandStack)); 
+			pop_wiz_stack_wiz_string(&operandStack); // } ?
 		}
 	}
 
@@ -1588,93 +1903,120 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	// ex) A = { B = 1 $C = { 3 } } D = { E }
 	// =>  A = { B = 1 $C = 3  }  D = E
 	// =>  A = { B = 1 $C = { 3 } } D = E  : ToDo! 
-
-	vector<string> strVec;
-	stack<int> chkBrace;
-
-	chkBrace.push(0);
-
-	for (i = size_wiz_stack_wiz_string(operandStack) - 1; i >= 0; --i)
 	{
-		if (get_wiz_stack_wiz_string(operandStack, i) == "}") {
-			chkBrace.top()++;
-			if (chkBrace.top() == 2)
-			{
-				string temp = strVec.back();
-				strVec.pop_back();
-				strVec.pop_back();
-				strVec.push_back(temp);
+		wiz_vector_wiz_string strVec;
+		wiz_stack_int chkBrace;
 
-				chkBrace.pop();
-				continue;
+
+		init_wiz_vector_wiz_string(&strVec, 1);
+		init_wiz_stack_int(&chkBrace, 1);
+
+		push_wiz_stack_int(&chkBrace, 0);
+
+		for (i = size_wiz_stack_wiz_string(&operandStack) - 1; i >= 0; --i)
+		{
+			if (comp_wiz_string_and_cstr(get_wiz_stack_wiz_string(&operandStack, i), "}")) {
+				(*top_wiz_stack_int(&chkBrace))++;
+
+				if (*top_wiz_stack_int(&chkBrace)== 2)
+				{
+					wiz_string temp = *back_wiz_vector_wiz_string(&strVec);
+				
+					pop_back_wiz_vector_wiz_string(&strVec);
+					free_wiz_string(back_wiz_vector_wiz_string(&strVec));
+					pop_back_wiz_vector_wiz_string(&strVec);
+					push_back_wiz_vector_wiz_string(&strVec, &temp);
+
+					pop_wiz_stack_int(&chkBrace);
+					continue;
+				}
+				pop_wiz_stack_int(&chkBrace);
 			}
-			chkBrace.pop();
-		}
-		else if (get_wiz_stack_wiz_string(operandStack, i) == "{") {
-			chkBrace.top()++;
-			chkBrace.push(0);
-		}
-		else {
-			chkBrace.top()++;
-		}
-		strVec.push_back(get_wiz_stack_wiz_string(operandStack, i));
-	}
-
-	// todo!  $C = 3 => $C = { 3 } 
-	{
-		//StringTokenizer tokenizer(result, builder, 1);
-		//result = "";
-		clear_wiz_string_builder(builder);
-
-		//while (tokenizer.hasMoreTokens()) {
-		for (i = 0; i < strVec.size(); ++i) {
-			 string temp = strVec[i]; // tokenizer.nextToken();
-
-										   // chk!! @$paramter - removal? @$. (for regex)??
-			if (temp.size() >= 3 && StringstartsWith(temp, "$.")) { // cf) @$. ?
-																	  //result = result + temp + " ";
-				append_wiz_string_builder(builder, temp.c_str(), temp.size());
-				append_wiz_string_builder(builder, " ", 1);
-			}
-			else if (temp.size() >= 12 && StringstartsWith(temp, "$parameter.") || (temp.size()) >= 13 && StringstartsWith(temp, "@$parameter.")) {
-				//result = result + temp + " ";
-				append_wiz_string_builder(builder, temp.c_str(), temp.size());
-				append_wiz_string_builder(builder, " ", 1);
-			}
-			else if (temp.size() >= 8 && StringstartsWith(temp, "$local.") || (temp.size() >= 9 && StringstartsWith(temp, "@$local."))) {
-				//result = result + temp + " ";
-				append_wiz_string_builder(builder, temp.c_str(), temp.size());
-				append_wiz_string_builder(builder, " ", 1);
-			}
-			else if (
-				(temp.size() >= 3 && temp[0] == '@' && temp[1] == '$')) {
-				++i; // tokenizer.nextToken(); // = 
-				string temp2 = strVec[i]; //tokenizer.nextToken();
-										  //result = result + temp + " = { " + temp2 + " } ";
-
-				append_wiz_string_builder(builder, temp.c_str(), temp.size());
-				append_wiz_string_builder(builder, " = { ", 5);
-
-				append_wiz_string_builder(builder, temp2.c_str(), temp2.size());
-				append_wiz_string_builder(builder, " } ", 3);
+			else if (comp_wiz_string_and_cstr(get_wiz_stack_wiz_string(&operandStack, i), "{")) {
+				(*top_wiz_stack_int(&chkBrace))++;
+				push_wiz_stack_int(&chkBrace, 0);
 			}
 			else {
-				//result = result + temp + " ";
-				append_wiz_string_builder(builder, temp.c_str(), temp.size());
-				append_wiz_string_builder(builder, " ", 1);
+				(*top_wiz_stack_int(&chkBrace))++;
+			}
+			push_back_wiz_vector_wiz_string(&strVec, get_wiz_stack_wiz_string(&operandStack, i));
+		}
+
+		// todo!  $C = 3 => $C = { 3 } 
+		{
+			//wiz_string_tokenizer tokenizer(result, builder, 1);
+			//result = "";
+			clear_wiz_string_builder(builder);
+
+			//while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
+			for (i = 0; i < size_wiz_vector_wiz_string(&strVec); ++i) {
+				wiz_string temp = *get_wiz_vector_wiz_string(&strVec, i); // next_token_wiz_string_tokenizer(&tokenizer);
+
+											  // chk!! @$paramter - removal? @$. (for regex)??
+				if (size_wiz_string(&temp) >= 3 && starts_with_wiz_string2(&temp, "$.")) { // cf) @$. ?
+																		  //result = result + temp + " ";
+					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+					append_wiz_string_builder(builder, " ", 1);
+				}
+				else if (size_wiz_string(&temp) >= 12 && starts_with_wiz_string2(&temp, "$parameter.")
+					|| (size_wiz_string(&temp)) >= 13 && starts_with_wiz_string2(&temp, "@$parameter.")) {
+					//result = result + temp + " ";
+					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+					append_wiz_string_builder(builder, " ", 1);
+				}
+				else if (size_wiz_string(&temp) >= 8 && starts_with_wiz_string2(&temp, "$local.") 
+					|| (size_wiz_string(&temp) >= 9 && starts_with_wiz_string2(&temp, "@$local."))) {
+					//result = result + temp + " ";
+					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+					append_wiz_string_builder(builder, " ", 1);
+				}
+				else if (
+					(size_wiz_string(&temp) >= 3 && get_cstr_wiz_string(&temp)[0] == '@' && get_cstr_wiz_string(&temp)[1] == '$')) {
+					++i; // next_token_wiz_string_tokenizer(&tokenizer); // = 
+					wiz_string temp2 = *get_wiz_vector_wiz_string(&strVec, i); //next_token_wiz_string_tokenizer(&tokenizer);
+											  //result = result + temp + " = { " + temp2 + " } ";
+
+					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+					append_wiz_string_builder(builder, " = { ", 5);
+
+					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp2), size_wiz_string(&temp2));
+					append_wiz_string_builder(builder, " } ", 3);
+
+					free_wiz_string(&temp2);
+				}
+				else {
+					//result = result + temp + " ";
+					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
+					append_wiz_string_builder(builder, " ", 1);
+				}
+
+				free_wiz_string(&temp);
 			}
 		}
+	
+		free_wiz_stack_int(&chkBrace);
+		free_wiz_vector_wiz_string(&strVec);
+}
+
+	free_wiz_string(&result);
+	result = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
+	if (!empty_wiz_string(&result)) {
+		erase_wiz_string(&result, size_wiz_string(&result) - 1);
 	}
-	result = string(builder->Str(), builder->size());
-	if (!result.empty()) {
-		result.erase(result.begin() + result.size() - 1);
-	}
+
+	// free 
+	free_user_type_in_user_type(&ut);
+	free_wiz_vector_wiz_string(&tokenVec);
+	free_wiz_stack_wiz_string(&resultStack);
+	free_wiz_stack_wiz_string(&operandStack);
+	free_wiz_stack_wiz_string(&operatorStack);
 
 	return result;
 }
 
 ////////////////////////////public//////////////////////////////////
-*/
+
 // todo - error chk!
 user_type load_data_from_file_in_load_data(wiz_string* fileName)
 {
@@ -1785,9 +2127,9 @@ user_type load_data_from_file_in_load_data(wiz_string* fileName)
 
 		for (x = left; x <= right; ++x)
 		{
-			//StringTokenizer tokenizer(std( (*aqTemp)[x] ) );
-			//while (tokenizer.hasMoreTokens()) {
-			//	aq.push(tokenizer.nextToken());
+			//wiz_string_tokenizer tokenizer(std( (*aqTemp)[x] ) );
+			//while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
+			//	aq.push(next_token_wiz_string_tokenizer(&tokenizer));
 			//}
 			wiz_string* statement = get_wiz_vector_wiz_string(&aqTemp, x);
 			long long token_first = 0, token_last = 0; // idx of token in statement.
@@ -2794,7 +3136,7 @@ int save_data_in_load_data(wiz_string* fileName, user_type* global, int option)
 }
 
 
-/*
+
 int add_data_in_load_data(user_type* global, wiz_string* position, wiz_string* data, wiz_string* cond_str, ExcuteData* excuteData, wiz_string_builder* builder) {
 	user_type utTemp;
 	int isTrue = 0;
@@ -2815,36 +3157,43 @@ int add_data_in_load_data(user_type* global, wiz_string* position, wiz_string* d
 				
 				// _cond = ToBool4(get_wiz_vector_any(&finded.second, i), global, _cond, excuteData, builder);
 
-				init_in_cond(&cond, _cond, (user_type*)get_wiz_vector_any(&finded.second, i), global, builder);
+				init_in_condition(&cond, _cond, (user_type*)get_wiz_vector_any(&finded.second, i), global, builder);
 
-				while (next_in_cond(&cond));
+				while (next_in_condition(&cond));
 				
-				if (cond.Now().size() != 1 || "TRUE" != cond.Now()[0]) // || cond.Now().size()  != 1
+				if (size_wiz_string(get_wiz_stack_wiz_string(now_in_condition(&cond), 0)) != 1 || 0 != strcmp("TRUE", get_cstr_wiz_string(get_wiz_stack_wiz_string(now_in_condition(&cond), 0)))) // || cond.Now().size()  != 1
 				{
-					// free all cond data?
-
+					// free all cond data
+					clear_now_condition(&cond);
+					free_in_condition(&cond);
 					continue;
 				}
 				// free all cond data?
+				clear_now_condition(&cond);
+				free_in_condition(&cond);
 			}
 
-			for (k = 0; k < utTemp.GetIListSize(); ++k) {
-				if (utTemp.IsItemList(k)) {
-					get_wiz_vector_any(&finded.second, i)->AddItem(utTemp.GetItemList(item_n).GetName(), utTemp.GetItemList(item_n).Get(0));
+			for (k = 0; k < get_ilist_size_in_user_type(&utTemp); ++k) {
+				if (is_item_list_in_user_type(&utTemp, k)) {
+					add_item_in_user_type(get_wiz_vector_any(&finded.second, i), &get_item_list_in_user_type(&utTemp, item_n)->name, &get_item_list_in_user_type(&utTemp, item_n)->value);
 					item_n++;
 				}
 				else {
-					get_wiz_vector_any(&finded.second, i)->AddUserTypeItem(*utTemp.GetUserTypeList(user_n));
+					add_user_type_item_in_user_type(get_wiz_vector_any(&finded.second, i), get_user_type_list_in_user_type(&utTemp, user_n));
 					user_n++;
 				}
 			}
 			isTrue = 1;
 		}
-		return isTrue;
+		
+		free_wiz_vector_any(&finded.second);
 	}
 	else {
-		return 0;
+		isTrue = 0;
 	}
+
+	free_user_type_in_user_type(&utTemp);
+	return isTrue;
 }
 
 wiz_string get_item_list_data_in_load_data(user_type* global, wiz_string* position, wiz_string* condstr, ExcuteData* excuteData, wiz_string_builder* builder)
@@ -2899,6 +3248,6 @@ wiz_string get_item_list_data_in_load_data(user_type* global, wiz_string* positi
 		return make_empty_wiz_string();
 	}
 }
-*/
+
 
 

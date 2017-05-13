@@ -13,6 +13,7 @@
 
 struct EventInfo
 {
+	int valid;
 	user_type* eventUT;
 	wiz_stack_any nowUT; //
 	wiz_stack_size_t userType_idx;
@@ -29,6 +30,8 @@ typedef struct EventInfo EventInfo;
 
 struct ExcuteData
 {
+	int valid;
+
 	user_type* pEvents;
 	EventInfo info; // chk!
 	int chkInfo;
@@ -41,10 +44,14 @@ struct ExcuteData
 
 typedef struct ExcuteData ExcuteData;
 
+wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* excuteData);
+
 //
 user_type load_data_from_file_in_load_data(wiz_string* fileName);
 user_type load_data_from_string_in_load_data(wiz_string* str);
 int save_data_in_load_data(wiz_string* fileName, user_type* global, int option);
+
+
 
 // search_item
 // search_user_type

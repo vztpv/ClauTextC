@@ -41,6 +41,12 @@ void clear_now_condition(condition* cond);
 
 int ChkExist(wiz_string* str);
 
+int comp_wiz_string_and_cstr(wiz_string* x, char* y);
+
+wiz_string union_wiz_string(wiz_string* x, wiz_string* y);
+
+int starts_with_wiz_string2(wiz_string* x, char* str);
+
 
 #endif
 

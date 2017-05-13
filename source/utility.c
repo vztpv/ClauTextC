@@ -745,7 +745,6 @@ void clear_now_condition(condition* cond)
 	for (i = 0; i < size_wiz_stack_wiz_string(&cond->token_stack); ++i) {
 		free_wiz_string(get_wiz_stack_wiz_string(&cond->token_stack, i));
 	}
-	free_wiz_stack_wiz_string(&cond->token_stack);
 }
 
 int ChkExist(wiz_string* str) // for \"
@@ -771,4 +770,35 @@ int ChkExist(wiz_string* str) // for \"
 	}
 
 	return 0 == state; // exist and valid !! chk - todo!
+}
+
+int comp_wiz_string_and_cstr(wiz_string* x, char* y)
+{
+	return 0 == strcmp(get_cstr_wiz_string(x), y);
+}
+
+wiz_string union_wiz_string(wiz_string* x, wiz_string* y)
+{
+	wiz_string result;
+	wiz_string_builder builder;
+
+	init_wiz_string_builder(&builder, size_wiz_string(x) + size_wiz_string(y), get_cstr_wiz_string(x), size_wiz_string(x));
+
+	append_wiz_string_builder(&builder, get_cstr_wiz_string(y), size_wiz_string(y));
+
+	result = make_wiz_string(str_wiz_string_builder(&builder, NULL), size_wiz_string_builder(&builder));
+
+	free_wiz_string_builder(&builder);
+	return result;
+}
+
+int starts_with_wiz_string2(wiz_string* x, char* str)
+{
+	wiz_string temp = make_wiz_string(str, strlen(str));
+
+	int val = starts_with_wiz_string(x, &temp);
+
+	free_wiz_string(&temp);
+
+	return val;
 }
