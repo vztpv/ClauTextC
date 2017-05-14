@@ -186,6 +186,7 @@ int starts_with_wiz_string(wiz_string* str, wiz_string* start_str)
 		return 0;
 	}
 
+	//printf("size is %d\n", start_str->len);
 	for (i = 0; i < start_str->len; ++i) {
 		if (get_cstr_wiz_string(str)[i] == get_cstr_wiz_string(start_str)[i]) {
 			//
@@ -195,7 +196,7 @@ int starts_with_wiz_string(wiz_string* str, wiz_string* start_str)
 			break;
 		}
 	}
-
+	//printf("end\n");
 	return result;
 }
 // ends_with_wiz_string

@@ -792,13 +792,3 @@ wiz_string union_wiz_string(wiz_string* x, wiz_string* y)
 	return result;
 }
 
-int starts_with_wiz_string2(wiz_string* x, char* str)
-{
-	wiz_string temp = make_wiz_string(str, strlen(str));
-
-	int val = starts_with_wiz_string(x, &temp);
-
-	free_wiz_string(&temp);
-
-	return val;
-}

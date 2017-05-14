@@ -1737,7 +1737,7 @@ wiz_string ToBool3(user_type* global, wiz_string* temp,
 
 wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  ExcuteData* excuteData, wiz_string_builder* builder)
 {
-	size_t i, j;
+	int i, j;
 	wiz_string result; //  = *temp;
 	wiz_vector_wiz_string tokenVec;
 	wiz_stack_wiz_string resultStack;
@@ -1747,12 +1747,23 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	wiz_stack_wiz_string operandStack;
 	wiz_stack_wiz_string operatorStack;
 	int flag_A = 0;
+	wiz_string result_temp;
+	wiz_string LOCAL_TEXT1;
+	wiz_string LOCAL_TEXT2;
+	wiz_string PARAMETER_TEXT1;
+	wiz_string PARAMETER_TEXT2;
+	wiz_string DOT_TEXT; // $.
 
+	init_wiz_string(&result, get_cstr_wiz_string(temp), size_wiz_string(temp));
 	if (size_wiz_string(&result) > 1 && get_cstr_wiz_string(&result)[0] == '/')
 	{
 		flag_A = 1;
 	}
-	result = ToBool3(global, &result, &excuteData->info, builder);
+	
+	result_temp = ToBool3(global, &result, &excuteData->info, builder);
+	free_wiz_string(&result);
+	result = result_temp;
+	
 	if (empty_wiz_string(&result)) { return result; }
 	if (!flag_A) {
 		substr_and_assign_wiz_string(&result, 1, size_wiz_string(&result));
@@ -1763,6 +1774,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	if (empty_wiz_string(&result)) { free_user_type_in_user_type(&ut);  return result; }
 
 	if (empty_in_user_type(&ut)) {
+		free_user_type_in_user_type(&ut);
 		return result;
 	}
 
@@ -1770,6 +1782,12 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	init_wiz_stack_wiz_string(&resultStack, 1);
 	init_wiz_stack_wiz_string(&operandStack, 1);
 	init_wiz_stack_wiz_string(&operatorStack, 1);
+
+	init_wiz_string(&LOCAL_TEXT1, "$local.", strlen("$local."));
+	init_wiz_string(&LOCAL_TEXT2, "@$local.", strlen("@$local."));
+	init_wiz_string(&PARAMETER_TEXT1, "$parameter.", strlen("$parameter."));
+	init_wiz_string(&PARAMETER_TEXT2, "@$parameter.", strlen("@$parameter."));
+	init_wiz_string(&DOT_TEXT, "$.", 2);
 
 	if (get_user_type_list_size_in_user_type(&ut) == 0 && get_item_list_size_in_user_type(&ut) == 1) /// chk
 	{
@@ -1784,7 +1802,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			free_user_type_in_user_type(&ut);
 			return result;
 		}
-		else if (starts_with_wiz_string2(&result, "$local.")) {
+		else if (starts_with_wiz_string(&result, &LOCAL_TEXT1)) {
 			wiz_string _temp = FindLocals(&excuteData->info.locals, &result);
 			if (!empty_wiz_string(&_temp)) {
 				free_wiz_string(&result);
@@ -1793,7 +1811,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			free_user_type_in_user_type(&ut); 
 			return result;
 		}
-		else if (starts_with_wiz_string2(&result, "$parameter.")) {
+		else if (starts_with_wiz_string(&result, &PARAMETER_TEXT1)) {
 			wiz_string _temp = FindParameters(&excuteData->info.parameters, &result);
 			if (!empty_wiz_string(&_temp)) {
 				free_wiz_string(&result);
@@ -1810,6 +1828,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 
 																					   //wiz_vector_wiz_string tokenVec2;
 		wiz_vector_wiz_string separator;
+		int i; // -1 -> not allowd but, size_t i -> -1 allowed!
 
 		init_wiz_vector_wiz_string(&separator, 1);
 		
@@ -1837,14 +1856,14 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
 			}
-			else if (starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$local.")) { // && length?
+			else if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &LOCAL_TEXT1)) { // && length?
 				wiz_string _temp = FindLocals(&excuteData->info.locals, get_wiz_vector_wiz_string(&tokenVec, i));
 				if (!empty_wiz_string(&_temp)) {
 					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
 			}
-			else if (starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$parameter.")) { // && length?
+			else if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &PARAMETER_TEXT1)) { // && length?
 				wiz_string _temp = FindParameters(&excuteData->info.parameters, get_wiz_vector_wiz_string(&tokenVec, i));
 				if (!empty_wiz_string(&_temp)) {
 					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
@@ -1863,8 +1882,8 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	//
 
 	for (i = size_wiz_vector_wiz_string(&tokenVec) - 1; i >= 0; --i) {
-		if (starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$parameter.") ||
-			starts_with_wiz_string2(get_wiz_vector_wiz_string(&tokenVec, i), "$local.") ||
+		if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &PARAMETER_TEXT1) ||
+			starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &LOCAL_TEXT1) ||
 			'$' != get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[0] 
 			|| ('$' == get_cstr_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i))[0]
 				&& size_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i)) == 1)
@@ -1906,12 +1925,12 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	{
 		wiz_vector_wiz_string strVec;
 		wiz_stack_int chkBrace;
-
+		int zero_int = 0;
 
 		init_wiz_vector_wiz_string(&strVec, 1);
 		init_wiz_stack_int(&chkBrace, 1);
 
-		push_wiz_stack_int(&chkBrace, 0);
+		push_wiz_stack_int(&chkBrace, &zero_int);
 
 		for (i = size_wiz_stack_wiz_string(&operandStack) - 1; i >= 0; --i)
 		{
@@ -1953,19 +1972,19 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 				wiz_string temp = *get_wiz_vector_wiz_string(&strVec, i); // next_token_wiz_string_tokenizer(&tokenizer);
 
 											  // chk!! @$paramter - removal? @$. (for regex)??
-				if (size_wiz_string(&temp) >= 3 && starts_with_wiz_string2(&temp, "$.")) { // cf) @$. ?
+				if (size_wiz_string(&temp) >= 3 && starts_with_wiz_string(&temp, &DOT_TEXT)) { // cf) @$. ?
 																		  //result = result + temp + " ";
 					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
 					append_wiz_string_builder(builder, " ", 1);
 				}
-				else if (size_wiz_string(&temp) >= 12 && starts_with_wiz_string2(&temp, "$parameter.")
-					|| (size_wiz_string(&temp)) >= 13 && starts_with_wiz_string2(&temp, "@$parameter.")) {
+				else if (size_wiz_string(&temp) >= 12 && starts_with_wiz_string(&temp, &PARAMETER_TEXT1)
+					|| (size_wiz_string(&temp)) >= 13 && starts_with_wiz_string(&temp, &PARAMETER_TEXT2)) {
 					//result = result + temp + " ";
 					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
 					append_wiz_string_builder(builder, " ", 1);
 				}
-				else if (size_wiz_string(&temp) >= 8 && starts_with_wiz_string2(&temp, "$local.") 
-					|| (size_wiz_string(&temp) >= 9 && starts_with_wiz_string2(&temp, "@$local."))) {
+				else if (size_wiz_string(&temp) >= 8 && starts_with_wiz_string(&temp, &LOCAL_TEXT1)
+					|| (size_wiz_string(&temp) >= 9 && starts_with_wiz_string(&temp, &LOCAL_TEXT2))) {
 					//result = result + temp + " ";
 					append_wiz_string_builder(builder, get_cstr_wiz_string(&temp), size_wiz_string(&temp));
 					append_wiz_string_builder(builder, " ", 1);
@@ -2011,6 +2030,13 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	free_wiz_stack_wiz_string(&resultStack);
 	free_wiz_stack_wiz_string(&operandStack);
 	free_wiz_stack_wiz_string(&operatorStack);
+
+
+	free_wiz_string(&LOCAL_TEXT1);
+	free_wiz_string(&LOCAL_TEXT2);
+	free_wiz_string(&PARAMETER_TEXT1);
+	free_wiz_string(&PARAMETER_TEXT2);
+	free_wiz_string(&DOT_TEXT);
 
 	return result;
 }

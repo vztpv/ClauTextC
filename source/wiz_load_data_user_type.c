@@ -245,7 +245,9 @@ void remove_user_type_list_by_var_name_in_user_type(user_type* ut, wiz_string* v
 //			
 void remove_list_in_user_type(user_type* ut, size_t idx){ } // ilis_t_idx!
 
-int empty_in_user_type(user_type* ut){ }
+int empty_in_user_type(user_type* ut){ 
+	return 0 == ut->ilist.num;
+}
 
 void insert_item_by_ilist_in_user_type(user_type* ut, size_t ilis_t_idx, wiz_string* name, wiz_string* item){ }
 

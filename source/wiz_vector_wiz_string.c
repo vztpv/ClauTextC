@@ -93,6 +93,7 @@ void FORM(push_back_cstr_wiz_vector_, wiz_string)(FORM(wiz_vector_, wiz_string)*
 	wiz_string temp;
 	init_wiz_string(&temp, cstr, strlen(cstr));
 
+	init_wiz_string(&vec->vec[vec->num], "", 0);
 	assign_wiz_string(&vec->vec[vec->num], &temp);
 
 	free_wiz_string(&temp);

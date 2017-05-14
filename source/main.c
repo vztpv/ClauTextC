@@ -35,6 +35,8 @@
 
 #include "wiz_load_data.h"
 
+#include "utility.h"
+
 // wiz_array_stack : based wiz_vector
 // wiz_deck for string( can random access )
 
@@ -146,7 +148,7 @@ void test()
 		// map
 	}
 }
-int main(void)
+void test_for_load_data()
 {
 	const char* text = "$OR = { "
 		" $EQ = { 3 0 } "
@@ -162,6 +164,36 @@ int main(void)
 		free_user_type_in_user_type(&ut);
 	}
 	free_wiz_string(&str);
+}
 
+int main(void)
+{
+
+	{
+		for (int i = 0; i < 500000; ++i) {
+			const char* text = "id = 1 i = 3 j = 4";
+			wiz_string str;
+			wiz_string result;
+			user_type global;
+			ExcuteData excuteData;
+			wiz_string_builder builder;
+			wiz_string EMPTY = make_wiz_string("", 0);
+			init_wiz_string(&str, text, strlen(text));
+			init_in_user_type(&global, &EMPTY);
+			init_wiz_string_builder(&builder, 1024, "", 0);
+
+			excuteData.valid = 0;
+
+		
+			result = ToBool4(NULL, &global, &str, &excuteData, &builder);
+
+
+			free_wiz_string(&str);
+			free_wiz_string(&result);
+			free_user_type_in_user_type(&global);
+			free_wiz_string_builder(&builder);
+			free_wiz_string(&EMPTY);
+		}
+	}
 	return 0;
 }

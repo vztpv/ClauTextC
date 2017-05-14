@@ -50,7 +50,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 user_type load_data_from_file_in_load_data(wiz_string* fileName);
 user_type load_data_from_string_in_load_data(wiz_string* str);
 int save_data_in_load_data(wiz_string* fileName, user_type* global, int option);
-
+wiz_string ToBool4(user_type* now, user_type* global, wiz_string* temp, ExcuteData* excuteData, wiz_string_builder* builder);
 
 
 // search_item
