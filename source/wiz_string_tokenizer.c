@@ -77,6 +77,7 @@ void init_wiz_string_tokenizer(wiz_string_tokenizer* tokenizer, wiz_string* str,
 				}
 				else {
 					left_shift_wiz_string_builder(builder, 1);
+					free_wiz_string(&temp);
 				}
 			}
 

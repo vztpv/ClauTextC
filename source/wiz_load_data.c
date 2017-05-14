@@ -215,6 +215,8 @@ wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
 			free_wiz_string(&itemName);
 			free_wiz_string(&it);
 		}
+
+		free_wiz_vector_any(&x.second);
 	}
 	init_wiz_string(&result, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 	return result;
@@ -1861,13 +1863,18 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
+				else {
+					free_wiz_string(&_temp);
+				}
 			}
 			else if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &LOCAL_TEXT1)) { // && length?
 				wiz_string _temp = FindLocals(&excuteData->info.locals, get_wiz_vector_wiz_string(&tokenVec, i));
 				if (!empty_wiz_string(&_temp)) {
-					printf("chk ..%s..", get_cstr_wiz_string(&_temp));
 					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
+				}
+				else {
+					free_wiz_string(&_temp);
 				}
 			}
 			else if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &PARAMETER_TEXT1)) { // && length?
@@ -1875,6 +1882,9 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 				if (!empty_wiz_string(&_temp)) {
 					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
+				}
+				else {
+					free_wiz_string(&_temp);
 				}
 			}
 		}
@@ -1899,7 +1909,6 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 		}
 		else
 		{
-			// cout << get_wiz_vector_wiz_string(&tokenVec, i) << endl;
 			free_wiz_string(top_wiz_stack_wiz_string(&operandStack));
 			pop_wiz_stack_wiz_string(&operandStack); // =
 			free_wiz_string(top_wiz_stack_wiz_string(&operandStack));
@@ -2037,6 +2046,10 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	free_wiz_vector_wiz_string(&tokenVec);
 	free_wiz_stack_wiz_string(&resultStack);
 	free_wiz_stack_wiz_string(&operandStack);
+
+	for (i = 0; i < size_wiz_stack_wiz_string(&operatorStack); ++i) {
+		free_wiz_string(get_wiz_stack_wiz_string(&operatorStack, i));
+	}
 	free_wiz_stack_wiz_string(&operatorStack);
 
 

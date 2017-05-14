@@ -591,6 +591,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 {
 	int exist = 0;
 	int chk = 0; // for break?
+	int i;
 
 	pair_int_and_wiz_vector_any result; // pair<bool, vector<UserType*>>
 	wiz_string delim, start, EMPTY, UT;
@@ -649,9 +650,10 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 		utTemp.first = global;
 		utTemp.second = 0;
 
-		for (int i = 0; i < count_tokens_wiz_string_tokenizer(&tokenizer); ++i) {
+		for (i = 0; i < count_tokens_wiz_string_tokenizer(&tokenizer); ++i) {
 			wiz_string* strTemp = next_token_wiz_string_tokenizer(&tokenizer);
 			if (0 == strcmp(get_cstr_wiz_string(strTemp), "root") && i == 0) {
+				free_wiz_string(strTemp);
 			}
 			else {
 				//strVec.push_back(strTemp);
@@ -700,6 +702,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 				//utTemp.first = utTemp.first->GetParent();
 				utTemp.first = get_parent_in_user_type((user_type*)utTemp.first);
 				//strVec.pop_back();
+				free_wiz_string(back_wiz_vector_wiz_string(&strVec));
 				pop_back_wiz_vector_wiz_string(&strVec);
 			}
 			if (chk) { break; }
@@ -776,6 +779,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 
 	if (0 == exist) { 
 		result.first = 0;
+
 		// free
 		free_wiz_vector_any(&temp);
 	}
@@ -792,6 +796,10 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 	free_wiz_string(&EMPTY);
 	free_wiz_string(&UT);
 	free_wiz_string_tokenizer(&tokenizer);
+
+	for (i = 0; i < size_wiz_vector_wiz_string(&strVec); ++i) {
+		free_wiz_string(get_wiz_vector_wiz_string(&strVec, i));
+	}
 	free_wiz_vector_wiz_string(&strVec);
 	free_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
 	
