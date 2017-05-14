@@ -170,8 +170,8 @@ int main(void)
 {
 
 	{
-		for (int i = 0; i < 500000; ++i) {
-			const char* text = "id = 1 i = 3 j = 4";
+		for (int i = 0; i < 500; ++i) {
+			const char* text = "id = 1 i = 3 j = 4 k = /parameter/chk";
 			wiz_string str;
 			wiz_string result;
 			user_type global;
@@ -183,8 +183,9 @@ int main(void)
 			init_wiz_string_builder(&builder, 1024, "", 0);
 
 			excuteData.valid = 0;
+			init_wiz_map_wiz_string_and_wiz_string(&excuteData.info.parameters);
+			init_wiz_map_wiz_string_and_wiz_string(&excuteData.info.locals);
 
-		
 			result = ToBool4(NULL, &global, &str, &excuteData, &builder);
 
 
@@ -193,7 +194,10 @@ int main(void)
 			free_user_type_in_user_type(&global);
 			free_wiz_string_builder(&builder);
 			free_wiz_string(&EMPTY);
+			free_wiz_map_wiz_string_and_wiz_string(&excuteData.info.parameters);
+			free_wiz_map_wiz_string_and_wiz_string(&excuteData.info.locals);
 		}
 	}
+
 	return 0;
 }

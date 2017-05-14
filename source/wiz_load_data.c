@@ -145,7 +145,7 @@ wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
 	int count = 0;
 	int idx = -1;
 	wiz_string result;
-	size_t i;
+	int i;
 	
 	
 	for (i = size_wiz_string(str) - 1; i >= 0; --i) {
@@ -284,7 +284,13 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		pair_wiz_string_and_wiz_string data;
 		data.first = substr_wiz_string(operand, 0, 7);
 
-		get_wiz_map_wiz_string_and_wiz_string(locals, &data);
+		if (0 == get_wiz_map_wiz_string_and_wiz_string(locals, &data))
+		{
+			free_wiz_string(&local_text);
+			free_wiz_string(&data.first);
+
+			return make_empty_wiz_string();
+		}
 
 		free_wiz_string(&local_text);
 		free_wiz_string(&data.first);
@@ -1859,6 +1865,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			else if (starts_with_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i), &LOCAL_TEXT1)) { // && length?
 				wiz_string _temp = FindLocals(&excuteData->info.locals, get_wiz_vector_wiz_string(&tokenVec, i));
 				if (!empty_wiz_string(&_temp)) {
+					printf("chk ..%s..", get_cstr_wiz_string(&_temp));
 					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = (_temp);
 				}
@@ -1937,7 +1944,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			if (comp_wiz_string_and_cstr(get_wiz_stack_wiz_string(&operandStack, i), "}")) {
 				(*top_wiz_stack_int(&chkBrace))++;
 
-				if (*top_wiz_stack_int(&chkBrace)== 2)
+				if (*top_wiz_stack_int(&chkBrace) == 2)
 				{
 					wiz_string temp = *back_wiz_vector_wiz_string(&strVec);
 				
@@ -1971,6 +1978,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			for (i = 0; i < size_wiz_vector_wiz_string(&strVec); ++i) {
 				wiz_string temp = *get_wiz_vector_wiz_string(&strVec, i); // next_token_wiz_string_tokenizer(&tokenizer);
 
+				printf("%s\n", get_cstr_wiz_string(&temp));
 											  // chk!! @$paramter - removal? @$. (for regex)??
 				if (size_wiz_string(&temp) >= 3 && starts_with_wiz_string(&temp, &DOT_TEXT)) { // cf) @$. ?
 																		  //result = result + temp + " ";
