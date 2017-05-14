@@ -174,7 +174,7 @@ wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
 		clear_wiz_string_builder(builder);
 		if (x.first == 0) { return make_empty_wiz_string(); }
 		for (i = 0; i < size_wiz_vector_any(&x.second); ++i) {
-			wiz_string itemName = substr_wiz_string(str, idx + 1, size_wiz_vector_any(&x.second));
+			wiz_string itemName = substr_wiz_string(str, idx + 1, size_wiz_string(str));
 			wiz_string it;
 			
 			init_wiz_string(&it, "$it", 3);
@@ -1987,7 +1987,6 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			for (i = 0; i < size_wiz_vector_wiz_string(&strVec); ++i) {
 				wiz_string temp = *get_wiz_vector_wiz_string(&strVec, i); // next_token_wiz_string_tokenizer(&tokenizer);
 
-				printf("%s\n", get_cstr_wiz_string(&temp));
 											  // chk!! @$paramter - removal? @$. (for regex)??
 				if (size_wiz_string(&temp) >= 3 && starts_with_wiz_string(&temp, &DOT_TEXT)) { // cf) @$. ?
 																		  //result = result + temp + " ";

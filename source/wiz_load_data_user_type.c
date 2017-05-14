@@ -623,21 +623,25 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 		}
 		if (empty_wiz_string(position)) { 
 			//temp.push_back(global); 
+			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
 			break; 
 		}
 		if (0 == strcmp(get_cstr_wiz_string(position), ".")) { 
 			//temp.push_back(global); 
+			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
 			break;
 		}
 		if (0 == strcmp(get_cstr_wiz_string(position), "/./")) { 
 			//temp.push_back(global); 
+			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
 			break;
 		} // chk..
 		if (0 == strcmp(get_cstr_wiz_string(position), "/.")) {
 			//temp.push_back(global); 
+			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
 			break; 
 		}

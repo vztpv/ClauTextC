@@ -171,15 +171,20 @@ int main(void)
 
 	{
 		for (int i = 0; i < 500; ++i) {
-			const char* text = "id = 1 i = 3 j = 4 k = /parameter/chk";
+			const char* text = "id = 1 i = 3 j = 4 k = /./x";
 			wiz_string str;
 			wiz_string result;
 			user_type global;
 			ExcuteData excuteData;
 			wiz_string_builder builder;
 			wiz_string EMPTY = make_wiz_string("", 0);
+			wiz_string name = make_wiz_string("x", 1);
+			wiz_string value = make_wiz_string("1", 1);
 			init_wiz_string(&str, text, strlen(text));
 			init_in_user_type(&global, &EMPTY);
+			
+			add_item_in_user_type(&global, &name, &value);
+
 			init_wiz_string_builder(&builder, 1024, "", 0);
 
 			excuteData.valid = 0;
@@ -187,8 +192,10 @@ int main(void)
 			init_wiz_map_wiz_string_and_wiz_string(&excuteData.info.locals);
 
 			result = ToBool4(NULL, &global, &str, &excuteData, &builder);
+			//printf("%s\n", get_cstr_wiz_string(&result));
 
-
+			free_wiz_string(&name);
+			free_wiz_string(&value);
 			free_wiz_string(&str);
 			free_wiz_string(&result);
 			free_user_type_in_user_type(&global);
