@@ -8,6 +8,8 @@ char* end(wiz_string_builder* builder)
 	return builder->buffer_first + builder->capacity;
 }
 
+// expand_wiz_string_builder ??
+
 void init_wiz_string_builder(wiz_string_builder* builder, const size_t buffer_size, const char* cstr, const size_t len)
 {
 
@@ -20,10 +22,12 @@ void init_wiz_string_builder(wiz_string_builder* builder, const size_t buffer_si
 }
 void free_wiz_string_builder(wiz_string_builder* builder)
 {
-	free(builder->buffer_first);
-	builder->len = 0;
-	builder->buffer = NULL;
-	builder->buffer_first = NULL;
+	if (NULL != builder->buffer_first) {
+		free(builder->buffer_first);
+		builder->len = 0;
+		builder->buffer = NULL;
+		builder->buffer_first = NULL;
+	}
 }
 
 wiz_string_builder* append_wiz_string_builder(wiz_string_builder* builder, const char* cstr, const size_t len)

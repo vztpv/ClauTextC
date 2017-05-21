@@ -42,6 +42,11 @@ struct pair_wiz_string_and_user_type
 	void* second;
 };
 
+struct pair_wiz_string_and_int
+{
+	wiz_string first;
+	int second;
+};
 
 typedef struct pair_int_and_wiz_vector_any pair_int_and_wiz_vector_any;
 
@@ -55,5 +60,6 @@ typedef struct pair_wiz_string_and_wiz_string pair_wiz_string_and_wiz_string;
 
 typedef struct pair_wiz_string_and_user_type pair_wiz_string_and_user_type;
 
+typedef struct pair_wiz_string_and_int pair_wiz_string_and_int;
 
 #endif

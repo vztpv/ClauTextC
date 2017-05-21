@@ -8,6 +8,83 @@
 #include "wiz_load_data_condition.h"
 #include "utility.h"
 
+
+/*
+struct event_info
+{
+	int valid;
+	user_type* eventUT;
+	wiz_stack_any nowUT; //
+	wiz_stack_size_t userType_idx;
+	wiz_map_wiz_string_and_wiz_string parameters;
+	wiz_map_wiz_string_and_wiz_string locals;
+	wiz_string id; //
+	wiz_stack_wiz_string conditionStack;
+	wiz_stack_int state;
+	wiz_string return_value;
+	wiz_string option;
+};
+*/
+void init_event_info(event_info* info)
+{
+	info->valid = 1;
+	info->eventUT = NULL;
+	init_wiz_stack_any(&info->nowUT, 1);
+	init_wiz_stack_size_t(&info->userType_idx, 1);
+	init_wiz_map_wiz_string_and_wiz_string(&info->parameters);
+	init_wiz_map_wiz_string_and_wiz_string(&info->locals);
+	init_wiz_string(&info->id, "", 0);
+	init_wiz_stack_wiz_string(&info->conditionStack, 1);
+	init_wiz_stack_int(&info->state, 1);
+	init_wiz_string(&info->return_value, "", 0);
+	init_wiz_string(&info->option, "", 0);
+}
+void free_all_event_info(event_info* info)
+{
+	int i;
+
+	info->valid = 0;
+	info->eventUT = NULL; //
+
+	free_wiz_stack_any(&info->nowUT);
+	free_wiz_stack_size_t(&info->userType_idx);
+	//
+	{
+		pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->parameters.count));
+		inorder_wiz_string_and_wiz_stirng(&info->parameters, temp);
+		for (i = 0; i < info->parameters.count; ++i) {
+			free_wiz_string(&temp[i].first);
+			free_wiz_string(&temp[i].second);
+		}
+		free(temp);
+	}
+	free_wiz_map_wiz_string_and_wiz_string(&info->parameters);
+	//
+	{
+		pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->locals.count));
+		inorder_wiz_string_and_wiz_stirng(&info->locals, temp);
+		for (i = 0; i < info->locals.count; ++i) {
+			free_wiz_string(&temp[i].first);
+			free_wiz_string(&temp[i].second);
+		}
+		free(temp);
+	}
+	free_wiz_map_wiz_string_and_wiz_string(&info->locals);
+	//
+	free_wiz_string(&info->id);
+	//
+	{
+		for (i = 0; i < size_wiz_stack_wiz_string(&info->conditionStack); ++i) {
+			free_wiz_string(get_wiz_stack_wiz_string(&info->conditionStack, i));
+		}
+	}
+	free_wiz_stack_wiz_string(&info->conditionStack);
+	//
+	free_wiz_stack_int(&info->state);
+	free_wiz_string(&info->return_value);
+	free_wiz_string(&info->option);
+}
+
 // rename to find_idx?
 size_t find( char* cstr,  char x,  size_t before,  size_t n)
 {
@@ -140,6 +217,8 @@ wiz_vector_any GetUserType(user_type* ut, wiz_string* name)
 {
 	return get_user_type_item_in_user_type(ut, name);
 }
+
+// chk more thinking!
 wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
 { // string ´ë½Å wiz_vector_wiz_string ??
 	int count = 0;
@@ -158,7 +237,7 @@ wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
 	}
 
 	
-	if (count == 1)
+	if (count <= 1) // <= 1
 	{
 		return make_empty_wiz_string();
 	}
@@ -233,10 +312,10 @@ wiz_string Find(user_type* ut, wiz_string* str, wiz_string_builder* builder)
 	return val;
 }
 // to do - rename!
-pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
+pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str, wiz_string_builder* builder)
 {
 	int idx = -1;
-	size_t i;
+	int i;
 	pair_wiz_string_and_wiz_string result;
 
 	for (i = size_wiz_string(str) - 1; i >= 0; --i) {
@@ -258,6 +337,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 pair_wiz_string_and_wiz_string data;
 	 wiz_string value;
 
+
 	 init_wiz_string(&parameter_text, "$parameter.", 11);
 	 if (starts_with_wiz_string(operand, &parameter_text)) {
 		 data.first = substr_wiz_string(operand, 11, size_wiz_string(operand));
@@ -270,7 +350,9 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 }
 		 free_wiz_string(&data.first);
 	}
-
+	 else {
+		 value = make_empty_wiz_string();
+	 }
 	free_wiz_string(&parameter_text);
 
 	return value;
@@ -312,7 +394,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
  {
 	 int operandNum = 0;
 	 int count = 0; // for brace!
-	 size_t i;
+	 int i;
 	 wiz_string empty;
 
 	 if (!empty_wiz_stack_wiz_string(operandStack) &&
@@ -882,10 +964,11 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 // pop_back or front - remove this function?
 	 else if (strcmp("$pop_back" , get_cstr_wiz_string(str)) == 0) // and for usertypelist? and mixed?, usertype-> "~"
 	 {
+		 int i;
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
 		 user_type* ut;
 		 pair_int_and_wiz_vector_any finded;
-
+		
 		 pop_wiz_stack_wiz_string(operandStack);
 		 for (i = size_wiz_string(x) - 1; i >= 0; --i)
 		 {
@@ -967,7 +1050,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 }
 	 else if (strcmp("$pop_front" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 size_t i;
+		 int i;
 		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
 		 user_type* ut = NULL;
 		 pair_int_and_wiz_vector_any finded;
@@ -1606,7 +1689,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 
 wiz_string ToBool3(user_type* global, wiz_string* temp,
-	EventInfo* info, wiz_string_builder* builder) /// has bug!
+	event_info* info, wiz_string_builder* builder) /// has bug!
 {
 	wiz_string PARAMTER_TEXT;
 	wiz_string LOCAL_TEXT;
@@ -1917,14 +2000,36 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 
 			if (0 == operation(now, global, get_wiz_vector_wiz_string(&tokenVec, i), &operandStack, excuteData, builder)) // chk!!
 			{
-				printf("error");
-				_getch();
-				//
-				pop_wiz_stack_wiz_string(&operatorStack);
-				push_cstr_wiz_stack_wiz_string(&operandStack, "{");
-				push_cstr_wiz_stack_wiz_string(&operandStack, "=");
-				push_wiz_stack_wiz_string(&operandStack, get_wiz_vector_wiz_string(&tokenVec, i));
-				exit(-100);
+				printf("error\n");
+				
+				free_wiz_string(&result);
+				result = make_empty_wiz_string();
+
+				if (!empty_wiz_string(&result)) {
+					erase_wiz_string(&result, size_wiz_string(&result) - 1);
+				}
+
+				// free 
+				free_user_type_in_user_type(&ut);
+				for (i = 0; i < size_wiz_vector_wiz_string(&tokenVec); ++i) {
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
+				}
+				free_wiz_vector_wiz_string(&tokenVec);
+				free_wiz_stack_wiz_string(&resultStack);
+				free_wiz_stack_wiz_string(&operandStack);
+
+				for (i = 0; i < size_wiz_stack_wiz_string(&operatorStack); ++i) {
+					free_wiz_string(get_wiz_stack_wiz_string(&operatorStack, i));
+				}
+				free_wiz_stack_wiz_string(&operatorStack);
+
+				free_wiz_string(&LOCAL_TEXT1);
+				free_wiz_string(&LOCAL_TEXT2);
+				free_wiz_string(&PARAMETER_TEXT1);
+				free_wiz_string(&PARAMETER_TEXT2);
+				free_wiz_string(&DOT_TEXT);
+
+				return result;
 			}
 
 			*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2) = 
@@ -1937,7 +2042,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 
 	// ex) A = { B = 1 $C = { 3 } } D = { E }
 	// =>  A = { B = 1 $C = 3  }  D = E
-	// =>  A = { B = 1 $C = { 3 } } D = E  : ToDo! 
+	// =>  A = { B = 1 $C = { 3 } } D = E  : ToDo! - do not?
 	{
 		wiz_vector_wiz_string strVec;
 		wiz_stack_int chkBrace;
@@ -2031,7 +2136,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 	
 		free_wiz_stack_int(&chkBrace);
 		free_wiz_vector_wiz_string(&strVec);
-}
+	}
 
 	free_wiz_string(&result);
 	result = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));

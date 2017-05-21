@@ -47,24 +47,25 @@ void link_user_type_in_user_type(user_type* ut, user_type* ut2);
 void init_in_user_type(user_type* ut, wiz_string* name);
 void init_from_other_user_type_in_user_type(user_type* ut_this, user_type* ut_other);
 void free_user_type_in_user_type(user_type* ut);
+void shallow_free_user_type_in_user_type(user_type* ut);
 
 //void Reset_in_user_type(user_type* ut, user_type* ut);
 //void _remove_in_user_type(user_type* ut);
 /// val : 1 or 2
-size_t _get_index_in_user_type(user_type* ut, wiz_vector_int ilist,  int val,  size_t start);
+int _get_index_in_user_type(user_type* ut, wiz_vector_int* ilist,  int val,  size_t start);
 // test? - need more thinking!
-size_t _get_item_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t ilist_idx);
-size_t _get_user_type_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t ilist_idx);
+size_t _get_item_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int* ilist, size_t ilist_idx);
+size_t _get_user_type_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int* ilist, size_t ilist_idx);
 /// type : 1 or 2
-size_t _get_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t index, int type);
+int _get_ilist_index_in_user_type(user_type* ut, wiz_vector_int* ilist, size_t index, int type);
 void remove_item_list_by_idx_in_user_type(user_type* ut, size_t idx);//
 void remove_user_type_list_by_idx_in_user_type(user_type* ut,  size_t idx);// chk
-void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName);
+void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int option);
 void remove_item_list_in_user_type(user_type* ut);//
 void remove_empty_item_in_user_type(user_type* ut);
 void remove_user_type_in_user_type(user_type* ut);
 //void remove_user_type_list_in_user_type(user_type* ut); // chk
-void remove_user_type_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int chk);
+void remove_user_type_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int option);
 //			
 void remove_list_in_user_type(user_type* ut, size_t idx); // ilis_t_idx!
 
@@ -89,6 +90,7 @@ int set_item_in_user_type(user_type* ut,  wiz_string* name,  wiz_string* value);
 int set_item_by_name_in_user_type(user_type* ut, size_t var_idx,  wiz_string* value);
 
 wiz_vector_any get_user_type_item_in_user_type(user_type* ut, wiz_string* name);
+wiz_vector_any get_user_type_item_except_in_user_type(user_type* ut, wiz_string* name);
 // deep copy.
 wiz_vector_any get_copy_user_type_item_in_user_type(user_type* ut, wiz_string* name);
 int get_user_type_item_ref_in_user_type(user_type* ut,  size_t idx, user_type* ref);

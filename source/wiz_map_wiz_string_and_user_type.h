@@ -33,5 +33,7 @@ int FORM(get_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_u
 int FORM(is_exist_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map, pair_wiz_string_and_user_type* val);
 int FORM(empty_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map);
 
+void FORM(inorder_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map, pair_wiz_string_and_user_type arr[]);
+
 
 #endif

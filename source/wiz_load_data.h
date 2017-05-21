@@ -11,7 +11,8 @@
 #include "wiz_stack_any.h"
 #include "wiz_stack_size_t.h"
 
-struct EventInfo
+
+struct event_info
 {
 	int valid;
 	user_type* eventUT;
@@ -26,14 +27,17 @@ struct EventInfo
 	wiz_string option;
 };
 
-typedef struct EventInfo EventInfo;
+typedef struct event_info event_info;
+
+void init_event_info(event_info* info);
+void free_all_event_info(event_info* info);
 
 struct ExcuteData
 {
 	int valid;
 
 	user_type* pEvents;
-	EventInfo info; // chk!
+	event_info info; // chk!
 	int chkInfo;
 
 	wiz_map_wiz_string_and_user_type* pObjectMap;

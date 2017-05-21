@@ -14,6 +14,9 @@ enum { TYPE_WIZ_INTEGER = 1, TYPE_WIZ_DOUBLE, TYPE_WIZ_STRING, TYPE_WIZ_DATE,
 
 int get_type(wiz_string* str);
 
+
+wiz_string make_wiz_string_from_cstr(const char* cstr);
+
 wiz_string make_wiz_string(const char* cstr, const size_t size);
 
 wiz_string make_empty_wiz_string();

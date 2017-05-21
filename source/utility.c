@@ -1,9 +1,42 @@
 
 #include <stdio.h>
+#include <string.h>
+
 #include "utility.h"
 #include "wiz_string_builder.h"
 #include "wiz_string_tokenizer.h"
 
+
+wiz_string wiz_fgets(FILE* file)
+{
+	char* buffer;
+	int size = 1024;
+	int num = 0;
+	wiz_string result;
+
+	buffer = malloc(sizeof(char) * size);
+
+	while(NULL == fgets(buffer, size, file)) {
+		if (ferror(file)) { 
+			free(buffer);
+			printf("file has error!");
+			exit(-102);
+		}
+		free(buffer);
+		size = size * 2;
+		buffer = malloc(sizeof(char) * size);
+	}
+	buffer[strlen(buffer) - 1] = '\0'; // remove enter key!
+	result = make_wiz_string_from_cstr(buffer);
+	free(buffer);
+
+	return result;
+}
+
+wiz_string make_wiz_string_from_cstr(const char* cstr)
+{
+	return make_wiz_string(cstr, strlen(cstr));
+}
 
 wiz_string make_wiz_string(const char* cstr, const size_t size)
 {
@@ -682,7 +715,8 @@ wiz_string wiz_ll_to_string(long long x)
 	init_wiz_string_builder(&temp, size, "", 0);
 
 	while (1) {
-		if (0 > snprintf(str_wiz_string_builder(&temp, NULL), size, "%lld", x)) {
+		int chk = snprintf(str_wiz_string_builder(&temp, NULL), size, "%lld", x);
+		if (!(0 <= chk && chk < size)) {
 			size = size * 2;
 			free_wiz_string_builder(&temp);
 			init_wiz_string_builder(&temp, size, "", 0);
@@ -704,7 +738,8 @@ wiz_string wiz_ld_to_string(long double x)
 	init_wiz_string_builder(&temp, size, "", 0);
 
 	while (1) {
-		if (0 > snprintf(str_wiz_string_builder(&temp, NULL), size, "%f", x)) {
+		int chk = snprintf(str_wiz_string_builder(&temp, NULL), size, "%Lf", x);
+		if (!(0 <= chk && chk < size)) {
 			size = size * 2;
 			free_wiz_string_builder(&temp);
 			init_wiz_string_builder(&temp, size, "", 0);

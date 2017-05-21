@@ -172,16 +172,48 @@ void free_user_type_in_user_type(user_type* ut)
 	_remove_in_user_type(ut);
 }
 
+void shallow_free_user_type_in_user_type(user_type* ut)
+{
+	free_wiz_string(&(ut->name));
+
+	free_wiz_vector_item_type(&(ut->item_list));
+
+	free_wiz_vector_int(&(ut->ilist));
+
+	free_wiz_vector_wiz_string(&(ut->comment_list));
+
+	free_wiz_vector_any2(&(ut->user_type_list));
+}
 // cf) c++ user_type&&, not used?
 //void Reset_in_user_type(user_type* ut_this, user_type* ut) { }
 
 // val : 1 or 2
-size_t _get_index_in_user_type(user_type* ut, wiz_vector_int ilist, int val, size_t start){ }
+int _get_index_in_user_type(user_type* ut, wiz_vector_int* ilist, int val, size_t start)
+{
+	int i;
+	for (i = start; i < size_wiz_vector_int(ilist); ++i) {
+		if (*get_wiz_vector_int(ilist, i) == val) { return i; }
+	}
+	return -1;
+}
 // test? - need more thinking!
-size_t _get_item_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t ilist_idx){ }
-size_t _get_user_type_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t ilist_idx){ }
+size_t _get_item_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int* ilist, size_t ilist_idx){ }
+size_t _get_user_type_index_from_ilist_index_in_user_type(user_type* ut, wiz_vector_int* ilist, size_t ilist_idx){ }
 // type : 1 or 2
-size_t _get_ilist_index_in_user_type(user_type* ut, wiz_vector_int ilist, size_t index, int type){ }
+int _get_ilist_index_in_user_type(user_type* ut, wiz_vector_int* ilist, size_t index, int type)
+{
+	int count = -1;
+
+	for (int i = 0; i < size_wiz_vector_int(ilist); ++i) {
+		if (*get_wiz_vector_int(ilist, i) == type) {
+			count++;
+			if (index == count) {
+				return i;
+			}
+		}
+	}
+	return -1;
+}
 void remove_item_list_by_idx_in_user_type(user_type* ut, size_t idx)
 {
 	int count = 0;
@@ -236,12 +268,43 @@ void remove_user_type_list_by_idx_in_user_type(user_type* ut, size_t idx)
 		}
 	}
 }
-void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName){ }
+void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int option) // option == 1 then free~(ut, idx);
+{ 
+	// todo
+}
 void remove_item_list_in_user_type(user_type* ut){ }//
 void remove_empty_item_in_user_type(user_type* ut){ }
 void remove_user_type_in_user_type(user_type* ut){ }
 // remove? - void remove_user_type_list_in_user_type(user_type* ut){ } // chk
-void remove_user_type_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int chk){ }
+void remove_user_type_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int option) // chk bug?
+{
+	int i, j;
+	int k = _get_ilist_index_in_user_type(ut, &ut->ilist, 2, 0);
+	
+	for (i = 0; i < get_user_type_list_size_in_user_type(ut); ++i) {
+		if (!equal_wiz_string(varName, &((user_type*)get_wiz_vector_any2(&ut->user_type_list, i))->name)) {
+			k = _get_index_in_user_type(ut, &ut->ilist, 2, k + 1);
+		}
+		else {
+			if (option) {
+				free(get_wiz_vector_any2(&ut->user_type_list, i));
+			}
+
+			// remove usertypeitem, ilist left shift 1.
+			for (j = i + 1; j < get_user_type_list_size_in_user_type(ut); ++j) {
+				*get_user_type_list_in_user_type(ut, j - 1) = *get_user_type_list_in_user_type(ut, j);
+			}
+			decrease_size_wiz_vector_any2(&ut->user_type_list);
+			--i;
+
+			for (j = k + 1; j < get_ilist_size_in_user_type(ut); ++j) {
+				*get_wiz_vector_int(&ut->ilist, j - 1) = *get_wiz_vector_int(&ut->ilist, j);
+			}
+			decrease_size_wiz_vector_int(&ut->ilist);
+			k = _get_index_in_user_type(ut, &ut->ilist, 2, k);
+		}
+	}
+}
 //			
 void remove_list_in_user_type(user_type* ut, size_t idx){ } // ilis_t_idx!
 
@@ -264,7 +327,7 @@ void add_item_in_user_type(user_type* ut, wiz_string* name, wiz_string* item)
 	temp.value = *item;
 
 	temp.name.moved = 0;
-	temp.name.moved = 0;
+	temp.value.moved = 0;
 
 	name->moved = 1;
 	item->moved = 1;
@@ -327,14 +390,31 @@ wiz_vector_any get_user_type_item_in_user_type(user_type* ut, wiz_string* name)
 
 	return result;
 }
-// deep copy.
-wiz_vector_any get_copy_user_type_item_in_user_type(user_type* ut, wiz_string* name){ }
+wiz_vector_any get_user_type_item_except_in_user_type(user_type* ut, wiz_string* name)
+{
+	wiz_vector_any result;
+	size_t i;
+
+	init_wiz_vector_any(&result, 1);
+
+	for (i = 0; i < get_user_type_list_size_in_user_type(ut); ++i) {
+		if (!equal_wiz_string(&((user_type*)get_user_type_list_in_user_type(ut, i))->name, name)) {
+			push_back_wiz_vector_any(&result, get_user_type_list_in_user_type(ut, i));
+		}
+	}
+
+	return result;
+}
+// deep copy , and not used?
+wiz_vector_any get_copy_user_type_item_in_user_type(user_type* ut, wiz_string* name) { }
+
 int get_user_type_item_ref_in_user_type(user_type* ut, size_t idx, user_type* ref){ }
 int get_last_user_type_item_ref_in_user_type(user_type* ut, wiz_string* name, user_type** ref)
 { 
 	int idx = -1;
-
-	for (size_t i = get_user_type_list_size_in_user_type(ut) - 1; i >= 0; --i)
+	int i;
+	
+	for (i = get_user_type_list_size_in_user_type(ut) - 1; i >= 0; --i)
 	{
 		if (0 == strcmp(get_cstr_wiz_string(name), 
 			get_cstr_wiz_string(&(((user_type*)get_wiz_vector_any2(&(ut->user_type_list), i))->name)))

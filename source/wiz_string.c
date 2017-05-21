@@ -203,7 +203,7 @@ int starts_with_wiz_string(wiz_string* str, wiz_string* start_str)
 int lasts_with_wiz_string(wiz_string* str, wiz_string* last_str)
 {
 	int result = 1;
-	size_t i, j;
+	int i, j;
 
 	if (str->len < last_str->len) {
 		return 0;
