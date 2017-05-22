@@ -55,7 +55,7 @@ void FORM(inorder_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user
 	_inorder_wiz_string_and_user_type(_map->root, arr, &count);
 }
 
-FORM(binary_node_, wiz_string_and_user_type)* balancing_wiz_string_and_user_type(pair_wiz_string_and_user_type arr[], size_t start, size_t last)
+FORM(binary_node_, wiz_string_and_user_type)* balancing_wiz_string_and_user_type(pair_wiz_string_and_user_type arr[], int start, int last)
 {
 	FORM(binary_node_, wiz_string_and_user_type)* temp = NULL;
 	size_t middle = (start + last) / 2;

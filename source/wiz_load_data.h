@@ -30,6 +30,9 @@ struct event_info
 typedef struct event_info event_info;
 
 void init_event_info(event_info* info);
+
+event_info deep_copy_event_info(event_info* info);
+
 void free_all_event_info(event_info* info);
 
 struct ExcuteData

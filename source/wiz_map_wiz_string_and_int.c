@@ -56,7 +56,7 @@ void FORM(inorder_, wiz_string_and_int)(FORM(wiz_map_, wiz_string_and_int)* _map
 	_inorder_wiz_string_and_int(_map->root, arr, &count);
 }
 
-FORM(binary_node_, wiz_string_and_int)* _balancing_string_and_int(pair_wiz_string_and_int arr[], size_t start, size_t last)
+FORM(binary_node_, wiz_string_and_int)* _balancing_string_and_int(pair_wiz_string_and_int arr[], int start, int last)
 {
 	FORM(binary_node_, wiz_string_and_int)* temp = NULL;
 	size_t middle = (start + last) / 2;

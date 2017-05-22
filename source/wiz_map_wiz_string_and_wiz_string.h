@@ -20,6 +20,7 @@ typedef struct FORM(wiz_map_, wiz_string_and_wiz_string) FORM(wiz_map_, wiz_stri
 
 void FORM(init_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map);
 void FORM(free_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map);
+void FORM(free_all_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map);
 
 void FORM(balancing_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map);
 
@@ -28,10 +29,11 @@ int FORM(insert_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_a
 
 int FORM(get_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val);
 
+int FORM(set_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val);
+
 int FORM(is_exist_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val);
 int FORM(empty_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map);
  
 void FORM(inorder_, wiz_string_and_wiz_stirng)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string arr[]);
-
 
 #endif

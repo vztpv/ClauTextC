@@ -782,6 +782,7 @@ void clear_now_condition(condition* cond)
 	}
 }
 
+// need to rename
 int ChkExist(wiz_string* str) // for \"
 {
 	int state = -1;

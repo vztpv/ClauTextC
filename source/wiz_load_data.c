@@ -39,9 +39,86 @@ void init_event_info(event_info* info)
 	init_wiz_string(&info->return_value, "", 0);
 	init_wiz_string(&info->option, "", 0);
 }
+
+
+event_info deep_copy_event_info(event_info* info) //chk
+{
+	int i;
+	event_info copyResult;
+
+	copyResult.valid = info->valid;
+	copyResult.eventUT = info->eventUT;
+	
+	init_wiz_stack_any(&copyResult.nowUT, 1);
+	{
+		for (i = 0; i < info->nowUT.count; ++i) {
+			user_type temp = *(user_type*)get_wiz_stack_any(&info->nowUT, i);
+			push_wiz_stack_any(&copyResult.nowUT, (void*)&temp);
+		}
+	}
+
+	init_wiz_stack_size_t(&copyResult.userType_idx, 1);
+	for (i = 0; i < size_wiz_stack_size_t(&info->userType_idx); ++i) {
+		push_wiz_stack_size_t(&copyResult.userType_idx, get_wiz_stack_size_t(&info->userType_idx, i));
+	}
+
+	init_wiz_map_wiz_string_and_wiz_string(&copyResult.parameters);
+	{
+		pair_wiz_string_and_wiz_string* arr = malloc(sizeof(pair_wiz_string_and_wiz_string) * info->parameters.count);
+
+		inorder_wiz_string_and_wiz_stirng(&info->parameters, arr);
+
+		for (i = 0; i < info->parameters.count; ++i) {
+			pair_wiz_string_and_wiz_string temp;
+			temp.first = make_wiz_string_from_other_wiz_string(&arr[i].first);
+			temp.second = make_wiz_string_from_other_wiz_string(&arr[i].second);
+
+			insert_wiz_map_wiz_string_and_wiz_string(&copyResult.parameters, &temp, 0);
+		}
+		free(arr);
+		balancing_wiz_map_wiz_string_and_wiz_string(&copyResult.parameters);
+	}
+
+	init_wiz_map_wiz_string_and_wiz_string(&copyResult.locals);
+	{
+		pair_wiz_string_and_wiz_string* arr = malloc(sizeof(pair_wiz_string_and_wiz_string) * info->locals.count);
+
+		inorder_wiz_string_and_wiz_stirng(&info->locals, arr);
+
+		for (i = 0; i < info->locals.count; ++i) {
+			pair_wiz_string_and_wiz_string temp;
+			temp.first = make_wiz_string_from_other_wiz_string(&arr[i].first);
+			temp.second = make_wiz_string_from_other_wiz_string(&arr[i].second);
+
+			insert_wiz_map_wiz_string_and_wiz_string(&copyResult.locals, &temp, 0);
+		}
+		free(arr);
+		balancing_wiz_map_wiz_string_and_wiz_string(&copyResult.locals);
+	}
+	init_wiz_string(&copyResult.id, get_cstr_wiz_string(&info->id), size_wiz_string(&info->id));
+	init_wiz_stack_wiz_string(&copyResult.conditionStack, 1);
+	{
+		for (i = 0; i < info->conditionStack.count; ++i) {
+			wiz_string temp = make_wiz_string_from_other_wiz_string(get_wiz_stack_wiz_string(&info->conditionStack, i));
+			push_wiz_stack_wiz_string(&copyResult.conditionStack, &temp);
+		}
+	}
+	init_wiz_stack_int(&copyResult.state, 1);
+	{
+		for (i = 0; i < info->state.count; ++i) {
+			push_wiz_stack_int(&copyResult.state, get_wiz_stack_int(&info->state, i));
+		}
+	}
+	copyResult.return_value = make_wiz_string_from_other_wiz_string(&info->return_value);
+	copyResult.option = make_wiz_string_from_other_wiz_string(&info->option);
+
+	return copyResult;
+}
+
 void free_all_event_info(event_info* info)
 {
 	int i;
+
 
 	info->valid = 0;
 	info->eventUT = NULL; //
@@ -49,25 +126,29 @@ void free_all_event_info(event_info* info)
 	free_wiz_stack_any(&info->nowUT);
 	free_wiz_stack_size_t(&info->userType_idx);
 	//
-	{
-		pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->parameters.count));
-		inorder_wiz_string_and_wiz_stirng(&info->parameters, temp);
-		for (i = 0; i < info->parameters.count; ++i) {
-			free_wiz_string(&temp[i].first);
-			free_wiz_string(&temp[i].second);
+	{//chk
+		if (info->parameters.count != 0) {
+			pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->parameters.count));
+			inorder_wiz_string_and_wiz_stirng(&info->parameters, temp);
+			for (i = 0; i < info->parameters.count; ++i) {
+				free_wiz_string(&temp[i].first);
+				free_wiz_string(&temp[i].second);
+			}
+			free(temp);
 		}
-		free(temp);
 	}
 	free_wiz_map_wiz_string_and_wiz_string(&info->parameters);
 	//
-	{
-		pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->locals.count));
-		inorder_wiz_string_and_wiz_stirng(&info->locals, temp);
-		for (i = 0; i < info->locals.count; ++i) {
-			free_wiz_string(&temp[i].first);
-			free_wiz_string(&temp[i].second);
+	{//chk
+		if (info->locals.count != 0) {
+			pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->locals.count));
+			inorder_wiz_string_and_wiz_stirng(&info->locals, temp);
+			for (i = 0; i < info->locals.count; ++i) {
+				free_wiz_string(&temp[i].first);
+				free_wiz_string(&temp[i].second);
+			}
+			free(temp);
 		}
-		free(temp);
 	}
 	free_wiz_map_wiz_string_and_wiz_string(&info->locals);
 	//

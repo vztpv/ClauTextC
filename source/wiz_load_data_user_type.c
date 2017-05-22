@@ -435,7 +435,8 @@ void save1_in_user_type(FILE* stream, user_type* ut, int depth)
 	int itemListCount = 0;
 	int userTypeListCount = 0;
 
-	size_t i;
+	int i;
+	int j;
 	const size_t commentListSize = get_comment_list_size_in_user_type(ut);
 	
 	for (i = 0; i < commentListSize; ++i) {
@@ -451,7 +452,7 @@ void save1_in_user_type(FILE* stream, user_type* ut, int depth)
 
 	for (i = 0; i < get_ilist_size_in_user_type(ut); ++i) {
 		if (1 == *get_wiz_vector_int(&(ut->ilist), i)) { // item_type
-			for (int j = 0; j < 1; j++) { 
+			for (j = 0; j < 1; j++) { 
 				for (int k = 0; k < depth; ++k) {
 					fputc('\t', stream);
 				}
@@ -503,7 +504,7 @@ void save2_in_user_type(FILE* stream, user_type* ut, int depth)
 	int itemListCount = 0;
 	int userTypeListCount = 0;
 
-	size_t i;
+	int i, j;
 	const size_t commentListSize = get_comment_list_size_in_user_type(ut);
 
 	for (i = 0; i < commentListSize; ++i) {
@@ -519,7 +520,7 @@ void save2_in_user_type(FILE* stream, user_type* ut, int depth)
 
 	for (i = 0; i < get_ilist_size_in_user_type(ut); ++i) {
 		if (1 == *get_wiz_vector_int(&(ut->ilist), i)) { // item_type
-			for (int j = 0; j < 1; j++) {
+			for (j = 0; j < 1; j++) {
 				for (int k = 0; k < depth; ++k) {
 					fputc('\t', stream);
 				}
@@ -671,7 +672,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 {
 	int exist = 0;
 	int chk = 0; // for break?
-	int i;
+	int i, j;
 
 	pair_int_and_wiz_vector_any result; // pair<bool, vector<UserType*>>
 	wiz_string delim, start, EMPTY, UT;
@@ -823,7 +824,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 			else if (utTemp.second < size_wiz_vector_wiz_string(&strVec)  && 
 				0 == strcmp(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, utTemp.second)), "$"))
 			{
-				for (int j = get_user_type_list_size_in_user_type(utTemp.first) - 1; j >= 0; --j) {
+				for (j = get_user_type_list_size_in_user_type(utTemp.first) - 1; j >= 0; --j) {
 					user_type* x = get_user_type_list_in_user_type(utTemp.first, j);
 					pair_user_type_ptr_and_int pair_temp;
 					
@@ -840,7 +841,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 					get_wiz_vector_wiz_string(&strVec, utTemp.second));
 				if (temp2.num == 0) {
 					wiz_vector_any x = get_user_type_item_in_user_type(utTemp.first, get_wiz_vector_wiz_string(&strVec, utTemp.second));
-					for (int j = size_wiz_vector_any(&x) - 1; j >= 0; --j) {
+					for (j = size_wiz_vector_any(&x) - 1; j >= 0; --j) {
 						pair_user_type_ptr_and_int pair_temp;
 						pair_temp.first = get_wiz_vector_any(&x, j);
 						pair_temp.second = utTemp.second + 1;
