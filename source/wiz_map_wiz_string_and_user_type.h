@@ -21,6 +21,7 @@ typedef struct FORM(wiz_map_, wiz_string_and_user_type) FORM(wiz_map_, wiz_strin
 
 void FORM(init_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map);
 void FORM(free_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map);
+void FORM(free_all_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map);
 
 void FORM(balancing_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map);
 

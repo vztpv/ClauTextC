@@ -124,7 +124,7 @@ wiz_string GetValueA(wiz_string* op,  wiz_string* var,  wiz_string* val, user_ty
 	return make_wiz_string("ERROR", 5);
 }
 wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,  wiz_string* var2,  wiz_string* position2,
-	user_type* utPosition, user_type* global, wiz_string_builder* builder,  wiz_string* option) // = "0")
+	user_type* utPosition, user_type* global, wiz_string_builder* builder,  wiz_string* option) // = "FALSE")
 {
 	size_t i, j;
 	wiz_vector_item_type value1;
@@ -188,16 +188,16 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 			result = make_wiz_string("ERROR GV5", 9); chk = 1; break;
 		}
 
-		if (0 == strcmp("0", get_cstr_wiz_string(option)) && size_wiz_vector_item_type(&value1) > 1 || size_wiz_vector_item_type(&value2) > 1) {
+		if (0 == strcmp("FALSE", get_cstr_wiz_string(option)) && size_wiz_vector_item_type(&value1) > 1 || size_wiz_vector_item_type(&value2) > 1) {
 			result = make_wiz_string("ERROR GV6", 9); chk = 1; break;
 		}
 
 		if (0 == strcmp("COMP<", get_cstr_wiz_string(op))) {
-			if (0 != strcmp("0", get_cstr_wiz_string(option))) { // ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
+			if (0 != strcmp("FALSE", get_cstr_wiz_string(option))) { // ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
 				for (i = 0; i < size_wiz_vector_item_type(&value1); ++i) {
 					for (j = 0; j < size_wiz_vector_item_type(&value2); ++j) {
 						if (compare_wiz_string_in_utility(&(get_wiz_vector_item_type(&value1, i)->value), &(get_wiz_vector_item_type(&value2, j)->value), builder, 0) == -1) {
-							if (0 == strcmp("1", get_cstr_wiz_string(option))) { 
+							if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { 
 								result = make_wiz_string("TRUE", 4); chk = 1; break;
 							}
 						}
@@ -210,7 +210,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 					if (chk) { break; }
 				}
 				if (chk) { break; }
-				if (0 == strcmp("1", get_cstr_wiz_string(option))) { chk = 1; result = make_wiz_string("FALSE", 5); break; }
+				if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { chk = 1; result = make_wiz_string("FALSE", 5); break; }
 				else if (0 == strcmp("2", get_cstr_wiz_string(option))) {
 					result = make_wiz_string("TRUE", 4); chk = 1; break;
 				}
@@ -223,12 +223,12 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 			result = make_wiz_string("FALSE", 5);
 		}
 		else if (0 == strcmp(get_cstr_wiz_string(op), "COMP<EQ")) {
-			if (0 != strcmp("0", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
+			if (0 != strcmp("FALSE", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
 				for (i = 0; i < size_wiz_vector_item_type(&value1); ++i) {
 					for (j = 0; j <size_wiz_vector_item_type(&value2); ++j) {
 						int temp = compare_wiz_string_in_utility(&get_wiz_vector_item_type(&value1, i)->value, &get_wiz_vector_item_type(&value2, i)->value, builder, 0);
 						if (temp == -1 || temp == 0) {
-							if (0 == strcmp("1", get_cstr_wiz_string(option))) { 
+							if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { 
 								result = make_wiz_string("TRUE", 4); chk = 1; break;
 							}
 						}
@@ -241,7 +241,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 					if (chk) { break; }
 				}
 				if (chk) { break; }
-				if (0 == strcmp("1", get_cstr_wiz_string(option))) { 
+				if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { 
 					result = make_wiz_string("FALSE", 5); chk = 1;
 					break;
 				}
@@ -258,11 +258,11 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 			result = make_wiz_string("FALSE", 5);
 		}
 		else if (0 == strcmp(get_cstr_wiz_string(op), "COMP>")) {
-			if (0 != strcmp("0", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
+			if (0 != strcmp("FALSE", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
 				for (i = 0; i < size_wiz_vector_item_type(&value1); ++i) {
 					for (j = 0; j <size_wiz_vector_item_type(&value2); ++j) {
 						if (compare_wiz_string_in_utility(&get_wiz_vector_item_type(&value1, i)->value, &get_wiz_vector_item_type(&value2, i)->value, builder, 0) == 1) {
-							if (0 == strcmp("1", get_cstr_wiz_string(option))) {
+							if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) {
 								result = make_wiz_string("TRUE", 4); chk = 1; break;
 							}
 						}
@@ -275,7 +275,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 					if (chk) { break; }
 				}
 				if (chk) { break; }
-				if (0 == strcmp("1", get_cstr_wiz_string(option))) {
+				if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) {
 					result = make_wiz_string("FALSE", 5); chk = 1;
 					break;
 				}
@@ -291,12 +291,12 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 			result = make_wiz_string("FALSE", 5); chk = 1; break;
 		}
 		else if (0 == strcmp(get_cstr_wiz_string(op), "COMP>EQ")) {
-			if (0 != strcmp("0", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
+			if (0 != strcmp("FALSE", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
 				for (i = 0; i < size_wiz_vector_item_type(&value1); ++i) {
 					for (j = 0; j <size_wiz_vector_item_type(&value2); ++j) {
 						int temp = compare_wiz_string_in_utility(&get_wiz_vector_item_type(&value1, i)->value, &get_wiz_vector_item_type(&value2, i)->value, builder, 0);
 						if (temp == 1 || temp == 0) {
-							if (0 == strcmp("1", get_cstr_wiz_string(option))) {
+							if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) {
 								result = make_wiz_string("TRUE", 4); chk = 1; break;
 							}
 						}
@@ -310,7 +310,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 				}
 				if (chk) { break; }
 
-				if (0 == strcmp("1", get_cstr_wiz_string(option))) { 
+				if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { 
 					result = make_wiz_string("FALSE", 5); chk = 1;
 					break;
 				}
@@ -327,11 +327,11 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 			result = make_wiz_string("FALSE", 5);
 		}
 		else if (0 == strcmp(get_cstr_wiz_string(op), "EQ")) {
-			if (0 != strcmp("0", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
+			if (0 != strcmp("FALSE", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
 				for (i = 0; i < size_wiz_vector_item_type(&value1); ++i) {
 					for (j = 0; j <size_wiz_vector_item_type(&value2); ++j) {
 						if (compare_wiz_string_in_utility(&get_wiz_vector_item_type(&value1, i)->value, &get_wiz_vector_item_type(&value2, i)->value, builder, 0) == 0) {
-							if (0 == strcmp("1", get_cstr_wiz_string(option))) { 
+							if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { 
 								result = make_wiz_string("TRUE", 4); chk = 1; break;
 							}
 						}
@@ -345,7 +345,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 				}
 				if (chk) { break; }
 
-				if (0 == strcmp("1", get_cstr_wiz_string(option))) {
+				if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) {
 					result = make_wiz_string("FALSE", 5); chk = 1;
 					break;
 				}
@@ -361,11 +361,11 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 			return make_wiz_string("FALSE", 5);
 		}
 		else if (0 == strcmp(get_cstr_wiz_string(op), "NOTEQ")) {
-			if (0 != strcmp("0", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
+			if (0 != strcmp("FALSE", get_cstr_wiz_string(option))) { /// ToDo.. // 0. just 1-1, // 1. for any case // 2. for all case
 				for (i = 0; i < size_wiz_vector_item_type(&value1); ++i) {
 					for (j = 0; j <size_wiz_vector_item_type(&value2); ++j) {
 						if (compare_wiz_string_in_utility(&get_wiz_vector_item_type(&value1, i)->value, &get_wiz_vector_item_type(&value2, i)->value, builder, 0) != 0) {
-							if (0 == strcmp("1", get_cstr_wiz_string(option))) { 
+							if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { 
 								result = make_wiz_string("TRUE", 4); chk = 1; break;
 							}
 						}
@@ -378,7 +378,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 					if (chk) { break; }
 				}
 				if (chk) { break; }
-				if (0 == strcmp("1", get_cstr_wiz_string(option))) { result = make_wiz_string("FALSE", 5); chk = 1;
+				if (0 == strcmp("TRUE", get_cstr_wiz_string(option))) { result = make_wiz_string("FALSE", 5); chk = 1;
 				break;
 				}
 				else if (0 == strcmp("2", get_cstr_wiz_string(option))) {
@@ -467,6 +467,9 @@ void init_in_condition(condition* cond, wiz_string* cond_str, user_type* positio
 		wiz_string* temp = next_token_wiz_string_tokenizer(&tokenizer);
 
 		if (0 == strcmp(get_cstr_wiz_string(temp), "^")) { // ^ or _   -> only _ ?
+			assign_wiz_string(temp, &empty_str);
+		}
+		else if (0 == strcmp(get_cstr_wiz_string(temp), "_")) { // ^ or _   -> only _ ?
 			assign_wiz_string(temp, &empty_str);
 		}
 		push_back_wiz_vector_wiz_string(&cond->token_vec, temp);

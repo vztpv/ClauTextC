@@ -35,10 +35,10 @@ void free_wiz_string(wiz_string* str)
 {
 	if (0 != str->len) {
 		if (str->len > wiz_string_buffer_size && 0 == str->moved) {
-			free(str->str);
+			free(str->str);	
 			
-			str->buffer[0] = '\0';
 			str->str = "";
+			str->buffer[0] = '\0';
 			str->len = 0;
 			str->moved = -1;
 		}

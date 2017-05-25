@@ -11,6 +11,15 @@
 enum { TYPE_WIZ_INTEGER = 1, TYPE_WIZ_DOUBLE, TYPE_WIZ_STRING, TYPE_WIZ_DATE,
 				TYPE_WIZ_DATETIMEA, TYPE_WIZ_DATETIMEB};
 
+int is_integer(wiz_string* str);
+int is_double(wiz_string* str);
+int is_date(wiz_string* str);
+
+int is_datetime_a(wiz_string* str); // yyyy.MM.dd.hh
+
+int is_datetime_b(wiz_string* str); // yyyy.MM.dd.hh.mm
+
+int is_minus(wiz_string* str);
 
 int get_type(wiz_string* str);
 

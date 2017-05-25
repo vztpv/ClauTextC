@@ -19,7 +19,8 @@ void init_binary_node_wiz_string_and_user_type(FORM(binary_node_, wiz_string_and
 	node->right = NULL;
 }
 
-void remove_all_wiz_string_and_user_type(FORM(binary_node_, wiz_string_and_user_type)* node)
+
+void remove_all_wiz_string_and_user_type(FORM(binary_node_, wiz_string_and_user_type)* node, int option)
 {
 	FORM(binary_node_, wiz_string_and_user_type)* left;
 	FORM(binary_node_, wiz_string_and_user_type)* right;
@@ -30,12 +31,15 @@ void remove_all_wiz_string_and_user_type(FORM(binary_node_, wiz_string_and_user_
 	left = node->left;
 	right = node->right;
 
+	if (1 == option) {
+		free_wiz_string(&node->val.first);
+	}
+
 	free(node);
 
-	remove_all_wiz_string_and_user_type(left);
-	remove_all_wiz_string_and_user_type(right);
+	remove_all_wiz_string_and_user_type(left, option);
+	remove_all_wiz_string_and_user_type(right, option);
 }
-
 void _inorder_wiz_string_and_user_type(FORM(binary_node_, wiz_string_and_user_type)* node, pair_wiz_string_and_user_type arr[], size_t* count)
 {
 	if (NULL == node) { return; }
@@ -77,7 +81,7 @@ void FORM(init_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and
 }
 void FORM(free_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map)
 {
-	remove_all_wiz_string_and_user_type(_map->root);
+	remove_all_wiz_string_and_user_type(_map->root, 0);
 	_map->count = 0;
 }
 
@@ -202,4 +206,11 @@ int FORM(empty_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and
 {
 	return 0 == _map->count;
 }
+
+void FORM(free_all_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map)
+{
+	remove_all_wiz_string_and_user_type(_map->root, 1);
+	_map->count = 0;
+}
+
 

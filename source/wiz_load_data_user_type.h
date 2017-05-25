@@ -36,7 +36,7 @@ item_type* get_item_list_in_user_type(user_type* ut, size_t idx);
 user_type* get_user_type_list_in_user_type(user_type* ut, size_t idx);
 
 int is_item_list_in_user_type(user_type* ut, size_t idx);
-int is_user_type_List_in_user_type(user_type* ut, size_t idx);
+int is_user_type_list_in_user_type(user_type* ut, size_t idx);
 
 //remove? - void add_item_list_in_user_type(user_type* ut, item_type* item);
 user_type* get_parent_in_user_type(user_type* ut);
@@ -84,10 +84,10 @@ void add_user_type_item_at_front_in_user_type(user_type* ut, user_type* item);
 wiz_vector_item_type get_item_in_user_type(user_type* ut, wiz_string* name);
 
 // regex to SetItem?
-int set_item_in_user_type(user_type* ut,  wiz_string* name,  wiz_string* value);
+int set_item_by_idx_in_user_type(user_type* ut,  size_t idx,  wiz_string* value);
 
 /// add set Data
-int set_item_by_name_in_user_type(user_type* ut, size_t var_idx,  wiz_string* value);
+int set_item_by_name_in_user_type(user_type* ut, wiz_string* name,  wiz_string* value);
 
 wiz_vector_any get_user_type_item_in_user_type(user_type* ut, wiz_string* name);
 wiz_vector_any get_user_type_item_except_in_user_type(user_type* ut, wiz_string* name);

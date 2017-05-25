@@ -51,22 +51,17 @@ wiz_string make_empty_wiz_string()
 {
 	return make_wiz_string("", 0);
 }
+ 
 
-wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
-{
-	wiz_string result;
-
-	init_wiz_string(&result, get_cstr_wiz_string(other), size_wiz_string(other));
-
-	return result;
-}
-//////////////////////////////////////////////////////////////////////////
- int is_integer(wiz_string* str) {
+int is_integer(wiz_string* _str) {
 	int state = 0;
 	size_t i;
+	wiz_string temp = make_wiz_string_from_other_wiz_string(_str);
+	wiz_string* str = &temp;
+
 	if (size_wiz_string(str) > 2 && get_cstr_wiz_string(str)[0] == back_wiz_string(str) && get_cstr_wiz_string(str)[0] == '\"') {
-		free_wiz_string(str);
-		*str = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
+		free_wiz_string(&temp);
+		temp = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
 	}
 	
 	for (i = 0; i < size_wiz_string(str); ++i) {
@@ -80,21 +75,25 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			{
 				state = 1;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 1:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') {
 				state = 1;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 		}
 	}
+	free_wiz_string(&temp);
 	return 1 == state; /// chk..
 }
- int is_double(wiz_string* str) {
+ int is_double(wiz_string* _str) {
+	 wiz_string temp = make_wiz_string_from_other_wiz_string(_str);
+	 wiz_string* str = &temp;
+
 	if (size_wiz_string(str) > 2 && get_cstr_wiz_string(str)[0] == back_wiz_string(str) && get_cstr_wiz_string(str)[0] == '\"') {
-		free_wiz_string(str);
-		*str = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
+		free_wiz_string(&temp);
+		temp = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
 	}
 	int state = 0;
 	size_t i;
@@ -109,7 +108,7 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			{
 				state = 1;
 			}
-			else { return 0; }
+			else { free_wiz_string(&temp);  return 0; }
 			break;
 		case 1:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') {
@@ -118,18 +117,18 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 2;
 			}
-			else { return 0; }
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 2:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
-			else { return 0; }
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 3:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
 			else if ('e' == get_cstr_wiz_string(str)[i] || 'E' == get_cstr_wiz_string(str)[i]) {
 				state = 4;
 			}
-			else { return 0; }
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 4:
 			if (get_cstr_wiz_string(str)[i] == '+' || get_cstr_wiz_string(str)[i] == '-') {
@@ -144,7 +143,7 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 				state = 6;
 			}
 			else {
-				return 0;
+				free_wiz_string(&temp); return 0;
 			}
 			break;
 		case 6:
@@ -152,16 +151,21 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 				state = 6;
 			}
 			else {
-				return 0;
+				free_wiz_string(&temp); return 0;
 			}
 		}
 	}
+	free_wiz_string(&temp);
 	return 3 == state || 6 == state;
 }
- int is_date(wiz_string* str) /// chk!!
+ int is_date(wiz_string* _str) /// chk!!
 {
+	 wiz_string temp = make_wiz_string_from_other_wiz_string(_str);
+	 wiz_string* str = &temp;
+
 	if (size_wiz_string(str) > 2 && get_cstr_wiz_string(str)[0] == back_wiz_string(str) && get_cstr_wiz_string(str)[0] == '\"') {
-		*str = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
+		free_wiz_string(&temp);
+		temp = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
 	}
 	int state = 0;
 	size_t i;
@@ -173,7 +177,7 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			{
 				state = 1;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 1:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') {
@@ -182,35 +186,41 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 2;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 2:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 3:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 4;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 4:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 5; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 5:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 5; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		}
 	}
+	free_wiz_string(&temp);
 	return 5 == state;
 }
- int is_datetime_a(wiz_string* str) // yyyy.MM.dd.hh
+ int is_datetime_a(wiz_string* _str) // yyyy.MM.dd.hh
 {
+	 wiz_string temp = make_wiz_string_from_other_wiz_string(_str);
+	 wiz_string* str = &temp;
+
+
 	if (size_wiz_string(str) > 2 && get_cstr_wiz_string(str)[0] == back_wiz_string(str) && get_cstr_wiz_string(str)[0] == '\"') {
-		*str = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
+		free_wiz_string(&temp);
+		temp = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
 	}
 	int state = 0;
 	size_t i;
@@ -222,7 +232,7 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			{
 				state = 1;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 1:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') {
@@ -231,46 +241,51 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 2;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 2:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 3:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 4;
 			}
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 4:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 5; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 5:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 5; }
 			else if (get_cstr_wiz_string(str)[i] == '.') { state = 6; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 6:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 7; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		case 7:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 7; }
-			else return 0;
+			else { free_wiz_string(&temp); return 0; }
 			break;
 		}
 	}
+	free_wiz_string(&temp);
 	return 7 == state;
 }
- int is_datetime_b(wiz_string* str) // yyyy.MM.dd.hh.mm
+ int is_datetime_b(wiz_string* _str) // yyyy.MM.dd.hh.mm
 {
 	int state = 0;
 	size_t i;
+	wiz_string temp = make_wiz_string_from_other_wiz_string(_str);
+	wiz_string* str = &temp;
+
 	if (size_wiz_string(str) > 2 && get_cstr_wiz_string(str)[0] == back_wiz_string(str) && get_cstr_wiz_string(str)[0] == '\"') {
-		*str = substr_wiz_string(str, 1, size_wiz_string(str) - 1);
+		free_wiz_string(&temp);
+		temp = substr_wiz_string(_str, 1, size_wiz_string(str) - 1);
 	}
 	for (i = 0; i < size_wiz_string(str); ++i) {
 		switch (state)
@@ -280,7 +295,10 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			{
 				state = 1;
 			}
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 1:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') {
@@ -289,58 +307,98 @@ wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 2;
 			}
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 2:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 3:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 3; }
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 4;
 			}
-			else return 0;
+			else
+			{
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 4:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 5; }
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 5:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 5; }
 			else if (get_cstr_wiz_string(str)[i] == '.') { state = 6; }
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 6:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 7; }
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 7:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 7; }
 			else if (get_cstr_wiz_string(str)[i] == '.') {
 				state = 8;
 			}
-			else return 0;
+			else {
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 8:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 9; }
-			else return 0;
+			else
+			{
+				free_wiz_string(&temp);
+				return 0;
+			}
 			break;
 		case 9:
 			if (get_cstr_wiz_string(str)[i] >= '0' && get_cstr_wiz_string(str)[i] <= '9') { state = 9; }
-			else return 0;
+			else {
+				free_wiz_string(&temp); return 0;
+			}
 			break;
 		}
 	}
+	free_wiz_string(&temp);
 	return 9 == state;
 }
- int is_minus(wiz_string* str)
+int is_minus(wiz_string* str)
 {
+	wiz_string temp = *str;
 	if (size_wiz_string(str) > 2 && get_cstr_wiz_string(str)[0] == back_wiz_string(str) && get_cstr_wiz_string(str)[0] == '\"') {
-		*str = substr_wiz_string(str, 1, size_wiz_string(str) - 2);
+		temp = substr_wiz_string(str, 1, size_wiz_string(str) - 2);
 	}
-	return empty_wiz_string(str) == 0 && get_cstr_wiz_string(str)[0] == '-';
+	return empty_wiz_string(&temp) == 0 && get_cstr_wiz_string(&temp)[0] == '-';
 }
+wiz_string make_wiz_string_from_other_wiz_string(wiz_string* other)
+{
+	wiz_string result;
+
+	init_wiz_string(&result, get_cstr_wiz_string(other), size_wiz_string(other));
+
+	return result;
+}
+//////////////////////////////////////////////////////////////////////////
+
 
 
 int comp(const char* str1, const char* str2, const size_t n) /// isSameData
@@ -369,31 +427,43 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 	int type1;
 	int type2;
 
+	wiz_string temp1, temp2;
+
 	if (size_wiz_string(str1) > 2 && get_cstr_wiz_string(str1)[0] == back_wiz_string(str1) && get_cstr_wiz_string(str1)[0] == '\"')
 	{
-		free_wiz_string(str1);
-
-		*str1 = substr_wiz_string(str1, 1, size_wiz_string(str1) - 1);
+		temp1 = substr_wiz_string(str1, 1, size_wiz_string(str1) - 1);	
+	}
+	else {
+		temp1 = make_wiz_string_from_other_wiz_string(str1);
 	}
 	if (size_wiz_string(str2) > 2 && get_cstr_wiz_string(str2)[0] == back_wiz_string(str1) && get_cstr_wiz_string(str2)[0] == '\"')
 	{
-		free_wiz_string(str2);
-		*str2 = substr_wiz_string(str2, 1, size_wiz_string(str2) - 1);
+		temp2 = substr_wiz_string(str2, 1, size_wiz_string(str2) - 1);
+	}
+	else {
+		temp2 = make_wiz_string_from_other_wiz_string(str2);
 	}
 
-	type1 = get_type(str1);
-	type2 = get_type(str2);
+	type1 = get_type(&temp1);
+	type2 = get_type(&temp2);
 
 	if (type1 != type2) {
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
 		return 2; // "ERROR";
 	}
 
 	if (TYPE_WIZ_STRING == type1 || type == 1)
 	{
-		if (str1 < str2) {
+		int comparision = strcmp(get_cstr_wiz_string(&temp1), get_cstr_wiz_string(&temp2));
+		
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
+
+		if (comparision < 0) {
 			return -1; // "< 0";
 		}
-		else if (str1 == str2) {
+		else if (0 == comparision) {
 			return 0; // "== 0";
 		}
 		return 1; // "> 0";
@@ -404,6 +474,10 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 		wiz_string y;
 		const int minusComp = is_minus(str1) && is_minus(str2);
 		
+
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
+
 		if (is_minus(str1) && !is_minus(str2)) { return -1; }
 		else if (!is_minus(str1) && is_minus(str2)) { return 1; }
 
@@ -423,7 +497,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&x), size_wiz_string(&x));
 
 				while (size_wiz_string(&x) < size_wiz_string(&y)) {
-					append_wiz_string_builder(builder, "0", 1);
+					append_wiz_string_builder(builder, "FALSE", 1);
 				}
 				free_wiz_string(&x);
 				x = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
@@ -433,7 +507,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&y), size_wiz_string(&y));
 
 				while (size_wiz_string(&y) < size_wiz_string(&x)) {
-					append_wiz_string_builder(builder, "0", 1);
+					append_wiz_string_builder(builder, "FALSE", 1);
 				}
 				free_wiz_string(&y);
 				y = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
@@ -449,6 +523,10 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 			return result;
 		}
 		else {
+
+			free_wiz_string(&temp1);
+			free_wiz_string(&temp2);
+
 			init_wiz_string(&x, get_cstr_wiz_string(str1), size_wiz_string(str1));
 			init_wiz_string(&y, get_cstr_wiz_string(str2), size_wiz_string(str2));
 			erase_wiz_string((&x), 0);
@@ -471,6 +549,10 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 		wiz_string dot;
 		int chk = 0;
 
+
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
+
 		init_wiz_string(&dot, ".", 1);
 		init_wiz_vector_wiz_string(&dilim, 1);
 		push_back_wiz_vector_wiz_string(&dilim, &dot);
@@ -489,7 +571,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&x), size_wiz_string(&x));
 
 				while (size_wiz_string(&x) < size_wiz_string(&y)) {
-					append_wiz_string_builder(builder, "0", 1);
+					append_wiz_string_builder(builder, "FALSE", 1);
 				}
 				init_wiz_string(&x2, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 				chk = 1;
@@ -499,7 +581,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&y), size_wiz_string(&y));
 
 				while (size_wiz_string(&y) < size_wiz_string(&x)) {
-					append_wiz_string_builder(builder, "0", 1);
+					append_wiz_string_builder(builder, "FALSE", 1);
 				}
 				init_wiz_string(&y2, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 				chk = 2;
@@ -533,6 +615,10 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 		wiz_string dot;
 		wiz_vector_wiz_string dilim;
 
+
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
+
 		init_wiz_string(&dot, ".", 1);
 		init_wiz_vector_wiz_string(&dilim, 1);
 		push_back_wiz_vector_wiz_string(&dilim, &dot);
@@ -563,6 +649,9 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 		wiz_string_tokenizer tokenizer2;
 		wiz_string dot;
 		wiz_vector_wiz_string dilim;
+
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
 
 		init_wiz_string(&dot, ".", 1);
 		init_wiz_vector_wiz_string(&dilim, 1);
@@ -595,6 +684,11 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 		wiz_string dot;
 		wiz_vector_wiz_string dilim;
 
+
+		free_wiz_string(&temp1);
+		free_wiz_string(&temp2);
+
+
 		init_wiz_string(&dot, ".", 1);
 		init_wiz_vector_wiz_string(&dilim, 1);
 		push_back_wiz_vector_wiz_string(&dilim, &dot);
@@ -620,6 +714,11 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 
 		return result;
 	}
+	
+
+	free_wiz_string(&temp1);
+	free_wiz_string(&temp2);
+
 	return 2; // ERROR
 }
 
@@ -722,12 +821,14 @@ wiz_string wiz_ll_to_string(long long x)
 			init_wiz_string_builder(&temp, size, "", 0);
 		}
 		else {
+			temp.len = chk;
 			break;
 		}
 	}
 
-	free_wiz_string_builder(&temp);
 	init_wiz_string(&result, str_wiz_string_builder(&temp, NULL), size_wiz_string_builder(&temp));
+
+	free_wiz_string_builder(&temp);
 	return result;
 }
 wiz_string wiz_ld_to_string(long double x)
@@ -745,12 +846,14 @@ wiz_string wiz_ld_to_string(long double x)
 			init_wiz_string_builder(&temp, size, "", 0);
 		}
 		else {
+			temp.len = chk;
 			break;
 		}
 	}
 
-	free_wiz_string_builder(&temp);
 	init_wiz_string(&result, str_wiz_string_builder(&temp, NULL), size_wiz_string_builder(&temp));
+	
+	free_wiz_string_builder(&temp);
 	return result;
 }
 

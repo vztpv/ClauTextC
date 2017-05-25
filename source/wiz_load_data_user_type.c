@@ -45,7 +45,7 @@ int is_item_list_in_user_type(user_type* ut, size_t idx)
 {
 	return 1 == *get_wiz_vector_int(&(ut->ilist), idx);
 }
-int is_user_type_List_in_user_type(user_type* ut, size_t idx)
+int is_user_type_list_in_user_type(user_type* ut, size_t idx)
 {
 	return 2 == *get_wiz_vector_int(&(ut->ilist), idx);
 }
@@ -63,11 +63,10 @@ user_type* get_parent_in_user_type(user_type* ut)
 	return ut->parent;
 }
 
-
 void link_user_type_in_user_type(user_type* ut, user_type* ut2) 
 {
 	int x = 2;
-	push_back_wiz_vector_any2(&(ut->user_type_list), (void*)ut2);
+	shallow_push_back_wiz_vector_any2(&(ut->user_type_list), (void*)ut2);
 	push_back_wiz_vector_int(&(ut->ilist), &x);
 	ut2->parent = ut;
 }
@@ -76,7 +75,7 @@ void _remove_in_user_type(user_type* ut)
 { 
 	// todo - add clear!
 	size_t i;
-
+	
 	free_wiz_string(&(ut->name));
 
 	for (i = 0; i < size_wiz_vector_item_type(&(ut->item_list)); ++i) {
@@ -93,9 +92,6 @@ void _remove_in_user_type(user_type* ut)
 	}
 	free_wiz_vector_wiz_string(&(ut->comment_list));
 
-	for (i = 0; i < get_user_type_list_size_in_user_type(ut); ++i) {
-		free_user_type_in_user_type(get_user_type_list_in_user_type(ut, i));
-	}
 	free_wiz_vector_any2(&(ut->user_type_list));
 }
 
@@ -182,7 +178,7 @@ void shallow_free_user_type_in_user_type(user_type* ut)
 
 	free_wiz_vector_wiz_string(&(ut->comment_list));
 
-	free_wiz_vector_any2(&(ut->user_type_list));
+	shallow_free_wiz_vector_any2(&(ut->user_type_list));
 }
 // cf) c++ user_type&&, not used?
 //void Reset_in_user_type(user_type* ut_this, user_type* ut) { }
@@ -270,9 +266,37 @@ void remove_user_type_list_by_idx_in_user_type(user_type* ut, size_t idx)
 }
 void remove_item_list_by_var_name_in_user_type(user_type* ut, wiz_string* varName, int option) // option == 1 then free~(ut, idx);
 { 
-	// todo
+	int i, j;
+	int k = _get_ilist_index_in_user_type(ut, &ut->ilist, 1, 0);
+
+	for (i = 0; i < get_item_list_size_in_user_type(ut); ++i) {
+		if (!equal_wiz_string(varName, &(get_item_list_in_user_type(ut, i))->name)) {
+			k = _get_index_in_user_type(ut, &ut->ilist, 1, k + 1);
+		}
+		else {
+			if (option) {
+				free_item_value_in_item_type(get_item_list_in_user_type(ut, i));
+			}
+
+			// remove usertypeitem, ilist left shift 1.
+			for (j = i + 1; j < get_item_list_size_in_user_type(ut); ++j) {
+				*get_item_list_in_user_type(ut, j - 1) = *get_item_list_in_user_type(ut, j);
+			}
+			decrease_size_wiz_vector_item_type(&ut->item_list);
+			--i;
+
+			for (j = k + 1; j < get_ilist_size_in_user_type(ut); ++j) {
+				*get_wiz_vector_int(&ut->ilist, j - 1) = *get_wiz_vector_int(&ut->ilist, j);
+			}
+			decrease_size_wiz_vector_int(&ut->ilist);
+			k = _get_index_in_user_type(ut, &ut->ilist, 1, k);
+		}
+	}
 }
-void remove_item_list_in_user_type(user_type* ut){ }//
+void remove_item_list_in_user_type(user_type* ut) 
+{
+	// todo
+}//
 void remove_empty_item_in_user_type(user_type* ut){ }
 void remove_user_type_in_user_type(user_type* ut){ }
 // remove? - void remove_user_type_list_in_user_type(user_type* ut){ } // chk
@@ -287,6 +311,7 @@ void remove_user_type_list_by_var_name_in_user_type(user_type* ut, wiz_string* v
 		}
 		else {
 			if (option) {
+				free_user_type_in_user_type(get_wiz_vector_any2(&ut->user_type_list, i));
 				free(get_wiz_vector_any2(&ut->user_type_list, i));
 			}
 
@@ -370,10 +395,32 @@ wiz_vector_item_type get_item_in_user_type(user_type* ut, wiz_string* name)
 }
 
 // regex to SetItem?
-int set_item_in_user_type(user_type* ut, wiz_string* name, wiz_string* value){ }
+int set_item_by_idx_in_user_type(user_type* ut, size_t idx, wiz_string* value)
+{
+	free_wiz_string(&get_wiz_vector_item_type(&ut->item_list, idx)->value);
+	get_wiz_vector_item_type(&ut->item_list, idx)->value = *value;
+
+	return 1;
+}
 
 // add set Data
-int set_item_by_name_in_user_type(user_type* ut, size_t var_idx, wiz_string* value){ }
+int set_item_by_name_in_user_type(user_type* ut, wiz_string* name, wiz_string* value)
+{
+	int index = -1;
+	int i;
+
+	for (i = 0; i < get_item_list_size_in_user_type(ut); ++i) {
+		if (equal_wiz_string(&get_wiz_vector_item_type(&ut->item_list, i)->name, name))
+		{
+			free_wiz_string(&get_wiz_vector_item_type(&ut->item_list, i)->value);
+			get_wiz_vector_item_type(&ut->item_list, i)->value = *value;
+			
+			index = i;
+		}
+	}
+
+	return -1 != index;
+}
 
 wiz_vector_any get_user_type_item_in_user_type(user_type* ut, wiz_string* name)
 {
@@ -615,7 +662,7 @@ wiz_string to_string_in_user_type(user_type* ut, wiz_string_builder* builder)
 			append_char_wiz_string_builder(builder, ' ');
 
 			init_wiz_string_builder(&tempBuilder, 1024, "", 0);
-			data = to_string_in_user_type(ut, &tempBuilder);
+			data = to_string_in_user_type(get_wiz_vector_any2(&ut->user_type_list, userTypeListCount), &tempBuilder);
 			
 			append_wiz_string_builder(builder, get_cstr_wiz_string(&data), size_wiz_string(&data));
 

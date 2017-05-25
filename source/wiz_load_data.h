@@ -54,6 +54,7 @@ typedef struct ExcuteData ExcuteData;
 wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* excuteData);
 
 //
+pair_wiz_string_and_wiz_string Find2(user_type* ut, wiz_string* str);
 user_type load_data_from_file_in_load_data(wiz_string* fileName);
 user_type load_data_from_string_in_load_data(wiz_string* str);
 int save_data_in_load_data(wiz_string* fileName, user_type* global, int option);
@@ -69,6 +70,7 @@ int add_data_in_load_data(user_type* global, wiz_string* position, wiz_string* d
 // insert
 // add_no_name_user_type
 // set_data (by_name)
+int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* varName, wiz_string* data, wiz_string* condition, ExcuteData* excuteData, wiz_string_builder* builder);
 // set_data_by_index
 //// get_data
 wiz_string get_item_list_data_in_load_data(user_type* global, wiz_string* position, wiz_string* condition, ExcuteData* excuteData, wiz_string_builder* builder);

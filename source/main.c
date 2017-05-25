@@ -64,23 +64,27 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 	wiz_string EMPTY_STR;
 	wiz_string ID_STR;
 	wiz_string LOCAL_STR;
+	wiz_string LOCAL_STR2;
 	wiz_string MAIN_STR;
 	wiz_string CALL_STR;
 	wiz_string IF_STR;
 	wiz_string ELSE_STR;
 	wiz_string EVENT_STR;
 	wiz_string ROOT_STR;
+	wiz_string TRUE_STR;
 
 	// init
 	init_wiz_string(&EMPTY_STR, "", 0);
 	init_wiz_string(&ID_STR, "id", 2);
 	init_wiz_string(&LOCAL_STR, "$local", 6);
+	init_wiz_string(&LOCAL_STR2, "$local.", 7);
 	init_wiz_string(&MAIN_STR, "Main", 4);
 	init_wiz_string(&CALL_STR, "$call", 5);
 	init_wiz_string(&ELSE_STR, "$else", 5);
 	init_wiz_string(&EVENT_STR, "Event", 5);
 	init_wiz_string(&IF_STR, "$if", 3);
 	init_wiz_string(&ROOT_STR, "root", 4);
+	init_wiz_string(&TRUE_STR, "TRUE", 4);
 	
 	init_wiz_map_wiz_string_and_user_type(&objectMap);
 	init_wiz_map_wiz_string_and_user_type(&moduleMap);
@@ -151,7 +155,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 			{
 				free_wiz_string(&EMPTY_STR);
 				free_wiz_string(&ID_STR);
-				free_wiz_string(&LOCAL_STR);
+				free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 				free_wiz_string(&MAIN_STR);
 				free_wiz_string(&CALL_STR);
 				free_wiz_string(&IF_STR);
@@ -257,7 +261,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 	while (!empty_wiz_stack_event_info(&eventStack))
 	{
 		int info_chk = 1;
-		event_info info = deep_copy_event_info(top_wiz_stack_event_info(&eventStack));
+		event_info info = deep_copy_event_info(top_wiz_stack_event_info(&eventStack)); // copy??
 		pair_wiz_string_and_wiz_string temp;
 		pair_wiz_string_and_int temp2;
 		wiz_string str;
@@ -308,13 +312,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						{
 							free_wiz_string(&EMPTY_STR);
 							free_wiz_string(&ID_STR);
-							free_wiz_string(&LOCAL_STR);
+							free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 							free_wiz_string(&MAIN_STR);
 							free_wiz_string(&CALL_STR);
 							free_wiz_string(&IF_STR);
 							free_wiz_string(&ELSE_STR);
 							free_wiz_string(&EVENT_STR);
 							free_wiz_string(&ROOT_STR);
+							free_wiz_string(&TRUE_STR);
 							{
 
 							}
@@ -342,22 +347,23 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						{
 							free_wiz_string(&EMPTY_STR);
 							free_wiz_string(&ID_STR);
-							free_wiz_string(&LOCAL_STR);
+							free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 							free_wiz_string(&MAIN_STR);
 							free_wiz_string(&CALL_STR);
 							free_wiz_string(&IF_STR);
 							free_wiz_string(&ELSE_STR);
 							free_wiz_string(&EVENT_STR);
 							free_wiz_string(&ROOT_STR);
+							free_wiz_string(&TRUE_STR);
 
 							{
 
 							}
-							free_wiz_map_wiz_string_and_user_type(&objectMap);
+							free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 							{
 
 							}
-							free_wiz_map_wiz_string_and_user_type(&moduleMap);
+							free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 							free_wiz_string(&module_value);
 							for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
@@ -403,22 +409,23 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							{
 								free_wiz_string(&EMPTY_STR);
 								free_wiz_string(&ID_STR);
-								free_wiz_string(&LOCAL_STR);
+								free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 								free_wiz_string(&MAIN_STR);
 								free_wiz_string(&CALL_STR);
 								free_wiz_string(&IF_STR);
 								free_wiz_string(&ELSE_STR);
 								free_wiz_string(&EVENT_STR);
 								free_wiz_string(&ROOT_STR);
+								free_wiz_string(&TRUE_STR);
 
 								{
 
 								}
-								free_wiz_map_wiz_string_and_user_type(&objectMap);
+								free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 								{
 
 								}
-								free_wiz_map_wiz_string_and_user_type(&moduleMap);
+								free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 								free_wiz_string(&module_value);
 								for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 									free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
@@ -437,22 +444,23 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						{
 							free_wiz_string(&EMPTY_STR);
 							free_wiz_string(&ID_STR);
-							free_wiz_string(&LOCAL_STR);
+							free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 							free_wiz_string(&MAIN_STR);
 							free_wiz_string(&CALL_STR);
 							free_wiz_string(&IF_STR);
 							free_wiz_string(&ELSE_STR);
 							free_wiz_string(&EVENT_STR);
 							free_wiz_string(&ROOT_STR);
+							free_wiz_string(&TRUE_STR);
 
 							{
 
 							}
-							free_wiz_map_wiz_string_and_user_type(&objectMap);
+							free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 							{
 
 							}
-							free_wiz_map_wiz_string_and_user_type(&moduleMap);
+							free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 							free_wiz_string(&module_value);
 							for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
@@ -482,22 +490,23 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								{
 									free_wiz_string(&EMPTY_STR);
 									free_wiz_string(&ID_STR);
-									free_wiz_string(&LOCAL_STR);
+									free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 									free_wiz_string(&MAIN_STR);
 									free_wiz_string(&CALL_STR);
 									free_wiz_string(&IF_STR);
 									free_wiz_string(&ELSE_STR);
 									free_wiz_string(&EVENT_STR);
 									free_wiz_string(&ROOT_STR);
+									free_wiz_string(&TRUE_STR);
 
 									{
 
 									}
-									free_wiz_map_wiz_string_and_user_type(&objectMap);
+									free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 									{
 
 									}
-									free_wiz_map_wiz_string_and_user_type(&moduleMap);
+									free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 									free_wiz_string(&module_value);
 									for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 										free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
@@ -516,22 +525,23 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							{
 								free_wiz_string(&EMPTY_STR);
 								free_wiz_string(&ID_STR);
-								free_wiz_string(&LOCAL_STR);
+								free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 								free_wiz_string(&MAIN_STR);
 								free_wiz_string(&CALL_STR);
 								free_wiz_string(&IF_STR);
 								free_wiz_string(&ELSE_STR);
 								free_wiz_string(&EVENT_STR);
 								free_wiz_string(&ROOT_STR);
+								free_wiz_string(&TRUE_STR);
 
 								{
 
 								}
-								free_wiz_map_wiz_string_and_user_type(&objectMap);
+								free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 								{
 
 								}
-								free_wiz_map_wiz_string_and_user_type(&moduleMap);
+								free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 								free_wiz_string(&module_value);
 								for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 									free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
@@ -551,7 +561,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					}
 				}
 			}
-			
 
 			while (val != NULL)
 			{
@@ -563,14 +572,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				/*if(0 == strcmp("$for_each" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					const string eventID = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					const string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
-					const string condition = val->get_user_type_list_in_user_type(2)->ToString();
+					const string eventID = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					const string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
+					const string condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
 
 					user_type* event = NULL;
 					string parameter = "id = " + eventID + " ";
@@ -671,15 +680,15 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$do" , get_cstr_wiz_string(&val->name))) { // chk?
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
 					user_type subGlobal;
-					wiz::load_data::LoadData::LoadDataFromString(val->get_user_type_list_in_user_type(1)->ToString(), subGlobal);
+					wiz::load_data::LoadData::LoadDataFromString(get_user_type_list_in_user_type(val, 1)->ToString(), subGlobal);
 					user_type inputUT;
-					wiz::load_data::LoadData::LoadDataFromString(ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder), inputUT);
+					wiz::load_data::LoadData::LoadDataFromString(ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder), inputUT);
 
 
 					wiz::load_data::LoadData::AddData(subGlobal, "/./", inputUT.ToString(), "TRUE", _excuteData, &builder);
@@ -695,12 +704,12 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$replace_datatype1" , get_cstr_wiz_string(&val->name))) { // name
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string rex = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string rex = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					rex = rex.substr(1, rex.size() - 2);
 					vector<string> sval;
 					vector<string> scondition;
@@ -710,13 +719,13 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					{
 						int n = (get_user_type_list_size_in_user_type(val)() - 1) / 2;
 						for (i = 0; i < n; ++i) {
-							sval.push_back(val->get_user_type_list_in_user_type(1)->ToString());
+							sval.push_back(get_user_type_list_in_user_type(val, 1)->ToString());
 
-							scondition.push_back(val->get_user_type_list_in_user_type(2)->ToString());
+							scondition.push_back(get_user_type_list_in_user_type(val, 2)->ToString());
 						}
 					}
 					if (get_user_type_list_size_in_user_type(val)() >= 4) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(3)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 3)->ToString(), _excuteData, &builder);
 					}
 
 					wiz::load_data::LoadData::ReplaceDataType1(global, rex, sval, scondition, start_dir, _excuteData, &builder);
@@ -727,12 +736,12 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$replace_datatype1_2" , get_cstr_wiz_string(&val->name))) { //val
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string rex = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string rex = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					rex = rex.substr(1, rex.size() - 2);
 					vector<string> sval;
 					vector<string> scondition;
@@ -743,15 +752,15 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						int n = (get_user_type_list_size_in_user_type(val)() - 1) / 2;
 						int count = 1;
 						for (i = 0; i < n; ++i) {
-							sval.push_back(val->get_user_type_list_in_user_type(count)->ToString());
+							sval.push_back(get_user_type_list_in_user_type(val, count)->ToString());
 							count++;
-							scondition.push_back(val->get_user_type_list_in_user_type(count)->ToString());
+							scondition.push_back(get_user_type_list_in_user_type(val, count)->ToString());
 							count++;
 						}
 					}
 
 					if (get_user_type_list_size_in_user_type(val)() >= 4 && (get_user_type_list_size_in_user_type(val)() % 2 == 0)) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(get_user_type_list_size_in_user_type(val)() - 1)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, get_user_type_list_size_in_user_type(val)() - 1)->ToString(), _excuteData, &builder);
 					}
 
 					wiz::load_data::LoadData::ReplaceDataType1_2(global, rex, sval, scondition, start_dir, _excuteData, &builder);
@@ -762,14 +771,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$replace_datatype2" , get_cstr_wiz_string(&val->name))) { // usertype name
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string rex = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string rex = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					rex = rex.substr(1, rex.size() - 2);
-					//cout << val->get_user_type_list_in_user_type(1)->ToString() << endl;
+					//cout << get_user_type_list_in_user_type(val, 1)->ToString() << endl;
 					vector<string> sval;
 					vector<string> scondition;
 					string start_dir = "root";
@@ -779,15 +788,15 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						int n = (get_user_type_list_size_in_user_type(val)() - 1) / 2;
 						int count = 1;
 						for (i = 0; i < n; ++i) {
-							sval.push_back(val->get_user_type_list_in_user_type(count)->ToString());
+							sval.push_back(get_user_type_list_in_user_type(val, count)->ToString());
 							count++;
-							scondition.push_back(val->get_user_type_list_in_user_type(count)->ToString());
+							scondition.push_back(get_user_type_list_in_user_type(val, count)->ToString());
 							count++;
 						}
 					}
 
 					if (get_user_type_list_size_in_user_type(val)() >= 4 && (get_user_type_list_size_in_user_type(val)() % 2 == 0)) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(get_user_type_list_size_in_user_type(val)() - 1)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, get_user_type_list_size_in_user_type(val)() - 1)->ToString(), _excuteData, &builder);
 					}
 
 					//cout << scondition << endl;
@@ -800,22 +809,22 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$replace_datetype" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string sval = val->get_user_type_list_in_user_type(0)->ToString();
+					string sval = to_string_in_user_type(get_user_type_list_in_user_type(val, 0));
 
 					string scondition = "TRUE";
 					string start_dir = "root";
 
 					if (get_user_type_list_size_in_user_type(val)() >= 2)
 					{
-						scondition = val->get_user_type_list_in_user_type(1)->ToString();
+						scondition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					if (get_user_type_list_size_in_user_type(val)() >= 3) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(2)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 2)->ToString(), _excuteData, &builder);
 					}
 
 					wiz::load_data::LoadData::ReplaceDateType(global, sval, scondition, start_dir, _excuteData, &builder);
@@ -826,22 +835,22 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$replace_datetype2" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string sval = val->get_user_type_list_in_user_type(0)->ToString();
+					string sval = to_string_in_user_type(get_user_type_list_in_user_type(val, 0));
 					string scondition = "TRUE";
 					string start_dir = "root";
 
 
 					if (get_user_type_list_size_in_user_type(val)() >= 2)
 					{
-						scondition = val->get_user_type_list_in_user_type(1)->ToString();
+						scondition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					if (get_user_type_list_size_in_user_type(val)() >= 3) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(2)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 2)->ToString(), _excuteData, &builder);
 					}
 
 					wiz::load_data::LoadData::ReplaceDateType2(global, sval, scondition, start_dir, _excuteData, &builder);
@@ -852,21 +861,21 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$remove_usertype_total" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string ut_name = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string ut_name = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					string condition = "TRUE";
 					string start_dir = "root";
 
 					if (get_user_type_list_size_in_user_type(val)() >= 2)
 					{
-						condition = val->get_user_type_list_in_user_type(1)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					if (get_user_type_list_size_in_user_type(val)() >= 3) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(2)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 2)->ToString(), _excuteData, &builder);
 					}
 
 					wiz::load_data::LoadData::RemoveUserTypeTotal(global, ut_name, condition, start_dir, _excuteData, &builder);
@@ -877,22 +886,22 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$replace_item" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 					// chk NULL vs val?
-					string svar = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string sval = val->get_user_type_list_in_user_type(1)->ToString();
+					string svar = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string sval = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					string scondition = "TRUE";
 					string start_dir = "root";
 
 					if (get_user_type_list_size_in_user_type(val)() >= 3)
 					{
-						scondition = val->get_user_type_list_in_user_type(2)->ToString();
+						scondition = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
 					}
 					if (get_user_type_list_size_in_user_type(val)() >= 4) {
-						start_dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(3)->ToString(), _excuteData, &builder);
+						start_dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 3)->ToString(), _excuteData, &builder);
 					}
 
 					wiz::load_data::LoadData::ReplaceItem(global, svar, sval, scondition, start_dir, _excuteData, &builder);
@@ -916,15 +925,15 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 					//todo
 					// "filename" save_option(0~2)
-					string fileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string fileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					fileName = wiz::String::substring(fileName, 1, fileName.size() - 2);
-					string option = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string option = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					wiz::load_data::LoadData::SaveWizDB(global, fileName, option, "");
 					wiz::load_data::LoadData::SaveWizDB(Main, fileName, option, "APPEND");
@@ -937,15 +946,15 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 					//todo
 					// "filename" save_option(0~2)
-					string fileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string fileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					fileName = wiz::String::substring(fileName, 1, fileName.size() - 2);
-					string option = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string option = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					wiz::load_data::LoadData::SaveWizDB(global, fileName, option, "");
 
@@ -957,16 +966,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 					//todo
 					// "filename" save_option(0~2)
-					string dirName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string fileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string dirName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string fileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 					fileName = wiz::String::substring(fileName, 1, fileName.size() - 2);
-					string option = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(2)->ToString(), _excuteData, &builder);
+					string option = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 2)->ToString(), _excuteData, &builder);
 
 					// todo - for? auto x = global.get_user_type_item_in_user_type(dirName);
 					user_type* utTemp = global.get_user_type_item_in_user_type(dirName)[0];
@@ -981,12 +990,12 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string moduleFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string moduleFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					moduleFileName = wiz::String::substring(moduleFileName, 1, moduleFileName.size() - 2);
 
 					user_type moduleUT;
@@ -1002,16 +1011,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string moduleFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string moduleFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					string input;
 
 					if (get_user_type_list_size_in_user_type(val)() >= 2) {
-						input = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+						input = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 					}
 
 					moduleFileName = wiz::String::substring(moduleFileName, 1, moduleFileName.size() - 2);
@@ -1028,16 +1037,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string moduleFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string moduleFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					string input;
 
 					if (get_user_type_list_size_in_user_type(val)() >= 2) {
-						input = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+						input = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 					}
 
 					moduleFileName = wiz::String::substring(moduleFileName, 1, moduleFileName.size() - 2);
@@ -1058,12 +1067,12 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$register_object" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string objectFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string objectFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 
 					objectFileName = wiz::String::substring(objectFileName, 1, objectFileName.size() - 2);
 
@@ -1079,13 +1088,13 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$copy_object" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string objectNameA = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string objectNameB = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string objectNameA = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string objectNameB = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					objectNameA = wiz::String::substring(objectNameA, 1, objectNameA.size() - 2);
 					objectNameB = wiz::String::substring(objectNameB, 1, objectNameB.size() - 2);
@@ -1098,13 +1107,13 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$register_object_from_string" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string objectName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string objectData = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string objectName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string objectData = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 					objectName = wiz::String::substring(objectName, 1, objectName.size() - 2);
 					objectData = wiz::String::substring(objectData, 1, objectData.size() - 2);
 					user_type objectUT;
@@ -1119,17 +1128,17 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$call_registered_object" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string objectFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string objectFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					objectFileName = wiz::String::substring(objectFileName, 1, objectFileName.size() - 2);
 					string parameter;
 					user_type objectUT = objectMapPtr->at(objectFileName);
 
-					parameter = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					parameter = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					string data = " Event = { id = NONE $call = { " + parameter + "  } } ";
 
@@ -1143,16 +1152,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$call_registered_object2" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string objectFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string objectFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					objectFileName = wiz::String::substring(objectFileName, 1, objectFileName.size() - 2);
 					string parameter;
 
-					parameter = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					parameter = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					string data = " Event = { id = NONE $call = { " + parameter + "  } } ";
 
@@ -1180,16 +1189,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$object" , get_cstr_wiz_string(&val->name))) { // "fileName"
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string objectFileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string objectFileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					objectFileName = wiz::String::substring(objectFileName, 1, objectFileName.size() - 2);
 					string parameter;
 
-					parameter = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					parameter = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 
 					user_type objectUT;
@@ -1210,15 +1219,15 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$object_from_string" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string data = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string data = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					string parameter;
 
-					parameter = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					parameter = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 
 					user_type objectUT;
@@ -1244,7 +1253,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -1258,19 +1267,19 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$pop_back" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					user_type* ut = NULL;
 					auto finded = user_type::Find(&global, dir, &builder);
 					ut = finded.second[0];
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 2) {
-						condition = val->get_user_type_list_in_user_type(1)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					wiz::load_data::LoadData::Remove(global, dir, ut->GetIListSize() - 1, condition, _excuteData, &builder);
 
@@ -1280,20 +1289,20 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$push_front" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string value = val->get_user_type_list_in_user_type(1)->ToString();
+					string value = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					string dir;
-					if (val->get_user_type_list_in_user_type(0)->get_item_list_in_user_typeSize() > 0) {
-						dir = val->get_user_type_list_in_user_type(0)->get_item_list_in_user_type(0).Get(0);
+					if (get_user_type_list_in_user_type(val, 0)->get_item_list_in_user_typeSize() > 0) {
+						dir = get_user_type_list_in_user_type(val, 0)->get_item_list_in_user_type(0).Get(0);
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 					}
 					else ///val->Ge
 					{
-						dir = string(val->get_user_type_list_in_user_type(0)->ToString());
+						dir = string(get_user_type_list_in_user_type(val, 0)->ToString());
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 					}
 
@@ -1302,7 +1311,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 3) {
-						condition = val->get_user_type_list_in_user_type(2)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
 					}
 					wiz::load_data::LoadData::AddDataAtFront(global, dir, value, condition, _excuteData, &builder);
 
@@ -1312,16 +1321,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$pop_front" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 2) {
-						condition = val->get_user_type_list_in_user_type(1)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					wiz::load_data::LoadData::Remove(global, dir, 0, condition, _excuteData, &builder);
 
@@ -1329,10 +1338,10 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					break;
 				}
 				else */
-				if(0 == strcmp("$call" , get_cstr_wiz_string(&val->name))) {
+				if (0 == strcmp("$call", get_cstr_wiz_string(&val->name))) {
 					event_info info2; //
-					ExcuteData _excuteData; _excuteData.valid = 1; 
-					if(NULL == excuteData) { _excuteData.depth = 0; }
+					ExcuteData _excuteData; _excuteData.valid = 1;
+					if (NULL == excuteData) { _excuteData.depth = 0; }
 					else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
 					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
@@ -1341,7 +1350,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					_excuteData.pModule = moduleMapPtr;
 					{
 						wiz_vector_item_type temp = get_item_in_user_type(val, &ID_STR);
-						
+
 						free_wiz_string(&info.id);
 
 						if (!empty_wiz_vector_item_type(&temp)) {
@@ -1369,20 +1378,20 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					{
 						size_t zero = 0;
 						push_wiz_stack_size_t(&info.userType_idx, &zero);
-					} 
+					}
 					///info.userType_idx.push(0);
 
 					free_wiz_string(&info.return_value);
 					init_wiz_string(&info.return_value, "", 0);
 					///info.return_value.clear();
-					
+
 					free_wiz_stack_any(&info.nowUT);
 					init_wiz_stack_any(&info.nowUT, 1);
 					///info.nowUT.clear();
 
-					
+
 					info2 = info;
-	
+
 
 					if (!(equal_wiz_string(&info.id, &top_wiz_stack_event_info(&eventStack)->id))) {
 						info.parameters.root = NULL;
@@ -1409,7 +1418,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						}
 						for (j = 0; j < get_user_type_list_size_in_user_type(val); ++j) {
 							if (get_user_type_list_size_in_user_type(val) > 0) {
-								wiz_string temp; 
+								wiz_string temp;
 								wiz_string param1 = to_string_in_user_type(get_user_type_list_in_user_type(val, j), &builder);
 								pair_wiz_string_and_wiz_string pairTemp;
 
@@ -1443,11 +1452,11 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								pairTemp.second = temp;
 
 								set_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp);
-								
-							//	if ((x = info.parameters.find(val->get_item_list_in_user_type(j).GetName())) != info.parameters.end())
-							//	{
-							//		x->second = temp;
-							//	}
+
+								//	if ((x = info.parameters.find(val->get_item_list_in_user_type(j).GetName())) != info.parameters.end())
+								//	{
+								//		x->second = temp;
+								//	}
 							}
 						}
 						if (get_user_type_list_size_in_user_type(val) > 0) {
@@ -1481,8 +1490,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						}
 					}
 
-					if (!empty_wiz_stack_event_info(&eventStack) && 0 == strcmp(get_cstr_wiz_string(&top_wiz_stack_event_info(&eventStack)->option), 
-																	"REMOVE_IF_CALL_ANY_EVENT"))
+					if (!empty_wiz_stack_event_info(&eventStack) && 0 == strcmp(get_cstr_wiz_string(&top_wiz_stack_event_info(&eventStack)->option),
+						"REMOVE_IF_CALL_ANY_EVENT"))
 					{
 						free_all_event_info(top_wiz_stack_event_info(&eventStack));
 						pop_wiz_stack_event_info(&eventStack);
@@ -1491,8 +1500,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					free_wiz_map_wiz_string_and_wiz_string(&info.locals);
 					init_wiz_map_wiz_string_and_wiz_string(&info.locals);
-				//	info.locals.clear();
-					
+					//	info.locals.clear();
+
 					{
 						pair_wiz_string_and_int temp;
 						int no = -1;
@@ -1502,7 +1511,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						get_wiz_map_wiz_string_and_int(&convert, &temp);
 
 						no = temp.second;
-						
+
 						for (i = 0; i < get_user_type_list_size_in_user_type(get_user_type_list_in_user_type(eventPtr, no)); ++i) {
 							if (0 == strcmp(get_cstr_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), i)->name), "$local")) {
 								for (j = 0; j < get_item_list_size_in_user_type(get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), i)); ++j) {
@@ -1528,41 +1537,54 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					push_wiz_stack_event_info(&eventStack, &info);
 					break;
 				}
-				/*
 				else if(0 == strcmp("$assign" , get_cstr_wiz_string(&val->name))) /// -> assign2?
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
-
-					pair_wiz_string_string> dir = Find2(&global, val->get_item_list_in_user_type(0).Get(0));
-					string data = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-
-					if (dir.first == "" && wiz::String::startsWith(dir.second, "$local."))
 					{
-						top_wiz_stack_event_info(&eventStack).locals[wiz::String::substring(dir.second, 7)] = data;
-					}
-					else {
-						wiz::load_data::LoadData::SetData(global, dir.first, dir.second, data, "TRUE", _excuteData, &builder);
+						pair_wiz_string_and_wiz_string dir = Find2(&global, &get_item_list_in_user_type(val, 0)->value);
+						wiz_string temp = to_string_in_user_type(get_user_type_list_in_user_type(val, 0), &builder);
+						wiz_string data = ToBool4(NULL, &global, &temp, &_excuteData, &builder);
+
+						if (equal_wiz_string(&dir.first, &EMPTY_STR) && starts_with_wiz_string(&dir.second, &LOCAL_STR2))
+						{
+							pair_wiz_string_and_wiz_string temp;
+
+							temp.first = substr_wiz_string(&dir.second, 7, size_wiz_string(&dir.second));
+							temp.second = data;
+
+							set_wiz_map_wiz_string_and_wiz_string(&top_wiz_stack_event_info(&eventStack)->locals, &temp);
+							
+							free_wiz_string(&temp.first);
+						}
+						else {
+							set_data_in_load_data(&global, &dir.first, &dir.second, &data, &TRUE_STR, &_excuteData, &builder);
+						}
+
+						free_wiz_string(&dir.first);
+						free_wiz_string(&dir.second);
+						free_wiz_string(&temp);
+						free_wiz_string(&data);
 					}
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
-
+				/*
 				else if(0 == strcmp("$assign2" , get_cstr_wiz_string(&val->name)))
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					pair_wiz_string_string> dir = Find2(&global, ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder));
-					string data = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					pair_wiz_string_and_wiz_string dir = Find2(&global, ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder));
+					string data = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					{
 						if (dir.first == "" && wiz::String::startsWith(dir.second, "$local."))
@@ -1581,13 +1603,13 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					pair_wiz_string_string> dir = Find2(&global, ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder));
-					string data = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					pair_wiz_string_and_wiz_string dir = Find2(&global, ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder));
+					string data = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					{
 						if (dir.first == "" && dir.second.size() > 1 && dir.second[0] == '@')
@@ -1610,17 +1632,17 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					pair_wiz_string_string> dir = Find2(&global, ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder));
-					string data = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					pair_wiz_string_and_wiz_string dir = Find2(&global, ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder));
+					string data = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					//string condition;
 					//if (get_user_type_list_size_in_user_type(val)() >= 3) {
-					//	condition = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(2)->ToString(), _excuteData, &builder);
+					//	condition = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 2)->ToString(), _excuteData, &builder);
 					//}
 					wiz::load_data::LoadData::SetData(global, dir.first, dir.second, data, "TRUE", _excuteData, &builder);
 
@@ -1634,20 +1656,20 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string value = val->get_user_type_list_in_user_type(1)->ToString();
+					string value = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					string dir;
-					if (val->get_user_type_list_in_user_type(0)->get_item_list_in_user_typeSize() > 0) {
-						dir = val->get_user_type_list_in_user_type(0)->get_item_list_in_user_type(0).Get(0);
+					if (get_user_type_list_in_user_type(val, 0)->get_item_list_in_user_typeSize() > 0) {
+						dir = get_user_type_list_in_user_type(val, 0)->get_item_list_in_user_type(0).Get(0);
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 					}
 					else ///val->Ge
 					{
-						dir = string(val->get_user_type_list_in_user_type(0)->ToString());
+						dir = string(get_user_type_list_in_user_type(val, 0)->ToString());
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 					}
 
@@ -1655,7 +1677,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 3) {
-						condition = val->get_user_type_list_in_user_type(2)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
 					}
 					wiz::load_data::LoadData::AddData(global, dir, value, condition, _excuteData, &builder);
 
@@ -1666,14 +1688,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string position = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);;
-					string data = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);;
-					string condition = val->get_user_type_list_in_user_type(2)->ToString();
+					string position = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);;
+					string data = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);;
+					string condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
 
 					wiz::load_data::LoadData::AddNoNameUserType(global, position, data, condition, _excuteData, &builder);
 
@@ -1684,21 +1706,21 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string value = val->get_user_type_list_in_user_type(2)->ToString();
-					int idx = atoi(ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder).c_str());
+					string value = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
+					int idx = atoi(ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder).c_str());
 					string dir;
-					if (val->get_user_type_list_in_user_type(0)->get_item_list_in_user_typeSize() > 0) {
-						dir = val->get_user_type_list_in_user_type(0)->get_item_list_in_user_type(0).Get(0);
+					if (get_user_type_list_in_user_type(val, 0)->get_item_list_in_user_typeSize() > 0) {
+						dir = get_user_type_list_in_user_type(val, 0)->get_item_list_in_user_type(0).Get(0);
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 					}
 					else ///val->Ge
 					{
-						dir = string(val->get_user_type_list_in_user_type(0)->ToString());
+						dir = string(get_user_type_list_in_user_type(val, 0)->ToString());
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 					}
 
@@ -1706,7 +1728,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 4) {
-						condition = val->get_user_type_list_in_user_type(3)->ToString();
+						condition = get_user_type_list_in_user_type(val, 3)->ToString();
 					}
 					wiz::load_data::LoadData::Insert(global, dir, idx, value, condition, _excuteData, &builder);
 
@@ -1718,7 +1740,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -1731,7 +1753,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					}
 					else // 
 					{
-						dir = string(val->get_user_type_list_in_user_type(0)->ToString());
+						dir = string(get_user_type_list_in_user_type(val, 0)->ToString());
 						dir = ToBool4(NULL, &global, dir, _excuteData, &builder);
 						is2 = 1;
 					}
@@ -1749,10 +1771,10 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					string condition = "TRUE";
 					if (is2 && get_user_type_list_size_in_user_type(val)() >= 2) {
-						condition = val->get_user_type_list_in_user_type(1)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					else if (0 == is2 && get_user_type_list_size_in_user_type(val)() >= 1) {
-						condition = val->get_user_type_list_in_user_type(0)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 0));
 					}
 
 					wiz::load_data::LoadData::AddUserType(global, dir, name, "", condition, _excuteData, &builder);
@@ -1765,13 +1787,13 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string value = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string value = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					user_type ut;
 					wiz::load_data::LoadData::LoadDataFromString(user_type::Find(&global, dir, &builder).second[0]->ToString(), ut);
@@ -1790,7 +1812,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -1801,7 +1823,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 2) {
-						condition = val->get_user_type_list_in_user_type(1)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					wiz::load_data::LoadData::Remove(global, dir, condition, _excuteData, &builder);
 
@@ -1813,7 +1835,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -1832,7 +1854,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					string condition = "TRUE";
 					if (get_user_type_list_size_in_user_type(val)() >= 2) {
-						condition = val->get_user_type_list_in_user_type(1)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 					}
 					wiz::load_data::LoadData::Remove(global, dir, name, condition, _excuteData, &builder);
 
@@ -1843,20 +1865,20 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string value = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string value = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					int idx = atoi(value.c_str());  // long long -> int?
 
 					string condition = "TRUE";
 
 					if (get_user_type_list_size_in_user_type(val)() >= 3) {
-						condition = val->get_user_type_list_in_user_type(2)->ToString();
+						condition = to_string_in_user_type(get_user_type_list_in_user_type(val, 2));
 					}
 
 					wiz::load_data::LoadData::Remove(global, dir, idx, condition, _excuteData, &builder);
@@ -1870,14 +1892,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
-					string idx = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
-					string value = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(2)->ToString(), _excuteData, &builder);
+					string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
+					string idx = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
+					string value = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 2)->ToString(), _excuteData, &builder);
 
 					int _idx = stoi(idx);
 					user_type::Find(&global, dir, &builder).second[0]->SetItem(_idx, value);
@@ -1889,14 +1911,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
 					string dir = string(val->get_item_list_in_user_type(0).Get(0).c_str()); // + 0
-					string value1 = val->get_user_type_list_in_user_type(0)->ToString();
-					string value2 = val->get_user_type_list_in_user_type(1)->ToString();
+					string value1 = to_string_in_user_type(get_user_type_list_in_user_type(val, 0));
+					string value2 = to_string_in_user_type(get_user_type_list_in_user_type(val, 1));
 
 					value1 = ToBool4(NULL, &global, value1, _excuteData, &builder);
 					value2 = ToBool4(NULL, &global, value2, _excuteData, &builder);
@@ -1914,110 +1936,151 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+				*/
 				else if(0 == strcmp("$print" , get_cstr_wiz_string(&val->name))) /// has many bugs..!?, for print list or print item?.
 				{
-					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
+					wiz_string LOCAL_STR = make_wiz_string_from_cstr("$local.");
+					wiz_string PARAMETER_STR = make_wiz_string_from_cstr("$parameter.");
+					wiz_string SLUSH_STR = make_wiz_string("/", 1);
+
+					ExcuteData _excuteData; _excuteData.valid = 1; 
+					if(NULL == excuteData) { _excuteData.depth = 0; }
+					else { _excuteData.depth = excuteData->depth; }
+
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					if (get_user_type_list_size_in_user_type(val)() == 1
-						&& val->get_user_type_list_in_user_type(0)->get_item_list_in_user_typeSize() == 1)
+					if (get_user_type_list_size_in_user_type(val) == 1
+						&& get_item_list_size_in_user_type(get_user_type_list_in_user_type(val, 0)) == 1)
 					{
-						string listName = val->get_user_type_list_in_user_type(0)->get_item_list_in_user_type(0).Get(0);
+						wiz_string listName = make_wiz_string_from_other_wiz_string(
+							&get_item_list_in_user_type(get_user_type_list_in_user_type(val, 0), 0)->value
+							);
 
-						if (listName.size() >= 2 && listName[0] == '\"' && listName.back() == '\"')
+						if (size_wiz_string(&listName) >= 2 
+							&& get_cstr_wiz_string(&listName)[0] == '\"' && back_wiz_string(&listName) == '\"')
 						{
-							listName = wiz::String::substring(listName, 1, listName.size() - 2);
-							cout << listName;
+							wiz_string temp = substr_wiz_string(&listName, 1, size_wiz_string(&listName) - 1);
+							free_wiz_string(&listName);
+							listName = temp;// wiz::String::substring(listName, 1, listName.size() - 2);
+							printf("%s", get_cstr_wiz_string(&listName));
 						}
-						else if (listName.size() == 2 && listName[0] == '\\' && listName[1] == 'n')
+						else if (size_wiz_string(&listName) == 2
+							&& get_cstr_wiz_string(&listName)[0] == '\\' && get_cstr_wiz_string(&listName)[1] == 'n')
 						{
-							cout << endl;
+							printf("\n");
 						}
-						else if (wiz::String::startsWith(listName, "$local.")
-							|| wiz::String::startsWith(listName, "$parameter.")
+						else if (starts_with_wiz_string(&listName, &LOCAL_STR)
+							|| starts_with_wiz_string(&listName, &PARAMETER_STR)
 							)
 						{
-							string temp = ToBool4(NULL, &global, listName, _excuteData, &builder);
-							if (temp.empty()) {
-								cout << "EMPTY";
+							wiz_string temp = ToBool4(NULL, &global, &listName, &_excuteData, &builder);
+							if (empty_wiz_string(&temp)) {
+								printf("EMPTY");
 							}
 							else {
-								cout << temp;
+								printf("%s", get_cstr_wiz_string(&temp));
 							}
+							free_wiz_string(&temp);
 						}
-						else if (wiz::String::startsWith(listName, "/") && listName.size() > 1)
+						else if (starts_with_wiz_string(&listName, &SLUSH_STR) && size_wiz_string(&listName) > 1)
 						{
-							string temp = ToBool4(NULL, &global, listName, _excuteData, &builder);
-							if (temp != listName) // chk 
+							wiz_string temp = ToBool4(NULL, &global, &listName, &_excuteData, &builder);
+							if (!equal_wiz_string(&temp, &listName)) // chk 
 							{
-								cout << temp;
+								printf("%s", get_cstr_wiz_string(&temp));
 							}
 							else {
-								user_type* ut = user_type::Find(&global, listName, &builder).second[0];
-								if (ut->get_item_list_in_user_typeSize() == 0 && ut->get_item_list_in_user_type(0).GetName().empty()) {
-									cout << ut->get_item_list_in_user_type(0).Get(0);
+								pair_int_and_wiz_vector_any temp = find_user_type_in_user_type(&global, &listName, &builder);
+								user_type* ut = get_wiz_vector_any(&temp.second, 0);
+								if (get_item_list_size_in_user_type(ut) == 0 && empty_wiz_string(&get_item_list_in_user_type(ut, 0)->name)) {
+									printf("%s", get_cstr_wiz_string(&get_item_list_in_user_type(ut, 0)->value));
 								}
+
+								free_wiz_vector_any(&temp.second);
 							}
+							free_wiz_string(&temp);
 						}
 						else
 						{
-							auto x = user_type::Find(&global, listName, &builder);
+							pair_int_and_wiz_vector_any x = find_user_type_in_user_type(&global, &listName, &builder);
 							if (x.first) {
-								user_type* ut = x.second[0];
-								cout << ut->ToString();
+								user_type* ut = get_wiz_vector_any(&x.second, 0); 
+								wiz_string temp = to_string_in_user_type(ut, &builder);
+								printf("%s", get_cstr_wiz_string(&temp));
+								free_wiz_string(&temp);
 							}
 							else {
-								cout << listName;
+								printf("%s", get_cstr_wiz_string(&listName));
 							}
 						}
+					
+						free_wiz_string(&listName);
 					}
 					// ?
-					else if (get_user_type_list_size_in_user_type(val)() == 1
-						&& val->get_user_type_list_in_user_type(0)->get_item_list_in_user_typeSize() == 0
-						&& val->get_user_type_list_in_user_type(0)->get_user_type_list_size_in_user_type() == 1)
+					else if (get_user_type_list_size_in_user_type(val) == 1
+						&& get_item_list_size_in_user_type(get_user_type_list_in_user_type(val, 0)) == 0
+						&& get_user_type_list_size_in_user_type(get_user_type_list_in_user_type(val, 0)) == 1)
 					{
-						string temp = val->get_user_type_list_in_user_type(0)->ToString();
+						wiz_string temp = to_string_in_user_type(get_user_type_list_in_user_type(val, 0), &builder);
 
-						string name = ToBool4(NULL, &global,
-							temp, _excuteData, &builder);
-						cout << name;
+						wiz_string name = ToBool4(NULL, &global, &temp, &_excuteData, &builder);
+						printf("%s", get_cstr_wiz_string(&name));
+
+						free_wiz_string(&temp);
+						free_wiz_string(&name);
 					}
 					else
 					{
-						string start = val->get_user_type_list_in_user_type(1)->ToString();
-						string last = val->get_user_type_list_in_user_type(2)->ToString();
+						wiz_string start = to_string_in_user_type(get_user_type_list_in_user_type(val, 1), &builder);
+						wiz_string last = to_string_in_user_type(get_user_type_list_in_user_type(val, 2), &builder);
 
-						start = ToBool4(NULL, &global, start, _excuteData, &builder);
-						last = ToBool4(NULL, &global, last, _excuteData, &builder);
+						wiz_string start2 = ToBool4(NULL, &global, &start, &_excuteData, &builder);
+						wiz_string last2 = ToBool4(NULL, &global, &last, &_excuteData, &builder);
+						
+						free_wiz_string(&start);
+						free_wiz_string(&last);
 
-						string listName = val->get_user_type_list_in_user_type(0)->get_item_list_in_user_type(0).Get(0);
-						int _start = atoi(start.c_str());
-						int _last = atoi(last.c_str());
-						user_type* ut = user_type::Find(&global, listName, &builder).second[0];
-						for (i = _start; i <= _last; ++i)
 						{
-							if (i != _start) { cout << " "; }
-							cout << ut->get_item_list_in_user_type(i).Get(0);
+							wiz_string listName = get_item_list_in_user_type(get_user_type_list_in_user_type(val, 0), 0)->value;
+							int _start = atoi(get_cstr_wiz_string(&start2)); // cf) long long ?
+							int _last = atoi(get_cstr_wiz_string(&last2)); //
+							wiz_vector_any temp = find_user_type_in_user_type(&global, &listName, &builder).second;
+							user_type* ut = get_wiz_vector_any(&temp, 0);
+
+							for (i = _start; i <= _last; ++i)
+							{
+								if (i != _start) { printf(" "); }
+								printf("%s", get_cstr_wiz_string(&get_item_list_in_user_type(ut, i)->value));
+							}
+
+							free_wiz_vector_any(&temp);
+							free_wiz_string(&start2);
+							free_wiz_string(&last2);
 						}
 					}
+
+					free_wiz_string(&LOCAL_STR);
+					free_wiz_string(&PARAMETER_STR);
+					free_wiz_string(&SLUSH_STR);
 
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+				/*
 				else if(0 == strcmp("$print2" , get_cstr_wiz_string(&val->name))) /// for print usertype.ToString();
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string dir = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string dir = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					auto x = user_type::Find(&global, dir, &builder);
 
 					for (auto& ut : x.second) {
@@ -2032,7 +2095,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -2108,16 +2171,16 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
 					// to do, load data and events from other file!
 					user_type ut;
-					string fileName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder);
+					string fileName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder);
 					fileName = wiz::String::substring(fileName, 1, fileName.size() - 2);
-					string dirName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+					string dirName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 					user_type* utTemp = global.get_user_type_item_in_user_type(dirName)[0];
 
 
@@ -2184,7 +2247,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -2222,7 +2285,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$sort" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -2230,7 +2293,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					vector<SortInfo> siVec;
 					user_type* utTemp =
 						user_type::Find(&global,
-							ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder), &builder).second[0];
+							ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder), &builder).second[0];
 
 					vector<wiz::load_data::Type*> temp;
 
@@ -2275,7 +2338,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$sort2" , get_cstr_wiz_string(&val->name))) { // colName -> just one! ? 
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -2284,8 +2347,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					vector<SortInfo> siVec;
 					user_type* utTemp =
 						user_type::Find(&global,
-							ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder), &builder).second[0];
-					const string colName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+							ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder), &builder).second[0];
+					const string colName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					vector<wiz::load_data::Type*> temp;
 
@@ -2336,7 +2399,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 															/// condition = has just one? in one usertype!
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -2344,8 +2407,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					vector<SortInfo2> siVec;
 					user_type* utTemp =
 						user_type::Find(&global,
-							ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder), &builder).second[0];
-					const string colName = ToBool4(NULL, &global, val->get_user_type_list_in_user_type(1)->ToString(), _excuteData, &builder);
+							ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder), &builder).second[0];
+					const string colName = ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 1)->ToString(), _excuteData, &builder);
 
 					vector<wiz::load_data::Type*> temp;
 
@@ -2396,7 +2459,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				else if(0 == strcmp("$stable_sort" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
@@ -2406,7 +2469,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					vector<SortInfo> siVec;
 					user_type* utTemp =
 						user_type::Find(&global,
-							ToBool4(NULL, &global, val->get_user_type_list_in_user_type(0)->ToString(), _excuteData, &builder), &builder).second[0];
+							ToBool4(NULL, &global, get_user_type_list_in_user_type(val, 0)->ToString(), _excuteData, &builder), &builder).second[0];
 
 					vector<wiz::load_data::Type*> temp;
 
@@ -2451,12 +2514,12 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
-					_excuteData.info = top_wiz_stack_event_info(&eventStack);
+					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string temp = val->get_user_type_list_in_user_type(0)->ToString();
+					string temp = to_string_in_user_type(get_user_type_list_in_user_type(val, 0));
 					temp = ToBool4(NULL, &global, temp, _excuteData, &builder);
 
 					if (!top_wiz_stack_event_info(&eventStack).conditionStack.empty())
@@ -2494,7 +2557,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					if ("TRUE" == temp)
 					{
-						top_wiz_stack_event_info(&eventStack).nowUT.push(val->get_user_type_list_in_user_type(1));
+						top_wiz_stack_event_info(&eventStack).nowUT.push(get_user_type_list_in_user_type(val, 1));
 						//val = top_wiz_stack_event_info(&eventStack).nowUT.top()->get_user_type_list_in_user_type(0); 
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 						top_wiz_stack_event_info(&eventStack).userType_idx.push(0);
@@ -2522,7 +2585,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					if (!top_wiz_stack_event_info(&eventStack).conditionStack.empty() && "FALSE" == top_wiz_stack_event_info(&eventStack).conditionStack.top())
 					{
 						top_wiz_stack_event_info(&eventStack).conditionStack.top() = "TRUE";
-						top_wiz_stack_event_info(&eventStack).nowUT.push(val->get_user_type_list_in_user_type(0));
+						top_wiz_stack_event_info(&eventStack).nowUT.push(get_user_type_list_in_user_type(val, 0));
 						//val = top_wiz_stack_event_info(&eventStack).nowUT.top()->get_user_type_list_in_user_type(0); // empty chk
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 						top_wiz_stack_event_info(&eventStack).userType_idx.push(0);
@@ -2545,8 +2608,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 			}
 		}
 
-		printf("chk %d\n", size_wiz_stack_event_info(&eventStack));
-
 		if(info_chk) {
 			free_all_event_info(&info);	
 		}
@@ -2556,24 +2617,25 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 	{
 		free_wiz_string(&EMPTY_STR);
 		free_wiz_string(&ID_STR);
-		free_wiz_string(&LOCAL_STR);
+		free_wiz_string(&LOCAL_STR); free_wiz_string(&LOCAL_STR2);
 		free_wiz_string(&MAIN_STR);
 		free_wiz_string(&CALL_STR);
 		free_wiz_string(&IF_STR);
 		free_wiz_string(&ELSE_STR);
 		free_wiz_string(&EVENT_STR);
 		free_wiz_string(&ROOT_STR);
+		free_wiz_string(&TRUE_STR);
 
 		//
 		{
 			// todo - make free_all ?
 		}
-		free_wiz_map_wiz_string_and_user_type(&objectMap);
+		free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 		//
 		{
 
 		}
-		free_wiz_map_wiz_string_and_user_type(&moduleMap);
+		free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 
 		for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 			free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
@@ -2592,8 +2654,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 			free(temp);
 		}
 		free_wiz_map_wiz_string_and_int(&convert);
-		
-
 		free_wiz_vector_any(&_events);
 		shallow_free_user_type_in_user_type(&events);
 		shallow_free_user_type_in_user_type(&Main);
@@ -2676,7 +2736,7 @@ void test()
 		free_wiz_string(&fileName);
 		free_wiz_string(&fileName2);
 
-		free_user_type_in_user_type(&global);
+		
 	}
 
 	{
@@ -2687,7 +2747,7 @@ void test()
 		global = load_data_from_string_in_load_data(&str);
 
 		free_wiz_string(&str);
-		free_user_type_in_user_type(&global);
+		
 	}
 	{
 		// excute_module
@@ -2726,7 +2786,7 @@ void test_for_bool4(){
 		wiz_string_builder builder;
 		wiz_string EMPTY = make_wiz_string("", 0);
 		wiz_string name = make_wiz_string("x", 1);
-		wiz_string value = make_wiz_string("1", 1);
+		wiz_string value = make_wiz_string("TRUE", 1);
 		init_wiz_string(&str, text, strlen(text));
 		init_in_user_type(&global, &EMPTY);
 			
@@ -2744,7 +2804,7 @@ void test_for_bool4(){
 		free_wiz_string(&value);
 		free_wiz_string(&str);
 		free_wiz_string(&result);
-		free_user_type_in_user_type(&global);
+		
 		free_wiz_string_builder(&builder);
 		free_wiz_string(&EMPTY);
 		free_wiz_map_wiz_string_and_wiz_string(&excuteData.info.parameters);
@@ -2773,3 +2833,4 @@ int main(void)
 	getchar();
 	return 0;
 }
+
