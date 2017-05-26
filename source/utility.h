@@ -7,6 +7,8 @@
 #include "wiz_string_builder.h"
 #include "wiz_load_data_condition.h"
 
+wiz_string wiz_fgets(FILE* file);
+
 
 enum { TYPE_WIZ_INTEGER = 1, TYPE_WIZ_DOUBLE, TYPE_WIZ_STRING, TYPE_WIZ_DATE,
 				TYPE_WIZ_DATETIMEA, TYPE_WIZ_DATETIMEB};

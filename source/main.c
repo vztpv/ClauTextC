@@ -2816,10 +2816,13 @@ int main(void)
 {
 	user_type global;
 	wiz_string EMPTY_STR = make_empty_wiz_string();
-	wiz_string fileName = make_wiz_string_from_cstr("test.txt");
+	wiz_string fileName; // = make_wiz_string_from_cstr("test.txt");
 	ExcuteData excuteData;
 	wiz_string return_value;
 	
+	printf("fileName : ");
+	fileName = wiz_fgets(stdin);
+	printf("fileName is : %s\n", get_cstr_wiz_string(&fileName));
 
 	global = load_data_from_file_in_load_data(&fileName);
 
@@ -2828,7 +2831,6 @@ int main(void)
 	free_wiz_string(&fileName);
 	free_user_type_in_user_type(&global);
 	free_wiz_string(&return_value);
-
 
 	getchar();
 	return 0;

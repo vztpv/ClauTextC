@@ -2281,6 +2281,7 @@ user_type load_data_from_file_in_load_data(wiz_string* fileName)
 	if (NULL == file) {
 		wiz_string name = make_wiz_string_from_cstr("FILE_OPEN_ERROR");
 		init_in_user_type(&global, &name);
+		free_wiz_string(&name);
 		return global;
 	 }
 

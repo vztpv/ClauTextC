@@ -9,26 +9,21 @@
 
 wiz_string wiz_fgets(FILE* file)
 {
-	char* buffer;
-	int size = 1024;
+	wiz_string_builder builder;
 	int num = 0;
 	wiz_string result;
+	int ch=0;
 
-	buffer = malloc(sizeof(char) * size);
+	init_wiz_string_builder(&builder, 1024, "", 0);
 
-	while(NULL == fgets(buffer, size, file)) {
-		if (ferror(file)) { 
-			free(buffer);
-			printf("file has error!");
-			exit(-102);
-		}
-		free(buffer);
-		size = size * 2;
-		buffer = malloc(sizeof(char) * size);
+
+	while((ch = fgetc(file)) != '\n') {
+		append_char_wiz_string_builder(&builder, ch);
 	}
-	buffer[strlen(buffer) - 1] = '\0'; // remove enter key!
-	result = make_wiz_string_from_cstr(buffer);
-	free(buffer);
+	
+	result = make_wiz_string_from_cstr(str_wiz_string_builder(&builder, NULL), size_wiz_string_builder(&builder));
+	
+	free_wiz_string_builder(&builder);
 
 	return result;
 }
