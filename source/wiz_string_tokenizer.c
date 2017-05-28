@@ -11,7 +11,7 @@ void init_wiz_string_tokenizer(wiz_string_tokenizer* tokenizer, wiz_string* str,
 	int state = 0;
 	size_t i, j, k;
 
-	tokenizer->count = 0;
+	tokenizer->count = 0; 
 	tokenizer->option = option;
 	tokenizer->exist = 0;
 	init_wiz_vector_wiz_string(&(tokenizer->str), 1);
@@ -100,8 +100,6 @@ void init_wiz_string_tokenizer(wiz_string_tokenizer* tokenizer, wiz_string* str,
 			}
 		}
 	}
-
-
 }
 void free_wiz_string_tokenizer(wiz_string_tokenizer* tokenizer)
 {

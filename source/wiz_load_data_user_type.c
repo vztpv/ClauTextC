@@ -1,4 +1,5 @@
 
+#include "utility.h"
 #include "wiz_load_data_user_type.h"
 #include "wiz_string_tokenizer.h"
 #include "wiz_deck_pair_user_type_ptr_and_int.h"
@@ -728,7 +729,8 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 	wiz_vector_wiz_string strVec;
 	wiz_deck_pair_user_type_ptr_and_int utDeck;
 	pair_user_type_ptr_and_int utTemp;
-	wiz_string* position = _position;
+	wiz_string __position = make_wiz_string_from_other_wiz_string(_position);
+	wiz_string* position = &__position;
 	wiz_vector_any temp;
 	wiz_vector_any temp2;
 
@@ -738,7 +740,6 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 	init_wiz_string(&UT, "$ut", 3);
 	init_wiz_vector_wiz_string(&delim_vec, 1);
 	push_back_wiz_vector_wiz_string(&delim_vec, &delim);
-	init_wiz_string_tokenizer(&tokenizer, position, &delim_vec, builder, 1); // option : 1
 	init_wiz_vector_wiz_string(&strVec, 1);
 	init_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
 	init_wiz_vector_any(&temp, 1);
@@ -749,36 +750,34 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 			//position.erase(position.begin()); 
 			erase_wiz_string(position, 0);
 		}
+		
 		if (empty_wiz_string(position)) { 
 			//temp.push_back(global); 
 			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
-			break; 
 		}
 		if (0 == strcmp(get_cstr_wiz_string(position), ".")) { 
 			//temp.push_back(global); 
 			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
-			break;
 		}
 		if (0 == strcmp(get_cstr_wiz_string(position), "/./")) { 
 			//temp.push_back(global); 
 			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
-			break;
 		} // chk..
 		if (0 == strcmp(get_cstr_wiz_string(position), "/.")) {
 			//temp.push_back(global); 
 			exist = 1;
 			push_back_wiz_vector_any(&temp, (void*)global);
-			break; 
 		}
-		
 		if (starts_with_wiz_string(position, &start))
 		{
 			substr_and_assign_wiz_string(position, 3, size_wiz_string(position));
 		}
+		init_wiz_string_tokenizer(&tokenizer, position, &delim_vec, builder, 1); // option : 1
 
+		if (exist) { break; }
 		utTemp.first = global;
 		utTemp.second = 0;
 
@@ -791,6 +790,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 				//strVec.push_back(strTemp);
 				push_back_wiz_vector_wiz_string(&strVec, strTemp);
 			}
+
 
 			if ((size_wiz_vector_wiz_string(&strVec) >= 1) && 
 				(0 == strcmp(" ", get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, 
@@ -826,9 +826,10 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 			//reverse(strVec.begin(), strVec.end());
 			reverse_wiz_vector_wiz_string(&strVec);
 
-			for (int i = 0; i < count; ++i) {
+			for (i = 0; i < count; ++i) {
 				if (utTemp.first == NULL) {
 					chk = 1;
+					break;
 					// return{ 0, vector< UserType* >() };
 				}
 				//utTemp.first = utTemp.first->GetParent();
@@ -869,7 +870,7 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 				push_front_wiz_deck_pair_user_type_ptr_and_int(&utDeck, &pair_temp);
 			}
 			else if (utTemp.second < size_wiz_vector_wiz_string(&strVec)  && 
-				0 == strcmp(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, utTemp.second)), "$"))
+				0 == strcmp(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, utTemp.second)), "$")) // all
 			{
 				for (j = get_user_type_list_size_in_user_type(utTemp.first) - 1; j >= 0; --j) {
 					user_type* x = get_user_type_list_in_user_type(utTemp.first, j);
@@ -886,7 +887,8 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 
 				temp2 = get_user_type_item_in_user_type((user_type*)utTemp.first,
 					get_wiz_vector_wiz_string(&strVec, utTemp.second));
-				if (temp2.num == 0) {
+				if (size_wiz_vector_any(&temp2) > 0)
+				{
 					wiz_vector_any x = get_user_type_item_in_user_type(utTemp.first, get_wiz_vector_wiz_string(&strVec, utTemp.second));
 					for (j = size_wiz_vector_any(&x) - 1; j >= 0; --j) {
 						pair_user_type_ptr_and_int pair_temp;
@@ -934,6 +936,6 @@ pair_int_and_wiz_vector_any find_user_type_in_user_type(user_type* global, wiz_s
 	}
 	free_wiz_vector_wiz_string(&strVec);
 	free_wiz_deck_pair_user_type_ptr_and_int(&utDeck);
-	
+	free_wiz_string(&__position);
 	return result;
 }

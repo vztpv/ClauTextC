@@ -21,7 +21,7 @@ wiz_string wiz_fgets(FILE* file)
 		append_char_wiz_string_builder(&builder, ch);
 	}
 	
-	result = make_wiz_string_from_cstr(str_wiz_string_builder(&builder, NULL), size_wiz_string_builder(&builder));
+	result = make_wiz_string_from_cstr(str_wiz_string_builder(&builder, NULL));
 	
 	free_wiz_string_builder(&builder);
 

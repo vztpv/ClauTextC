@@ -123,7 +123,7 @@ wiz_string GetValueA(wiz_string* op,  wiz_string* var,  wiz_string* val, user_ty
 
 	return make_wiz_string("ERROR", 5);
 }
-wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,  wiz_string* var2,  wiz_string* position2,
+wiz_string GetValueB(wiz_string* op,  wiz_string* var1,  wiz_string* position1,  wiz_string* var2,  wiz_string* position2,
 	user_type* utPosition, user_type* global, wiz_string_builder* builder,  wiz_string* option) // = "FALSE")
 {
 	size_t i, j;
@@ -406,7 +406,7 @@ wiz_string GetValueB( wiz_string* op,  wiz_string* var1,  wiz_string* position1,
 	free_wiz_vector_item_type(&value2);
 	return result;
 }
-wiz_string GetValue3( wiz_string* op,  wiz_string* val,  wiz_string* dir, user_type* utPosition, user_type* global, wiz_string_builder* builder)
+wiz_string GetValue3(wiz_string* op,  wiz_string* val,  wiz_string* dir, user_type* utPosition, user_type* global, wiz_string_builder* builder)
 {
 	size_t i;
 	pair_int_and_wiz_vector_any x;

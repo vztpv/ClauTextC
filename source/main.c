@@ -130,7 +130,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 		wiz_vector_item_type x = get_item_in_user_type(get_user_type_list_in_user_type(eventPtr, i), &ID_STR);
 		if (!empty_wiz_vector_item_type(&x)) {
 			pair_wiz_string_and_int temp;
-			temp.first = get_wiz_vector_item_type(&x, 0)->value;
+			temp.first = (get_wiz_vector_item_type(&x, 0)->value);
 			temp.second = i;
 
 			insert_wiz_map_wiz_string_and_int(&convert, &temp, 0); // no balancing!
@@ -162,6 +162,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				free_wiz_string(&ELSE_STR);
 				free_wiz_string(&EVENT_STR);
 				free_wiz_string(&ROOT_STR);
+				free_wiz_string(&TRUE_STR);
 				{
 
 				}
@@ -197,7 +198,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 		}
 
 		free_wiz_vector_any(&temp);
-		remove_item_list_by_var_name_in_user_type(&global, &MAIN_STR, 0);
+		remove_item_list_by_var_name_in_user_type(&global, &MAIN_STR, 0); //?
 		{
 			int no;
 			event_info info;
@@ -284,7 +285,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 		{
 			if (size_wiz_stack_event_info(&eventStack) == 1)
 			{
-				module_value = top_wiz_stack_event_info(&eventStack)->return_value;
+				module_value = make_wiz_string_from_other_wiz_string(&top_wiz_stack_event_info(&eventStack)->return_value);
 			}
 			
 			free_all_event_info(top_wiz_stack_event_info(&eventStack));
@@ -295,7 +296,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 			continue;
 		}
 
-		{ /// has bug!! WARNNING!!
+		{ // has bug!! WARNNING!!
 			user_type* val = NULL;
 			if (size_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 1) {
 				if (get_user_type_list_size_in_user_type(get_user_type_list_in_user_type(eventPtr, no)) > 
@@ -320,26 +321,39 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							free_wiz_string(&EVENT_STR);
 							free_wiz_string(&ROOT_STR);
 							free_wiz_string(&TRUE_STR);
+
 							{
 
 							}
-							free_wiz_map_wiz_string_and_user_type(&objectMap);
+							free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 							{
 
 							}
-							free_wiz_map_wiz_string_and_user_type(&moduleMap);
+							free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 							free_wiz_string(&module_value);
 							for (i = 0; i < size_wiz_stack_event_info(&eventStack); ++i) {
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 							}
 							free_wiz_stack_event_info(&eventStack);
+							if (convert.count > 0) {
+								pair_wiz_string_and_int* temp = malloc(sizeof(pair_wiz_string_and_int) * convert.count);
+								int i;
+
+								inorder_wiz_string_and_int(&convert, temp); // rename to inorder_wiz_map_wiz_string_and_int!
+								for (i = 0; i < convert.count; ++i) {
+									free_wiz_string(&temp[i].first);
+								}
+
+								free(temp);
+							}
 							free_wiz_map_wiz_string_and_int(&convert);
 							free_wiz_vector_any(&_events);
 							shallow_free_user_type_in_user_type(&events);
 							shallow_free_user_type_in_user_type(&Main);
 							free_wiz_string_builder(&builder);
+							free_all_event_info(&info);
 						}
-						return make_wiz_string_from_cstr("ERROR not exist $if, front $else.");
+						return make_wiz_string_from_cstr("ERROR1 not exist $if, front $else.");
 					}
 					if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && equal_wiz_string(&val->name, &ELSE_STR) ) {
 						
@@ -369,13 +383,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 							}
 							free_wiz_stack_event_info(&eventStack);
+							
 							free_wiz_map_wiz_string_and_int(&convert);
 							free_wiz_vector_any(&_events);
 							shallow_free_user_type_in_user_type(&events);
 							shallow_free_user_type_in_user_type(&Main);
 							free_wiz_string_builder(&builder);
 						}
-						return make_wiz_string_from_cstr("ERROR not exist $if, front $else.");
+						return make_wiz_string_from_cstr("ERROR2 not exist $if, front $else.");
 					}
 				}
 				else {
@@ -431,13 +446,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 									free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 								}
 								free_wiz_stack_event_info(&eventStack);
+								
 								free_wiz_map_wiz_string_and_int(&convert);
 								free_wiz_vector_any(&_events);
 								shallow_free_user_type_in_user_type(&events);
 								shallow_free_user_type_in_user_type(&Main);
 								free_wiz_string_builder(&builder);
 							}
-						return make_wiz_string_from_cstr("ERROR not exist $if, front $else.");
+						return make_wiz_string_from_cstr("ERROR3 not exist $if, front $else.");
 					}
 					if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && equal_wiz_string(&val->name, &ELSE_STR)) {
 						// free
@@ -466,13 +482,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 							}
 							free_wiz_stack_event_info(&eventStack);
+							
 							free_wiz_map_wiz_string_and_int(&convert);
 							free_wiz_vector_any(&_events);
 							shallow_free_user_type_in_user_type(&events);
 							shallow_free_user_type_in_user_type(&Main);
 							free_wiz_string_builder(&builder);
 						}
-						return make_wiz_string_from_cstr("ERROR not exist $if, front $else.");
+						return make_wiz_string_from_cstr("ERROR4 not exist $if, front $else.");
 					}
 				}
 				else // same to else if( top_wiz_stack_event_info(&eventStack).nowUT.empty() ), also same to else if ( 1 == top_wiz_stack_event_info(&eventStack).userType_idx.size() )
@@ -512,13 +529,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 										free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 									}
 									free_wiz_stack_event_info(&eventStack);
+									
 									free_wiz_map_wiz_string_and_int(&convert);
 									free_wiz_vector_any(&_events);
 									shallow_free_user_type_in_user_type(&events);
 									shallow_free_user_type_in_user_type(&Main);
 									free_wiz_string_builder(&builder);
 								}
-							return make_wiz_string_from_cstr("ERROR not exist $if, front $else.");
+							return make_wiz_string_from_cstr("ERROR5 not exist $if, front $else.");
 						}
 						if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && equal_wiz_string(&val->name, &ELSE_STR)) {
 							// free
@@ -547,13 +565,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 									free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 								}
 								free_wiz_stack_event_info(&eventStack);
+								
 								free_wiz_map_wiz_string_and_int(&convert);
 								free_wiz_vector_any(&_events);
 								shallow_free_user_type_in_user_type(&events);
 								shallow_free_user_type_in_user_type(&Main);
 								free_wiz_string_builder(&builder);
 							}
-							return make_wiz_string_from_cstr("ERROR not exist $if, front $else.");
+							return make_wiz_string_from_cstr("ERROR6 not exist $if, front $else.");
 						}
 					}
 					else {
@@ -564,6 +583,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 			while (val != NULL)
 			{
+
 				// ToDo -$filter, $map, $reduce?
 				// list = { base_tax } // /root/ X , root/ O
 				// $filter = { utDir = { /./test } 
@@ -1355,7 +1375,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 						if (!empty_wiz_vector_item_type(&temp)) {
 							wiz_vector_item_type temp = get_item_in_user_type(val, &ID_STR);
-							info.id = get_wiz_vector_item_type(&temp, 0)->value;
+							info.id = make_wiz_string_from_other_wiz_string(&get_wiz_vector_item_type(&temp, 0)->value);
 							free_wiz_vector_item_type(&temp);
 						}
 						else {
@@ -1390,7 +1410,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					///info.nowUT.clear();
 
 
-					info2 = info;
+					info2 = info; // chk!! bug!?
 
 
 					if (!(equal_wiz_string(&info.id, &top_wiz_stack_event_info(&eventStack)->id))) {
@@ -1409,7 +1429,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								pair_wiz_string_and_wiz_string pairTemp;
 								_excuteData.info = info2;
 								temp = ToBool4(NULL, &global, &get_item_list_in_user_type(val, j)->value, &_excuteData, &builder);
-								pairTemp.first = get_item_list_in_user_type(val, j)->name;
+								pairTemp.first = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(val, j)->name);
 								pairTemp.second = temp;
 
 								insert_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp, 0);
@@ -1426,7 +1446,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								temp = ToBool4(NULL, &global, &param1, &_excuteData, &builder);
 								free_wiz_string(&param1);
 
-								pairTemp.first = get_user_type_list_in_user_type(val, j)->name;
+								pairTemp.first = make_wiz_string_from_other_wiz_string(&get_user_type_list_in_user_type(val, j)->name);
 								pairTemp.second = temp;
 
 								insert_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp, 0);
@@ -1448,7 +1468,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								temp = ToBool4(NULL, &global, &get_item_list_in_user_type(val, j)->value, &_excuteData, &builder);
 
 
-								pairTemp.first = get_item_list_in_user_type(val, j)->name;
+								pairTemp.first = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(val, j)->name);
 								pairTemp.second = temp;
 
 								set_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp);
@@ -1471,7 +1491,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								temp = ToBool4(NULL, &global, &utStr, &_excuteData, &builder);
 								free_wiz_string(&utStr);
 
-								pairTemp.first = get_user_type_list_in_user_type(val, j)->name;
+								pairTemp.first = make_wiz_string_from_other_wiz_string(&get_user_type_list_in_user_type(val, j)->name);
 								pairTemp.second = temp;
 
 								set_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp);
@@ -1515,7 +1535,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						for (i = 0; i < get_user_type_list_size_in_user_type(get_user_type_list_in_user_type(eventPtr, no)); ++i) {
 							if (0 == strcmp(get_cstr_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), i)->name), "$local")) {
 								for (j = 0; j < get_item_list_size_in_user_type(get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), i)); ++j) {
-									wiz_string name = get_item_list_in_user_type(get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), i), j)->value;
+									wiz_string name = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), i), j)->value);
 									wiz_string value = EMPTY_STR;
 									pair_wiz_string_and_wiz_string pairTemp = { name, value };
 
@@ -1539,7 +1559,9 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				}
 				else if(0 == strcmp("$assign" , get_cstr_wiz_string(&val->name))) /// -> assign2?
 				{
-					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
+					ExcuteData _excuteData; _excuteData.valid = 1; 
+					if(NULL == excuteData) { _excuteData.depth = 0; } 
+					else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
 					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
@@ -1562,6 +1584,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							free_wiz_string(&temp.first);
 						}
 						else {
+							printf("%s\n", get_cstr_wiz_string(&data));
 							set_data_in_load_data(&global, &dir.first, &dir.second, &data, &TRUE_STR, &_excuteData, &builder);
 						}
 
@@ -1628,7 +1651,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
-				else if(0 == strcmp("$assign_global" , get_cstr_wiz_string(&val->name))) // 주의!! dir=> dir/name ( dir= { name = val } } , @�??�에 붙여???�다. 
+				else if(0 == strcmp("$assign_global" , get_cstr_wiz_string(&val->name))) // 주의!! dir=> dir/name ( dir= { name = val } } , @�??�에 붙여???�다. 
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
@@ -2228,13 +2251,14 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					system("cls");
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
-				}
+				}*/
 				else if(0 == strcmp("$_getch" , get_cstr_wiz_string(&val->name)))
 				{
 					_getch();
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+				/*
 				else if(0 == strcmp("$input" , get_cstr_wiz_string(&val->name)))
 				{
 					string str;
@@ -2271,6 +2295,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					pop_wiz_stack_event_info(&eventStack);
 					break;
 				}
+				*/
 				else if(0 == strcmp("$parameter" , get_cstr_wiz_string(&val->name)))
 				{
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
@@ -2281,6 +2306,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+				/*
 				// make sort stable.
 				else if(0 == strcmp("$sort" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
@@ -2600,7 +2626,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					}
 				}*/
 				else { //
-					printf("it does not work : %s\n", get_cstr_wiz_string(&val->name));
+					printf("it does not work : %s\n", get_cstr_wiz_string(&val->name)); //
 
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
@@ -2633,7 +2659,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 		free_all_wiz_map_wiz_string_and_user_type(&objectMap);
 		//
 		{
-
+			// todo - make free_all ?
 		}
 		free_all_wiz_map_wiz_string_and_user_type(&moduleMap);
 
@@ -2812,27 +2838,32 @@ void test_for_bool4(){
 	}
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
 	user_type global;
 	wiz_string EMPTY_STR = make_empty_wiz_string();
-	wiz_string fileName; // = make_wiz_string_from_cstr("test.txt");
+	wiz_string fileName; // = make_wiz_string_from_cstr("test.txt"); //
 	ExcuteData excuteData;
 	wiz_string return_value;
-	
-	printf("fileName : ");
-	fileName = wiz_fgets(stdin);
-	printf("fileName is : %s\n", get_cstr_wiz_string(&fileName));
 
+	if (1 == argc) {
+		printf("fileName : ");
+		fileName = wiz_fgets(stdin);
+	}
+	else if (2 <= argc) {
+		fileName = make_wiz_string_from_cstr(argv[1]);
+	}
+
+	printf("fileName is : %s\n", get_cstr_wiz_string(&fileName));
 	global = load_data_from_file_in_load_data(&fileName);
 
 	return_value = excute_module(&EMPTY_STR, &global, NULL);
+	printf("%s\n", get_cstr_wiz_string(&return_value));
 
 	free_wiz_string(&fileName);
 	free_user_type_in_user_type(&global);
 	free_wiz_string(&return_value);
 
-	getchar();
 	return 0;
 }
 

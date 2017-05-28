@@ -28,7 +28,9 @@ struct event_info
 void init_event_info(event_info* info)
 {
 	info->valid = 1;
+
 	info->eventUT = NULL;
+
 	init_wiz_stack_any(&info->nowUT, 1);
 	init_wiz_stack_size_t(&info->userType_idx, 1);
 	init_wiz_map_wiz_string_and_wiz_string(&info->parameters);
@@ -121,14 +123,14 @@ void free_all_event_info(event_info* info)
 
 
 	info->valid = 0;
-	info->eventUT = NULL; //
+	//info->eventUT; //
 
 	free_wiz_stack_any(&info->nowUT);
 	free_wiz_stack_size_t(&info->userType_idx);
 	//
 	{//chk
 		if (info->parameters.count != 0) {
-			pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->parameters.count));
+	    	pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->parameters.count));
 			inorder_wiz_string_and_wiz_stirng(&info->parameters, temp);
 			for (i = 0; i < info->parameters.count; ++i) {
 				free_wiz_string(&temp[i].first);
@@ -2157,7 +2159,8 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 				}
 				else if (comp_wiz_string_and_cstr(get_wiz_stack_wiz_string(&operandStack, i), "{")) {
 					(*top_wiz_stack_int(&chkBrace))++;
-					push_wiz_stack_int(&chkBrace, 0);
+					int x = 0;
+					push_wiz_stack_int(&chkBrace, &x);
 				}
 				else {
 					(*top_wiz_stack_int(&chkBrace))++;
