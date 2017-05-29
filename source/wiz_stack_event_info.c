@@ -35,6 +35,7 @@ void FORM(init_wiz_stack_, event_info)(FORM(wiz_stack_, event_info)* stack, size
 void FORM(free_wiz_stack_, event_info)(FORM(wiz_stack_, event_info)* stack)
 {
 	free_wiz_vector_event_info(&(stack->stack));
+	stack->count = 0;
 }
 
 void FORM(push_wiz_stack_, event_info)(FORM(wiz_stack_, event_info)* stack, event_info* val)

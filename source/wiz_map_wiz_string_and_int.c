@@ -78,8 +78,11 @@ void FORM(init_wiz_map_, wiz_string_and_int)(FORM(wiz_map_, wiz_string_and_int)*
 }
 void FORM(free_wiz_map_, wiz_string_and_int)(FORM(wiz_map_, wiz_string_and_int)* _map)
 {
-	remove_all_wiz_string_and_int(_map->root);
-	_map->count = 0;
+	if (NULL != _map->root) {
+		remove_all_wiz_string_and_int(_map->root);
+		_map->root = NULL;
+		_map->count = 0;
+	}
 }
 
 void FORM(balancing_wiz_map_, wiz_string_and_int)(FORM(wiz_map_, wiz_string_and_int)* _map)

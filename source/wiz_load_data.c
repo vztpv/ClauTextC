@@ -65,10 +65,10 @@ event_info deep_copy_event_info(event_info* info) //chk
 	}
 
 	init_wiz_map_wiz_string_and_wiz_string(&copyResult.parameters);
-	{
+	if (info->parameters.count != 0) {
 		pair_wiz_string_and_wiz_string* arr = malloc(sizeof(pair_wiz_string_and_wiz_string) * info->parameters.count);
 
-		inorder_wiz_string_and_wiz_stirng(&info->parameters, arr);
+		inorder_wiz_string_and_wiz_string(&info->parameters, arr);
 
 		for (i = 0; i < info->parameters.count; ++i) {
 			pair_wiz_string_and_wiz_string temp;
@@ -82,10 +82,10 @@ event_info deep_copy_event_info(event_info* info) //chk
 	}
 
 	init_wiz_map_wiz_string_and_wiz_string(&copyResult.locals);
-	{
+	if (info->locals.count != 0) {
 		pair_wiz_string_and_wiz_string* arr = malloc(sizeof(pair_wiz_string_and_wiz_string) * info->locals.count);
 
-		inorder_wiz_string_and_wiz_stirng(&info->locals, arr);
+		inorder_wiz_string_and_wiz_string(&info->locals, arr);
 
 		for (i = 0; i < info->locals.count; ++i) {
 			pair_wiz_string_and_wiz_string temp;
@@ -131,7 +131,7 @@ void free_all_event_info(event_info* info)
 	{//chk
 		if (info->parameters.count != 0) {
 	    	pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->parameters.count));
-			inorder_wiz_string_and_wiz_stirng(&info->parameters, temp);
+			inorder_wiz_string_and_wiz_string(&info->parameters, temp);
 			for (i = 0; i < info->parameters.count; ++i) {
 				free_wiz_string(&temp[i].first);
 				free_wiz_string(&temp[i].second);
@@ -144,7 +144,7 @@ void free_all_event_info(event_info* info)
 	{//chk
 		if (info->locals.count != 0) {
 			pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->locals.count));
-			inorder_wiz_string_and_wiz_stirng(&info->locals, temp);
+			inorder_wiz_string_and_wiz_string(&info->locals, temp);
 			for (i = 0; i < info->locals.count; ++i) {
 				free_wiz_string(&temp[i].first);
 				free_wiz_string(&temp[i].second);
@@ -1177,19 +1177,19 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 }
 	 else if (strcmp("$get" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x = top_wiz_stack_wiz_string(operandStack);
+		 wiz_string x = *top_wiz_stack_wiz_string(operandStack);
 		 wiz_string NOW_TEXT;
 		 pop_wiz_stack_wiz_string(operandStack);
 
 		 init_wiz_string(&NOW_TEXT, "now.", 4);
 
 		 if ('@' == get_cstr_wiz_string(&NOW_TEXT)[0]) { // chk..
-			 erase_wiz_string(x, 0);
+			 erase_wiz_string(&x, 0);
 		 }
 
-		 if (starts_with_wiz_string(x, &NOW_TEXT) && NULL != now)
+		 if (starts_with_wiz_string(&x, &NOW_TEXT) && NULL != now)
 		 {
-			 substr_and_assign_wiz_string(x, 4, size_wiz_string(x));
+			 substr_and_assign_wiz_string(&x, 4, size_wiz_string(&x));
 
 			 clear_wiz_string_builder(builder);
 
@@ -1197,38 +1197,50 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 append_char_wiz_string_builder(builder, '.');
 			 append_char_wiz_string_builder(builder, '/');
 
-			 append_wiz_string_builder(builder, get_cstr_wiz_string(x), size_wiz_string(x));
+			 append_wiz_string_builder(builder, get_cstr_wiz_string(&x), size_wiz_string(&x));
 
-			 free_wiz_string(x);
+			 free_wiz_string(&x);
 
-			 init_wiz_string(x, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+			 init_wiz_string(&x, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 
-			 if ('/' == get_cstr_wiz_string(x)[0])
+			 if ('/' == get_cstr_wiz_string(&x)[0])
 			 {
-				 wiz_string temp = Find(now, x, builder);
-				 if (!empty_wiz_string(&temp)) { *x = temp; }
+				 wiz_string temp = Find(now, &x, builder);
+				 if (!empty_wiz_string(&temp)) {
+					 free_wiz_string(&x);
+					 x = temp;
+				 }
 			 }
 		 }
 		 else {
-			 if ('/' == get_cstr_wiz_string(x)[0])
+			 if ('/' == get_cstr_wiz_string(&x)[0])
 			 {
-				 wiz_string temp = Find(global, x, builder);
-				 if (!empty_wiz_string(&temp)) { *x = temp; }
+				 wiz_string temp = Find(global, &x, builder);
+				 if (!empty_wiz_string(&temp)) { 
+					 free_wiz_string(&x);
+					 x = temp; 
+				 }
 			 }
 		 }
 
 		 {
-			 wiz_string temp = FindParameters(&excuteData->info.parameters, x);
-			 if (!empty_wiz_string(&temp)) { *x = temp; }
+			 wiz_string temp = FindParameters(&excuteData->info.parameters, &x);
+			 if (!empty_wiz_string(&temp)) {
+				 free_wiz_string(&x);
+				 x = temp;
+			 }
 		 }
 		 {
-			 wiz_string temp = FindLocals(&excuteData->info.locals, x);
-			 if (!empty_wiz_string(&temp)) { *x = temp; }
+			 wiz_string temp = FindLocals(&excuteData->info.locals, &x);
+			 if (!empty_wiz_string(&temp)) {
+				 free_wiz_string(&x);
+				 x = temp;
+			 }
 		 }
 
 		 free_wiz_string(&NOW_TEXT);
 
-		 push_wiz_stack_wiz_string(operandStack, x);
+		 push_wiz_stack_wiz_string(operandStack, &x);
 	 }
 	 else if (strcmp("$size" , get_cstr_wiz_string(str)) == 0)
 	 {
@@ -2117,9 +2129,13 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 					return result;
 				}
 
+				{
+					wiz_string* temp = get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2);
+					free_wiz_string(temp);
+				}
 				*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2) =
 					*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 1);
-				free_wiz_string(top_wiz_stack_wiz_string(&operandStack));
+
 				pop_wiz_stack_wiz_string(&operandStack); // } ?
 			}
 		}

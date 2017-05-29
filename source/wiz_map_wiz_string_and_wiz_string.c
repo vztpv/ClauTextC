@@ -53,7 +53,7 @@ void _inorder_wiz_string_and_wiz_string(FORM(binary_node_, wiz_string_and_wiz_st
 	_inorder_wiz_string_and_wiz_string(node->right, arr, count);
 }
 
-void FORM(inorder_, wiz_string_and_wiz_stirng)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string arr[])
+void FORM(inorder_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string arr[])
 {
 	size_t count = 0;
 
@@ -82,8 +82,11 @@ void FORM(init_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_an
 }
 void FORM(free_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map)
 {
-	remove_all_wiz_string_and_wiz_string(_map->root, 0);
-	_map->count = 0;
+	if (NULL != _map->root) {
+		remove_all_wiz_string_and_wiz_string(_map->root, 0);
+		_map->root = NULL;
+		_map->count = 0;
+	}
 }
 
 void FORM(balancing_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map)
@@ -181,7 +184,7 @@ int FORM(get_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_
 }
 
 
-int FORM(set_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val)
+int FORM(set_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val, int option)
 {
 	FORM(binary_node_, wiz_string_and_wiz_string)* temp = _map->root;
 
@@ -197,6 +200,11 @@ int FORM(set_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_
 			temp = temp->left;
 		}
 		else {
+			if (1 == option) {
+				free_wiz_string(&temp->val.first);
+				free_wiz_string(&temp->val.second);
+			}
+			temp->val.first = val->first;
 			temp->val.second = val->second;
 			return 1;
 		}
@@ -235,7 +243,10 @@ int FORM(empty_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_an
 
 void FORM(free_all_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map)
 {
-	remove_all_wiz_string_and_wiz_string(_map->root, 1);
-	_map->count = 0;
+	if (NULL != _map->root) {
+		remove_all_wiz_string_and_wiz_string(_map->root, 1);
+		_map->root = NULL;
+		_map->count = 0;
+	}
 }
 

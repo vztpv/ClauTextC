@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <conio.h>
 
 // wiz_string
 #include "wiz_string.h"
@@ -45,6 +45,7 @@
 
 wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* excuteData)
 {
+	int exit = 0;
 	int i, j;
 	user_type global = *_global;
 	wiz_map_wiz_string_and_user_type objectMap; // string -> user_type
@@ -269,7 +270,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 		int state = 0; 
 		int no;
 
-		
 		temp.first = ID_STR;
 
 		get_wiz_map_wiz_string_and_wiz_string(&info.parameters, &temp);
@@ -306,7 +306,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx));
 
 					if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) >= 1 && equal_wiz_string(&val->name, &ELSE_STR)
-						&& equal_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no),
+						&& !equal_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no),
 							*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) - 1)->name, &IF_STR) ) {
 						
 						// free
@@ -355,7 +355,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						}
 						return make_wiz_string_from_cstr("ERROR1 not exist $if, front $else.");
 					}
-					if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && equal_wiz_string(&val->name, &ELSE_STR) ) {
+					if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 
+						&& equal_wiz_string(&val->name, &ELSE_STR) ) {
 						
 						// free
 						{
@@ -383,12 +384,23 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 							}
 							free_wiz_stack_event_info(&eventStack);
-							
+							if (convert.count > 0) {
+								pair_wiz_string_and_int* temp = malloc(sizeof(pair_wiz_string_and_int) * convert.count);
+								int i;
+
+								inorder_wiz_string_and_int(&convert, temp); // rename to inorder_wiz_map_wiz_string_and_int!
+								for (i = 0; i < convert.count; ++i) {
+									free_wiz_string(&temp[i].first);
+								}
+
+								free(temp);
+							}
 							free_wiz_map_wiz_string_and_int(&convert);
 							free_wiz_vector_any(&_events);
 							shallow_free_user_type_in_user_type(&events);
 							shallow_free_user_type_in_user_type(&Main);
 							free_wiz_string_builder(&builder);
+							free_all_event_info(&info);
 						}
 						return make_wiz_string_from_cstr("ERROR2 not exist $if, front $else.");
 					}
@@ -417,7 +429,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					val = get_user_type_list_in_user_type(top_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT), *top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx));
 
 					if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) >= 1 && equal_wiz_string(&val->name, &ELSE_STR)
-						&& equal_wiz_string(&get_user_type_list_in_user_type(top_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT), 
+						&& !equal_wiz_string(&get_user_type_list_in_user_type(top_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT), 
 							(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) - 1))->name, &IF_STR)
 						) {
 						// free
@@ -447,6 +459,18 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								}
 								free_wiz_stack_event_info(&eventStack);
 								
+								free_all_event_info(&info);
+								if (convert.count > 0) {
+									pair_wiz_string_and_int* temp = malloc(sizeof(pair_wiz_string_and_int) * convert.count);
+									int i;
+
+									inorder_wiz_string_and_int(&convert, temp); // rename to inorder_wiz_map_wiz_string_and_int!
+									for (i = 0; i < convert.count; ++i) {
+										free_wiz_string(&temp[i].first);
+									}
+
+									free(temp);
+								}
 								free_wiz_map_wiz_string_and_int(&convert);
 								free_wiz_vector_any(&_events);
 								shallow_free_user_type_in_user_type(&events);
@@ -455,7 +479,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							}
 						return make_wiz_string_from_cstr("ERROR3 not exist $if, front $else.");
 					}
-					if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && equal_wiz_string(&val->name, &ELSE_STR)) {
+					if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && 
+						equal_wiz_string(&val->name, &ELSE_STR)) {
 						// free
 						{
 							free_wiz_string(&EMPTY_STR);
@@ -482,7 +507,18 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 							}
 							free_wiz_stack_event_info(&eventStack);
-							
+							free_all_event_info(&info);
+							if (convert.count > 0) {
+								pair_wiz_string_and_int* temp = malloc(sizeof(pair_wiz_string_and_int) * convert.count);
+								int i;
+
+								inorder_wiz_string_and_int(&convert, temp); // rename to inorder_wiz_map_wiz_string_and_int!
+								for (i = 0; i < convert.count; ++i) {
+									free_wiz_string(&temp[i].first);
+								}
+
+								free(temp);
+							}
 							free_wiz_map_wiz_string_and_int(&convert);
 							free_wiz_vector_any(&_events);
 							shallow_free_user_type_in_user_type(&events);
@@ -501,7 +537,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 						if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) >= 1 && 
 							equal_wiz_string(&val->name, &ELSE_STR)
-							&& equal_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no),
+							&& !equal_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no),
 								*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) - 1)->name, &IF_STR)) {
 							// free
 								{
@@ -529,7 +565,19 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 										free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 									}
 									free_wiz_stack_event_info(&eventStack);
-									
+
+									free_all_event_info(&info);
+									if (convert.count > 0) {
+										pair_wiz_string_and_int* temp = malloc(sizeof(pair_wiz_string_and_int) * convert.count);
+										int i;
+
+										inorder_wiz_string_and_int(&convert, temp); // rename to inorder_wiz_map_wiz_string_and_int!
+										for (i = 0; i < convert.count; ++i) {
+											free_wiz_string(&temp[i].first);
+										}
+
+										free(temp);
+									}
 									free_wiz_map_wiz_string_and_int(&convert);
 									free_wiz_vector_any(&_events);
 									shallow_free_user_type_in_user_type(&events);
@@ -538,7 +586,8 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								}
 							return make_wiz_string_from_cstr("ERROR5 not exist $if, front $else.");
 						}
-						if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 && equal_wiz_string(&val->name, &ELSE_STR)) {
+						if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) == 0 
+							&& equal_wiz_string(&val->name, &ELSE_STR)) {
 							// free
 							{
 								free_wiz_string(&EMPTY_STR);
@@ -565,7 +614,19 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 									free_all_event_info(get_wiz_stack_event_info(&eventStack, i));
 								}
 								free_wiz_stack_event_info(&eventStack);
-								
+								free_all_event_info(&info);
+
+								if (convert.count > 0) {
+									pair_wiz_string_and_int* temp = malloc(sizeof(pair_wiz_string_and_int) * convert.count);
+									int i;
+
+									inorder_wiz_string_and_int(&convert, temp); // rename to inorder_wiz_map_wiz_string_and_int!
+									for (i = 0; i < convert.count; ++i) {
+										free_wiz_string(&temp[i].first);
+									}
+
+									free(temp);
+								}
 								free_wiz_map_wiz_string_and_int(&convert);
 								free_wiz_vector_any(&_events);
 								shallow_free_user_type_in_user_type(&events);
@@ -1361,6 +1422,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				if (0 == strcmp("$call", get_cstr_wiz_string(&val->name))) {
 					event_info info2; //
 					ExcuteData _excuteData; _excuteData.valid = 1;
+					int isRecursiveCall = 0;
 					if (NULL == excuteData) { _excuteData.depth = 0; }
 					else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
@@ -1409,18 +1471,22 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					init_wiz_stack_any(&info.nowUT, 1);
 					///info.nowUT.clear();
 
-
 					info2 = info; // chk!! bug!?
 
-
-					if (!(equal_wiz_string(&info.id, &top_wiz_stack_event_info(&eventStack)->id))) {
+					if (!(equal_wiz_string(&info.id, &top_wiz_stack_event_info(&eventStack)->id))) {	
 						info.parameters.root = NULL;
 						info.parameters.count = 0;
+					}
+					else {
+						info.parameters.root = NULL;
+						info.parameters.count = 0;
+						isRecursiveCall = 1;
 					}
 					info.conditionStack.count = 0;
 					info.conditionStack.stack.num = 0;
 					info.conditionStack.stack.vec = NULL;
 
+					init_wiz_stack_wiz_string(&info.conditionStack, 1);
 					//
 					if (!(equal_wiz_string(&info.id, &top_wiz_stack_event_info(&eventStack)->id))) {
 						for (j = 0; j < get_item_list_size_in_user_type(val); ++j) {
@@ -1433,7 +1499,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								pairTemp.second = temp;
 
 								insert_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp, 0);
-								// info.parameters.insert(make_pair(val->get_item_list_in_user_type(j).GetName(), temp));
 							}
 						}
 						for (j = 0; j < get_user_type_list_size_in_user_type(val); ++j) {
@@ -1450,7 +1515,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								pairTemp.second = temp;
 
 								insert_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp, 0);
-								//info.parameters.insert(make_pair(get_user_type_list_in_user_type(val, j)->GetName(), temp));
 							}
 						}
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
@@ -1471,12 +1535,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								pairTemp.first = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(val, j)->name);
 								pairTemp.second = temp;
 
-								set_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp);
-
-								//	if ((x = info.parameters.find(val->get_item_list_in_user_type(j).GetName())) != info.parameters.end())
-								//	{
-								//		x->second = temp;
-								//	}
+								insert_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp, 0);
 							}
 						}
 						if (get_user_type_list_size_in_user_type(val) > 0) {
@@ -1494,7 +1553,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 								pairTemp.first = make_wiz_string_from_other_wiz_string(&get_user_type_list_in_user_type(val, j)->name);
 								pairTemp.second = temp;
 
-								set_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp);
+								insert_wiz_map_wiz_string_and_wiz_string(&info.parameters, &pairTemp, 0);
 							}
 						}
 
@@ -1548,12 +1607,13 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 
 					{
 						free_all_wiz_map_wiz_string_and_wiz_string(&info2.parameters);
+
 						for (i = 0; i < info2.conditionStack.count; ++i) {
 							free_wiz_string(get_wiz_stack_wiz_string(&info2.conditionStack, i));
 						}
 						free_wiz_stack_wiz_string(&info2.conditionStack);
 					}
-					info_chk = 0;
+					info_chk = 0; // 
 					push_wiz_stack_event_info(&eventStack, &info);
 					break;
 				}
@@ -1579,12 +1639,12 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							temp.first = substr_wiz_string(&dir.second, 7, size_wiz_string(&dir.second));
 							temp.second = data;
 
-							set_wiz_map_wiz_string_and_wiz_string(&top_wiz_stack_event_info(&eventStack)->locals, &temp);
+							set_wiz_map_wiz_string_and_wiz_string(&top_wiz_stack_event_info(&eventStack)->locals, &temp, 1);
 							
 							free_wiz_string(&temp.first);
 						}
 						else {
-							printf("%s\n", get_cstr_wiz_string(&data));
+						//	printf("%s\n", get_cstr_wiz_string(&data));
 							set_data_in_load_data(&global, &dir.first, &dir.second, &data, &TRUE_STR, &_excuteData, &builder);
 						}
 
@@ -2536,87 +2596,134 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
-				else if(0 == strcmp("$if" , get_cstr_wiz_string(&val->name))) // ToDo!!
+				*/
+				// ToDo - $if, $else!
+				else if(0 == strcmp("$if", get_cstr_wiz_string(&val->name))) // ToDo!!
 				{
-					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
+					wiz_string TRUE_STR = make_wiz_string_from_cstr("TRUE");
+					wiz_string FALSE_STR = make_wiz_string_from_cstr("FALSE");
+					ExcuteData _excuteData; _excuteData.valid = 1;
+					wiz_string temp;
+					wiz_string temp2;
+					int pass = 0;
+
+					if(NULL == excuteData) { _excuteData.depth = 0; } 
+					else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
 					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
 
-					string temp = to_string_in_user_type(get_user_type_list_in_user_type(val, 0));
-					temp = ToBool4(NULL, &global, temp, _excuteData, &builder);
+					temp = to_string_in_user_type(get_user_type_list_in_user_type(val, 0), &builder);
+					
+					temp2 = ToBool4(NULL, &global, &temp, &_excuteData, &builder);
+					
+					free_wiz_string(&temp);
+					temp = temp2;
 
-					if (!top_wiz_stack_event_info(&eventStack).conditionStack.empty())
+					if (!empty_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack))
 					{
-						if ("TRUE" == temp && top_wiz_stack_event_info(&eventStack).conditionStack.top() == "FALSE")
+						if (equal_wiz_string(&TRUE_STR, &temp) &&
+							equal_wiz_string(top_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack), &FALSE_STR)
+							)
 						{
-							temp = "FALSE";
+							free_wiz_string(&temp);
+							temp = make_wiz_string_from_other_wiz_string(&FALSE_STR);
 						}
-						else if ("FALSE" == temp && top_wiz_stack_event_info(&eventStack).conditionStack.top() == "FALSE")
+						else if (equal_wiz_string(&FALSE_STR, &temp) &&
+							equal_wiz_string(top_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack), &FALSE_STR)
+							)
 						{
-							temp = "FALSE";
+							free_wiz_string(&temp);
+							temp = make_wiz_string_from_other_wiz_string(&FALSE_STR);
 						}
-						else if (!top_wiz_stack_event_info(&eventStack).nowUT.empty() && top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1 < top_wiz_stack_event_info(&eventStack).nowUT.top()->get_user_type_list_size_in_user_type()
-							&& (top_wiz_stack_event_info(&eventStack).nowUT.top()->get_user_type_list_in_user_type(top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1)->GetName() == "$else"))
+						else if (!empty_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT) &&
+							*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1 
+							< get_user_type_list_size_in_user_type(top_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT))
+							&& 0 == strcmp(get_cstr_wiz_string(&get_user_type_list_in_user_type(top_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT),
+								*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1)->name), "$else")
+							)
 						{
-							top_wiz_stack_event_info(&eventStack).conditionStack.push(temp);
+							push_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack, &temp);
+							pass = 1;
 						}
-						else if ("TRUE" == temp)
+						else if (equal_wiz_string(&TRUE_STR, &temp))
 						{
-							top_wiz_stack_event_info(&eventStack).conditionStack.push(temp);
+							push_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack, &temp);
+							pass = 1;
 						}
 					}
 					else
 					{
-						if (top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1 < get_user_type_list_in_user_type(eventPtr, no)->get_user_type_list_size_in_user_type() &&
-							get_user_type_list_in_user_type(eventPtr, no)->get_user_type_list_in_user_type(top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1)->GetName() == "$else")
+						if (*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1 
+							< get_user_type_list_size_in_user_type(get_user_type_list_in_user_type(eventPtr, no))
+							&& 0 == strcmp(get_cstr_wiz_string(&get_user_type_list_in_user_type(get_user_type_list_in_user_type(eventPtr, no), 
+								*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx) + 1)->name), "$else")
+							)
 						{
-							top_wiz_stack_event_info(&eventStack).conditionStack.push(temp);
+							push_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack, &temp);
 						}
-						else if ("TRUE" == temp)
+						else if (equal_wiz_string(&TRUE_STR, &temp))
 						{
-							top_wiz_stack_event_info(&eventStack).conditionStack.push(temp);
+							push_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack, &temp);
 						}
 					}
 
-					if ("TRUE" == temp)
+					if (equal_wiz_string(&TRUE_STR, &temp))
 					{
-						top_wiz_stack_event_info(&eventStack).nowUT.push(get_user_type_list_in_user_type(val, 1));
-						//val = top_wiz_stack_event_info(&eventStack).nowUT.top()->get_user_type_list_in_user_type(0); 
+						size_t initial_value = 0;
+						push_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT, get_user_type_list_in_user_type(val, 1));
+
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
-						top_wiz_stack_event_info(&eventStack).userType_idx.push(0);
-						//top_wiz_stack_event_info(&eventStack).state.push(1);
-						//state = 1;
+						push_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx, &initial_value);
+
+						free_wiz_string(&temp);
+						free_wiz_string(&TRUE_STR);
+						free_wiz_string(&FALSE_STR);
 						break;
 					}//
-					else if ("FALSE" == temp)
+					else if (equal_wiz_string(&FALSE_STR, &temp))
 					{
+						free_wiz_string(&temp);
+						free_wiz_string(&TRUE_STR);
+						free_wiz_string(&FALSE_STR);
+
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 						break;
 					}
 					else
 					{
 						// debug..
-						std::cout << "Error Debug : " << temp << endl;
+						printf("Error Debug : %s\n", get_cstr_wiz_string(&temp));
+						
 						// free
+						if (!pass) {
+							free_wiz_string(&temp);
+						}
+						free_wiz_string(&TRUE_STR);
+						free_wiz_string(&FALSE_STR);
 
-
-						return "ERROR -3";
+						exit = 1;
+						break;
 					}
 				}
 				else if(0 == strcmp("$else" , get_cstr_wiz_string(&val->name)))
 				{
-					if (!top_wiz_stack_event_info(&eventStack).conditionStack.empty() && "FALSE" == top_wiz_stack_event_info(&eventStack).conditionStack.top())
+					if (!empty_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack) 
+						&& 0 == strcmp("FALSE", get_cstr_wiz_string(top_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack)))
+						)
 					{
-						top_wiz_stack_event_info(&eventStack).conditionStack.top() = "TRUE";
-						top_wiz_stack_event_info(&eventStack).nowUT.push(get_user_type_list_in_user_type(val, 0));
+						wiz_string TRUE_STR = make_wiz_string_from_cstr("TRUE");
+						size_t initial_value = 0;
+						assign_wiz_string(top_wiz_stack_wiz_string(&top_wiz_stack_event_info(&eventStack)->conditionStack), &TRUE_STR);
+						push_wiz_stack_any(&top_wiz_stack_event_info(&eventStack)->nowUT, get_user_type_list_in_user_type(val, 0));
 						//val = top_wiz_stack_event_info(&eventStack).nowUT.top()->get_user_type_list_in_user_type(0); // empty chk
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
-						top_wiz_stack_event_info(&eventStack).userType_idx.push(0);
+						push_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx, &initial_value);
 						//top_wiz_stack_event_info(&eventStack).state.push(2);
 						//state = 2; //
+						free_wiz_string(&TRUE_STR);
 						break;
 					}
 					else
@@ -2624,13 +2731,17 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 						break;
 					}
-				}*/
+				}
 				else { //
 					printf("it does not work : %s\n", get_cstr_wiz_string(&val->name)); //
 
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+			}
+		
+			if (exit) {
+				break;
 			}
 		}
 

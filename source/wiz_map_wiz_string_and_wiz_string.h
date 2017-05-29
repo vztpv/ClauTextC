@@ -29,11 +29,13 @@ int FORM(insert_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_a
 
 int FORM(get_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val);
 
-int FORM(set_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val);
+int FORM(set_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val, int option);
+//if option == 1 then remove before data.
+//if option == 0 then no remove before data.
 
 int FORM(is_exist_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string* val);
 int FORM(empty_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map);
  
-void FORM(inorder_, wiz_string_and_wiz_stirng)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string arr[]);
+void FORM(inorder_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_wiz_string)* _map, pair_wiz_string_and_wiz_string arr[]);
 
 #endif

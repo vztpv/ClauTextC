@@ -174,6 +174,7 @@ void erase_wiz_string(wiz_string* str, size_t idx)
 
 	if (str->len == wiz_string_buffer_size) {
 		strncpy(str->buffer, str->str, wiz_string_buffer_size + 1);
+		free(str->str);
 	}
 }
 // starts_with_wiz_string

@@ -33,6 +33,7 @@ void FORM(init_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, size
 void FORM(free_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack)
 {
 	free_wiz_vector_wiz_string(&(stack->stack));
+	stack->count = 0;
 }
 
 void FORM(push_wiz_stack_, wiz_string)(FORM(wiz_stack_, wiz_string)* stack, wiz_string* val)

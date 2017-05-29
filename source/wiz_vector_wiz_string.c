@@ -48,7 +48,6 @@ void FORM(push_back_wiz_vector_, wiz_string) (FORM(wiz_vector_, wiz_string)* vec
 		FORM(expand_wiz_vector_, wiz_string) (vec);
 	}
 
-	//init_wiz_string(&(vec->vec[vec->num]), get_cstr_wiz_string(pval), size_wiz_string(pval));
 	vec->vec[vec->num] = *pval;
 	vec->num++;
 }

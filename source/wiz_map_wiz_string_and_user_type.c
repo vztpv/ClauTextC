@@ -81,8 +81,12 @@ void FORM(init_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and
 }
 void FORM(free_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map)
 {
-	remove_all_wiz_string_and_user_type(_map->root, 0);
-	_map->count = 0;
+	
+	if (NULL != _map->root) {
+		remove_all_wiz_string_and_user_type(_map->root, 0);
+		_map->root = NULL;
+		_map->count = 0;
+	}
 }
 
 void FORM(balancing_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map)
@@ -209,8 +213,11 @@ int FORM(empty_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and
 
 void FORM(free_all_wiz_map_, wiz_string_and_user_type)(FORM(wiz_map_, wiz_string_and_user_type)* _map)
 {
-	remove_all_wiz_string_and_user_type(_map->root, 1);
-	_map->count = 0;
+	if (_map->root != NULL) {
+		remove_all_wiz_string_and_user_type(_map->root, 1);
+		_map->count = 0;
+		_map->root = NULL;
+	}
 }
 
 
