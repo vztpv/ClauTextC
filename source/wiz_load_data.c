@@ -142,7 +142,7 @@ void free_all_event_info(event_info* info)
 	free_wiz_map_wiz_string_and_wiz_string(&info->parameters);
 	//
 	{//chk
-		if (info->locals.count != 0) {
+		if (info->locals.count > 0) {
 			pair_wiz_string_and_wiz_string* temp = malloc(sizeof(pair_wiz_string_and_wiz_string)*(info->locals.count));
 			inorder_wiz_string_and_wiz_string(&info->locals, temp);
 			for (i = 0; i < info->locals.count; ++i) {
@@ -1278,6 +1278,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 				 user_type* ut = get_wiz_vector_any(&tempPair.second, 0);
 				 free_wiz_string(&x);
 				 x = wiz_ll_to_string(get_user_type_list_size_in_user_type(ut));
+				 free_wiz_vector_any(&tempPair.second);
 			 }
 			 else {
 				 //
