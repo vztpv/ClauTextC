@@ -1,5 +1,6 @@
 
 #include "wiz_map_wiz_string_and_wiz_string.h"
+#include <stdio.h>
 
 #define FORM(A, B) A##B
 
@@ -101,7 +102,7 @@ void FORM(balancing_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_stri
 	FORM(free_wiz_map_, wiz_string_and_wiz_string)(_map);
 	
 	_map->root = _balancing_string_and_wiz_string(arr, 0, count - 1);
-
+	_map->count = count;
 	free(arr);
 }
 
@@ -147,6 +148,10 @@ int FORM(insert_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_a
 			temp2->left->left = NULL;
 			temp2->left->right = NULL;
 		}
+		else {
+			printf("error.. \n");
+			exit(-100);
+		}
 		_map->count++;
 	}
 
@@ -175,7 +180,7 @@ int FORM(get_wiz_map_, wiz_string_and_wiz_string)(FORM(wiz_map_, wiz_string_and_
 			temp = temp->left;
 		}
 		else {
-			*val = temp->val;
+			val->second = temp->val.second;
 			return 1;
 		}
 	}

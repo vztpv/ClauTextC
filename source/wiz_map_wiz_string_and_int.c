@@ -97,7 +97,7 @@ void FORM(balancing_wiz_map_, wiz_string_and_int)(FORM(wiz_map_, wiz_string_and_
 	FORM(free_wiz_map_, wiz_string_and_int)(_map);
 
 	_map->root = _balancing_string_and_int(arr, 0, count - 1);
-
+	_map->count = count;
 	free(arr);
 }
 
@@ -171,7 +171,7 @@ int FORM(get_wiz_map_, wiz_string_and_int)(FORM(wiz_map_, wiz_string_and_int)* _
 			temp = temp->left;
 		}
 		else {
-			*val = temp->val;
+			val->second = temp->val.second;
 			return 1;
 		}
 	}

@@ -1330,20 +1330,27 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 				//		~.ToString() + "Main = { $call = { id = 0 } } Event = { id = 0 $call = { id = " + id_val + " " + param_name1 + " = " + param_val1 + "  } } "
 				// todo - register object from string.
 				// todo - call registered object.  $registered_object = { name = { "ex2.txt" } parameter = { id = 1 i = 1 j = 1 } }  
-				else if(0 == strcmp("$option" , get_cstr_wiz_string(&val->name))) // first
+				*/
+				//else 
+				if(0 == strcmp("$option" , get_cstr_wiz_string(&val->name))) // first
 				{
+					wiz_string temp = to_string_in_user_type(val, &builder);
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
 					_excuteData.chkInfo = 1;
 					_excuteData.info = *top_wiz_stack_event_info(&eventStack);
 					_excuteData.pObjectMap = objectMapPtr;
 					_excuteData.pEvents = eventPtr;
 					_excuteData.pModule = moduleMapPtr;
+					
+					free_wiz_string(&top_wiz_stack_event_info(&eventStack)->option);
+					top_wiz_stack_event_info(&eventStack)->option = ToBool4(NULL, &global, &temp, &_excuteData, &builder);
 
-					top_wiz_stack_event_info(&eventStack).option = ToBool4(NULL, &global, val->ToString(), _excuteData, &builder);
+					free_wiz_string(&temp);
 
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+				/*
 				// done - ($push_back-insert!) $pop_back, $push_front, $pop_front ($front?, $back?)
 				else if(0 == strcmp("$pop_back" , get_cstr_wiz_string(&val->name))) {
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
@@ -1542,7 +1549,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							for (j = 0; j < get_user_type_list_size_in_user_type(val); ++j) {
 								pair_wiz_string_and_wiz_string pairTemp;
 								wiz_string temp;
-								wiz_string utStr = get_user_type_list_in_user_type(val, j)->name;
+								wiz_string utStr = to_string_in_user_type(get_user_type_list_in_user_type(val, j), &builder);
 
 								_excuteData.info = info;
 								_excuteData.info.parameters = info2.parameters;
@@ -1577,7 +1584,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					}
 
 
-					free_wiz_map_wiz_string_and_wiz_string(&info.locals);
+					free_all_wiz_map_wiz_string_and_wiz_string(&info.locals);
 					init_wiz_map_wiz_string_and_wiz_string(&info.locals);
 					//	info.locals.clear();
 
@@ -1615,6 +1622,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					}
 					info_chk = 0; // 
 					push_wiz_stack_event_info(&eventStack, &info);
+
 					break;
 				}
 				else if(0 == strcmp("$assign" , get_cstr_wiz_string(&val->name))) /// -> assign2?
@@ -1640,8 +1648,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 							temp.second = data;
 
 							set_wiz_map_wiz_string_and_wiz_string(&top_wiz_stack_event_info(&eventStack)->locals, &temp, 1);
-							
-							free_wiz_string(&temp.first);
 						}
 						else {
 						//	printf("%s\n", get_cstr_wiz_string(&data));
@@ -2327,6 +2333,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
 				}
+				*/
 				else if(0 == strcmp("$return" , get_cstr_wiz_string(&val->name)))
 				{
 					ExcuteData _excuteData; _excuteData.valid = 1; if(NULL == excuteData) { _excuteData.depth = 0; } else { _excuteData.depth = excuteData->depth; }
@@ -2339,23 +2346,28 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					if (size_wiz_stack_event_info(&eventStack) > 1)
 					{
-						string temp = ToBool4(NULL, &global, val->ToString(), _excuteData, &builder);
+						wiz_string val_data = to_string_in_user_type(val, &builder);
+						wiz_string temp = ToBool4(NULL, &global, &val_data, &_excuteData, &builder);
 						/// if temp just one
-						eventStack[size_wiz_stack_event_info(&eventStack) - 2].return_value = temp;
+						free_wiz_string(&get_wiz_stack_event_info(&eventStack, size_wiz_stack_event_info(&eventStack) - 2)->return_value);
+						get_wiz_stack_event_info(&eventStack, size_wiz_stack_event_info(&eventStack) - 2)->return_value = temp;
+						
+						free_wiz_string(&val_data);
 					}
 
 					if (size_wiz_stack_event_info(&eventStack) == 1)
 					{
-						string temp = ToBool4(NULL, &global, val->ToString(), _excuteData, &builder);
+						wiz_string val_data = to_string_in_user_type(val, &builder);
+						wiz_string temp = ToBool4(NULL, &global, &val_data, &_excuteData, &builder);
 						free_wiz_string(&module_value);
 						module_value = temp;
 					}
 
 					free_all_event_info(top_wiz_stack_event_info(&eventStack));
+
 					pop_wiz_stack_event_info(&eventStack);
 					break;
 				}
-				*/
 				else if(0 == strcmp("$parameter" , get_cstr_wiz_string(&val->name)))
 				{
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
@@ -2695,12 +2707,11 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 					else
 					{
 						// debug..
-						printf("Error Debug : %s\n", get_cstr_wiz_string(&temp));
+						printf("Error Debug : //%s//\n", get_cstr_wiz_string(&temp));
 						
 						// free
-						if (!pass) {
-							free_wiz_string(&temp);
-						}
+						free_wiz_string(&temp);
+						
 						free_wiz_string(&TRUE_STR);
 						free_wiz_string(&FALSE_STR);
 

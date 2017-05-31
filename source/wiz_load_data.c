@@ -426,7 +426,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 data.first = substr_wiz_string(operand, 11, size_wiz_string(operand));
 		 if (get_wiz_map_wiz_string_and_wiz_string(parameters, &data))
 		 {
-			 value = data.second;
+			 value = make_wiz_string_from_other_wiz_string(&data.second);
 		 }
 		 else {
 			 value = make_empty_wiz_string();
@@ -461,7 +461,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		free_wiz_string(&local_text);
 		free_wiz_string(&data.first);
-		return data.second;
+		return make_wiz_string_from_other_wiz_string(&data.second);
 	}
 	free_wiz_string(&local_text);
 	return make_empty_wiz_string();
@@ -1309,6 +1309,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 				 user_type* ut = get_wiz_vector_any(&pairTemp.second, 0);
 				 free_wiz_string(&x);
 				 x = get_item_list_in_user_type(ut, idx)->value;
+				 free_wiz_vector_any(&pairTemp.second);
 			 }
 			 else {
 				 //
@@ -1841,6 +1842,7 @@ wiz_string ToBool3(user_type* global, wiz_string* temp,
 					
 					wiz_string param3 = replace_wiz_string(&param1, &param2, &temp, builder);
 					
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = union_wiz_string(&param3, &param3_2);
 
 					free_wiz_string(&param1);
@@ -1855,6 +1857,7 @@ wiz_string ToBool3(user_type* global, wiz_string* temp,
 			{
 				wiz_string temp = FindParameters(&info->parameters, get_wiz_vector_wiz_string(&tokenVec, i));
 				if (!empty_wiz_string(&temp)) {
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = temp;
 				}
 			}
@@ -1884,6 +1887,7 @@ wiz_string ToBool3(user_type* global, wiz_string* temp,
 
 					wiz_string param3 = replace_wiz_string(&param1, &param2, &temp, builder);
 
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = union_wiz_string(&param3, &param3_2);
 
 					free_wiz_string(&param1);
@@ -1898,6 +1902,7 @@ wiz_string ToBool3(user_type* global, wiz_string* temp,
 			{
 				wiz_string temp = FindLocals(&info->locals, get_wiz_vector_wiz_string(&tokenVec, i));
 				if (!empty_wiz_string(&temp)) {
+					free_wiz_string(get_wiz_vector_wiz_string(&tokenVec, i));
 					*get_wiz_vector_wiz_string(&tokenVec, i) = temp;
 				}
 			}
