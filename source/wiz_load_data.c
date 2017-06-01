@@ -516,6 +516,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 if (strcmp("$EQ", get_cstr_wiz_string(str)) == 0) {
 		 wiz_string* x;
 		 wiz_string* y;
+		 wiz_string _x; wiz_string _y;
 		 int idx = -1;
 
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
@@ -524,70 +525,111 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 if (compare_wiz_string_in_utility(x, y, builder, 0) == 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 		 }
 		 else {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
 	 else if (strcmp("$NOTEQ" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 if (compare_wiz_string_in_utility(x, y, builder, 0) != 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 
 		 }
 		 else {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
 	 else if (strcmp("$AND" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 if (0 == strcmp(get_cstr_wiz_string(x), "TRUE") && 0 == strcmp(get_cstr_wiz_string(y), "TRUE")) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+
+
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
+
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 
 		 }
 		 else {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
 	 }
 	 else if (strcmp("$AND_ALL" , get_cstr_wiz_string(str)) == 0) {
 		 wiz_vector_wiz_string store;
-
+		 int value = 0;
 		 init_wiz_vector_wiz_string(&store, 1);
 
 		 for (i = 0; i < operandNum; ++i) {
-			 push_back_wiz_vector_wiz_string(&store, (top_wiz_stack_wiz_string(operandStack)));  pop_wiz_stack_wiz_string(operandStack);
+			 push_back_wiz_vector_wiz_string(&store, (top_wiz_stack_wiz_string(operandStack)));  
+			 pop_wiz_stack_wiz_string(operandStack);
 		 }
 		 for (i = 0; i < size_wiz_vector_wiz_string(&store); ++i) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 if (0 != strcmp("TRUE", get_cstr_wiz_string(get_wiz_vector_wiz_string(&store, i)))) {
-				 wiz_string FALSE_TEXT;
-				 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
-				 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
+				 value = 1;
+			 }
 
-				 return 1;
+			 {
+				 wiz_string temp = *get_wiz_vector_wiz_string(&store, i);
+				 free_wiz_string(&temp);
 			 }
 		 }
-		 {
+		 free_wiz_vector_wiz_string(&store);
+		 if (value == 1) { 
+			 wiz_string FALSE_TEXT;
+			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
+			 return 1;
+		 }
+		 else {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
@@ -595,7 +637,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 }
 	 else if (strcmp("$OR" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
@@ -609,24 +651,40 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 		 }
+		 _x = *x;
+		 _y = *y;
+		 free_wiz_string(&_x);
+		 free_wiz_string(&_y);
 	 }
 	 else if (strcmp("$OR_ALL" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_vector_wiz_string store;
+		 int chk = 0;
 
 		 for (i = 0; i < operandNum; ++i) {
 			 push_back_wiz_vector_wiz_string(&store, top_wiz_stack_wiz_string(operandStack));  pop_wiz_stack_wiz_string(operandStack);
 		 }
 		 for (i = 0; i < size_wiz_vector_wiz_string(&store); ++i) {
 			 if (0 == strcmp("TRUE", get_cstr_wiz_string(get_wiz_vector_wiz_string(&store, i)))) {
-				 wiz_string TRUE_TEXT;
-				 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
-				 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
+				 chk = 1;
+			 }
 
-				 return 1;
+			 {
+				 wiz_string temp = *get_wiz_vector_wiz_string(&store, i);
+				 free_wiz_string(&temp);
 			 }
 		 }
-		 {
+
+		 free_wiz_vector_wiz_string(&store);
+
+		 if (chk == 1) {
+			 wiz_string TRUE_TEXT;
+			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
+
+			 return 1;
+		 }
+		 else {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
@@ -635,30 +693,40 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 else if (strcmp("$NOT" , get_cstr_wiz_string(str)) == 0)
 	 {
 		 wiz_string* x;
+		 wiz_string _x;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 if (0 == strcmp(get_cstr_wiz_string(x), "TRUE")) {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 _x = *x;
+			 free_wiz_string(&_x);
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 
 		 }
 		 else {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+			 _x = *x;
+			 free_wiz_string(&_x);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 
 		 }
 	 }
 	 else if (strcmp("$COMP<" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 if (compare_wiz_string_in_utility(x, y, builder, 0) < 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 
 		 }
@@ -666,33 +734,50 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 
 		 }
+
 	 }
 	 else if (strcmp("$COMP>" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
 		 if (compare_wiz_string_in_utility(x, y, builder, 0) > 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+				
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 
 		 }
 		 else
 		 {
 			 wiz_string FALSE_TEXT;
-			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 init_wiz_string(&FALSE_TEXT, "FALSE", 5); 
+			 
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 
 		 }
+
 	 }
 	 else if (strcmp("$COMP<EQ" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
@@ -700,6 +785,12 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 compare_wiz_string_in_utility(x, y, builder, 0) == 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 
 		 }
@@ -707,13 +798,18 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 
 		 }
 	 }
 	 else if (strcmp("$COMP>EQ" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 
@@ -721,49 +817,74 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 compare_wiz_string_in_utility(x, y, builder, 0) == 0) {
 			 wiz_string TRUE_TEXT;
 			 init_wiz_string(&TRUE_TEXT, "TRUE", 4);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &TRUE_TEXT);
 		 }
 		 else
 		 {
 			 wiz_string FALSE_TEXT;
 			 init_wiz_string(&FALSE_TEXT, "FALSE", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &FALSE_TEXT);
 
 		 }
 	 }
 	 else if (strcmp("$add" , get_cstr_wiz_string(str)) == 0) // todo! = int operator double => double operator double!
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 int typex, typey;
 
-		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
-		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
+		 x = top_wiz_stack_wiz_string(operandStack); 
+		 pop_wiz_stack_wiz_string(operandStack);
+		 y = top_wiz_stack_wiz_string(operandStack); 
+		 pop_wiz_stack_wiz_string(operandStack);
 
 		 // other *, /, mod, ..
 		 typex = get_type(x);
 		 typey = get_type(y);
 
+		
 		 if (typex == typey && typey == TYPE_WIZ_INTEGER) { /// only integer -> BigInteger
 			 wiz_string temp = wiz_ll_to_string(atoll(get_cstr_wiz_string(x)) + atoll(get_cstr_wiz_string(y)));
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else if (typex == typey && typey == TYPE_WIZ_DOUBLE) {
-			 char* end;
+			 char* end = NULL;
 
 			 wiz_string temp = wiz_ld_to_string(strtold(get_cstr_wiz_string(x), &end) + strtold(get_cstr_wiz_string(y), &end));
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else
 		 {
 			 wiz_string temp = make_wiz_string("ERROR", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
 	 else if (strcmp("$multiple" , get_cstr_wiz_string(str)) == 0) // todo! = int operator double => double operator double!
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 int typex, typey;
 
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
@@ -776,24 +897,36 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 if (typex == typey && typey == TYPE_WIZ_INTEGER) { /// only integer -> BigInteger
 			 wiz_string temp = wiz_ll_to_string(atoll(get_cstr_wiz_string(x)) * atoll(get_cstr_wiz_string(y)));
-
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else if (typex == typey && typey == TYPE_WIZ_DOUBLE) {
 			 char* end;
 			 wiz_string temp = wiz_ld_to_string(strtold(get_cstr_wiz_string(x), &end) * strtold(get_cstr_wiz_string(y), &end));
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else
 		 {
 			 wiz_string temp = make_wiz_string("ERROR", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
+
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
 	 else if (strcmp("$divide" , get_cstr_wiz_string(str)) == 0) // todo! = int operator double => double operator double!
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 int typex, typey;
 
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
@@ -805,24 +938,34 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 if (typex == typey && typey == TYPE_WIZ_INTEGER) { /// only integer -> BigInteger
 			 wiz_string temp = wiz_ll_to_string(atoll(get_cstr_wiz_string(x)) / atoll(get_cstr_wiz_string(y)));
-
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else if (typex == typey && typey == TYPE_WIZ_DOUBLE) {
 			 char* end;
 			 wiz_string temp = wiz_ld_to_string(strtold(get_cstr_wiz_string(x), &end) / strtold(get_cstr_wiz_string(y), &end));
-
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else
 		 {
-			 wiz_string temp = make_wiz_string("ERROR", 5);
+			 wiz_string temp = make_wiz_string("ERROR", 5); 
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
 	 else if (strcmp("$modular" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 int typex, typey;
 
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
@@ -834,23 +977,30 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 		 if (typex == typey && typey == TYPE_WIZ_INTEGER) { /// only integer -> BigInteger
 			 wiz_string temp = wiz_ll_to_string(atoll(get_cstr_wiz_string(x)) % atoll(get_cstr_wiz_string(y)));
-
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 		 else
 		 {
 			 wiz_string temp = make_wiz_string("ERROR", 5);
+			 _x = *x;
+			 _y = *y;
+			 free_wiz_string(&_x);
+			 free_wiz_string(&_y);
 			 push_wiz_stack_wiz_string(operandStack, &temp);
 		 }
 	 }
 	 else if (strcmp("$rand" , get_cstr_wiz_string(str)) == 0)
 	 {
-		 wiz_string* x; wiz_string* y;
+		 wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 int typex, typey;
-
+		 wiz_string temp;
 		 x = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
 		 y = top_wiz_stack_wiz_string(operandStack); pop_wiz_stack_wiz_string(operandStack);
-
+			
 		 // other *, /, mod, ..
 		 typex = get_type(x);
 		 typey = get_type(y);
@@ -859,20 +1009,24 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 			 int _x = atoi(get_cstr_wiz_string(x));
 			 int _y = atoi(get_cstr_wiz_string(y));
 			 if (_y - _x + 1 <= 0) {
-				 wiz_string temp = make_wiz_string("ERROR x / 0", 11);
-				 push_wiz_stack_wiz_string(operandStack, &temp);
+				 temp = make_wiz_string("ERROR x / 0", 11);
 			 }
 			 else {
 				 long long _z = rand_int() % (_y - _x + 1) + _x; // _x <= _z <= _y
-				 wiz_string temp = wiz_ll_to_string(_z);
-				 push_wiz_stack_wiz_string(operandStack, &temp);
+			     temp = wiz_ll_to_string(_z);
 			 }
 		 }
 		 else
 		 {
-			 wiz_string temp = make_wiz_string("ERROR", 5);
-			 push_wiz_stack_wiz_string(operandStack, &temp);
+			 temp = make_wiz_string("ERROR", 5);
 		 }
+
+		 _x = *x;
+		 _y = *y;
+		 free_wiz_string(&_x);
+		 free_wiz_string(&_y);
+
+		 push_wiz_stack_wiz_string(operandStack, &temp);
 	 }
 	 else if (strcmp("$concat" , get_cstr_wiz_string(str)) == 0)
 	 {
@@ -894,7 +1048,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 	 }
 	 else if (strcmp("$concat2" , get_cstr_wiz_string(str)) == 0) /// with space
 	 {
-		 wiz_string* x; wiz_string* y;
+		wiz_string* x; wiz_string* y; wiz_string _x; wiz_string _y;
 		 wiz_string temp;
 
 		 x = top_wiz_stack_wiz_string(operandStack);
@@ -909,10 +1063,14 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 append_wiz_string_builder(builder, get_cstr_wiz_string(y), size_wiz_string(y));
 
 		 temp = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
+
+		 _x = *x;
+		 _y = *y;
+		 free_wiz_string(&_x);
+		 free_wiz_string(&_y);
+
 		 push_wiz_stack_wiz_string(operandStack, &temp);
 
-		 free_wiz_string(x);
-		 free_wiz_string(y);
 	 }
 	 else if (strcmp("$concat_all" , get_cstr_wiz_string(str)) == 0)
 	 {
@@ -964,9 +1122,11 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 				 //
 			 }
 			 else {
-				 wiz_string temp = make_wiz_string("ERROR in $concat3, 1. must be \" \" ", strlen("ERROR in $concat3, 1. must be \" \" "));
-				 push_wiz_stack_wiz_string(operandStack, &temp);
+				 wiz_string tempa = make_wiz_string("ERROR in $concat3, 1. must be \" \" ", strlen("ERROR in $concat3, 1. must be \" \" "));
 				 free_wiz_string(&result);
+				 free_wiz_string(temp);
+				 push_wiz_stack_wiz_string(operandStack, &tempa);
+
 				 return 0;
 			 }
 			 if (i < operandNum - 1) {
@@ -984,7 +1144,10 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 
 				 append_wiz_string_builder(builder, get_cstr_wiz_string(temp), size_wiz_string(temp));
 			 }
+
+			 free_wiz_string(temp);
 		 }
+		 
 		 free_wiz_string(&result);
 		 init_wiz_string(&result, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 		 push_wiz_stack_wiz_string(operandStack, &result);
@@ -1319,7 +1482,7 @@ pair_wiz_string_and_wiz_string Find2(user_type* ut,  wiz_string* str)
 		 else
 		 {
 			 free_wiz_string(&x);
-			 make_wiz_string("NONE", 4);
+			 x = make_wiz_string("NONE", 4);
 		 }
 
 		 push_wiz_stack_wiz_string(operandStack, &x);
@@ -1989,7 +2152,7 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 			{
 				wiz_string temp = Find(global, &result, builder);
 
-				if (!empty_wiz_string(&temp)) {
+ 				if (!empty_wiz_string(&temp)) {
 					free_wiz_string(&result);
 					result = (temp);
 				}
@@ -2136,8 +2299,8 @@ wiz_string ToBool4(user_type* now, user_type* global,  wiz_string* temp,  Excute
 				}
 
 				{
-					wiz_string* temp = get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2);
-					free_wiz_string(temp);
+					wiz_string temp = *get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2);
+					free_wiz_string(&temp);
 				}
 				*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 2) =
 					*get_wiz_stack_wiz_string(&operandStack, size_wiz_stack_wiz_string(&operandStack) - 1);
@@ -2646,6 +2809,7 @@ user_type load_data_from_file_in_load_data(wiz_string* fileName)
 
 					init_in_user_type(&ut_temp, &var2);
 					add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &ut_temp);
+					free_user_type_in_user_type(&ut_temp);
 
 					user_type* pTemp;
 					get_last_user_type_item_ref_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &var2, &pTemp);
@@ -2702,6 +2866,7 @@ user_type load_data_from_file_in_load_data(wiz_string* fileName)
 					init_in_user_type(&temp, &EMPTY);
 
 					add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &temp);
+					free_user_type_in_user_type(&temp);
 					user_type* pTemp;
 					get_last_user_type_item_ref_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &EMPTY, &pTemp);
 
@@ -2798,6 +2963,7 @@ user_type load_data_from_file_in_load_data(wiz_string* fileName)
 						user_type ut_temp;
 						init_in_user_type(&ut_temp, &var2);
 						add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &ut_temp);
+						free_user_type_in_user_type(&ut_temp);
 						user_type* pTemp;
 						get_last_user_type_item_ref_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &var2, &pTemp);
 						assign_wiz_string(&var2, &EMPTY);
@@ -3109,6 +3275,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 						else {
 							if (Pop(get_wiz_vector_any(&nestedUT, braceNum), &aq, &var1)) {
 								add_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &EMPTY, &var1);
+								var1 = EMPTY;
 								state = 0;
 							}
 						}
@@ -3116,6 +3283,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 					else {
 						if (Pop(get_wiz_vector_any(&nestedUT, braceNum), &aq, &var1)) {
 							add_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &EMPTY, &var1);
+							var1 = EMPTY;
 							state = 0;
 						}
 					}
@@ -3138,7 +3306,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 
 					init_in_user_type(&ut_temp, &var2);
 					add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &ut_temp);
-
+					free_user_type_in_user_type(&ut_temp);
 					user_type* pTemp;
 					get_last_user_type_item_ref_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &var2, &pTemp);
 
@@ -3158,8 +3326,8 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 					if (Pop(get_wiz_vector_any(&nestedUT, braceNum), &aq, &val)) {
 						add_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &var2, &val);
 
-						assign_wiz_string(&var2, &EMPTY);
-						assign_wiz_string(&val, &EMPTY);
+						var2 = EMPTY;
+						val = EMPTY;
 
 						state = 0;
 					}
@@ -3194,6 +3362,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 					init_in_user_type(&temp, &EMPTY);
 
 					add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &temp);
+					free_user_type_in_user_type(&temp);
 					user_type* pTemp;
 					get_last_user_type_item_ref_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &EMPTY, &pTemp);
 
@@ -3234,7 +3403,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 							// var1
 							if (Pop(get_wiz_vector_any(&nestedUT, braceNum), &aq, &var1)) {
 								add_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &EMPTY, &var1);
-								assign_wiz_string(&var1, &EMPTY);
+								var1 = EMPTY;
 
 								state = 4;
 							}
@@ -3246,7 +3415,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 						if (Pop(get_wiz_vector_any(&nestedUT, braceNum), &aq, &var1))
 						{
 							add_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &EMPTY, &var1);
-							assign_wiz_string(&var1, &EMPTY);
+							var1 = EMPTY;
 
 							state = 4;
 						}
@@ -3290,6 +3459,7 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 						user_type ut_temp;
 						init_in_user_type(&ut_temp, &var2);
 						add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &ut_temp);
+						free_user_type_in_user_type(&ut_temp);
 						user_type* pTemp;
 						get_last_user_type_item_ref_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &var2, &pTemp);
 						assign_wiz_string(&var2, &EMPTY);
@@ -3309,8 +3479,8 @@ user_type load_data_from_string_in_load_data(wiz_string* str) // , int error? = 
 				else {
 					if (Pop(get_wiz_vector_any(&nestedUT, braceNum), &aq, &val)) {
 						add_item_in_user_type((user_type*)get_wiz_vector_any(&nestedUT, braceNum), &var2, &val);
-						assign_wiz_string(&var2, &EMPTY);
-						assign_wiz_string(&val, &EMPTY);
+						var2 = EMPTY;
+						val = EMPTY;
 
 						if (empty_wiz_array_queue_token(&aq))
 						{
@@ -3444,7 +3614,9 @@ int add_data_in_load_data(user_type* global, wiz_string* position, wiz_string* d
 
 			for (k = 0; k < get_ilist_size_in_user_type(&utTemp); ++k) {
 				if (is_item_list_in_user_type(&utTemp, k)) {
-					add_item_in_user_type(get_wiz_vector_any(&finded.second, i), &get_item_list_in_user_type(&utTemp, item_n)->name, &get_item_list_in_user_type(&utTemp, item_n)->value);
+					wiz_string name = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(&utTemp, item_n)->name);
+					wiz_string value = make_wiz_string_from_other_wiz_string(&get_item_list_in_user_type(&utTemp, item_n)->value);
+					add_item_in_user_type(get_wiz_vector_any(&finded.second, i), &name, &value);
 					item_n++;
 				}
 				else {
@@ -3482,7 +3654,7 @@ wiz_string get_item_list_data_in_load_data(user_type* global, wiz_string* positi
 				wiz_string _cond;
 				condition cond;
 
-				//_cond = ToBool4((user_type*)get_wiz_vector_any(&finded.second, i), global, condstr, excuteData, builder);
+				_cond = ToBool4((user_type*)get_wiz_vector_any(&finded.second, i), global, condstr, excuteData, builder);
 
 				init_in_condition(&cond, &_cond, (user_type*)get_wiz_vector_any(&finded.second, i), global, builder);
 
@@ -3540,25 +3712,25 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 
 
 
-		if (empty_wiz_string(&_varName)) { 
+		if (empty_wiz_string(&_varName)) {
 			free_wiz_string(&_varName); _varName = make_wiz_string(" ", 1);
 		}
-		
+
 		{
 			wiz_vector_wiz_string temp;
-			
+
 			init_wiz_vector_wiz_string(&temp, 1);
 			push_back_wiz_vector_wiz_string(&temp, &DIVIDE_STR);
 			init_wiz_string_tokenizer(&tokenizer, &_varName, &temp, builder, 1);
 			free_wiz_vector_wiz_string(&temp);
 		}
 		utTemp = load_data_from_string_in_load_data(data);
-		
+
 		while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
 			free_wiz_string(&_varName);
 			_varName = *next_token_wiz_string_tokenizer(&tokenizer);
 			/// todo - if varName is "" then data : val val val ... 
-			if (0 == strcmp(get_cstr_wiz_string(&_varName), "") || 0 == strcmp(get_cstr_wiz_string(&_varName), " ") 
+			if (0 == strcmp(get_cstr_wiz_string(&_varName), "") || 0 == strcmp(get_cstr_wiz_string(&_varName), " ")
 				|| 0 == strcmp(get_cstr_wiz_string(&_varName), "_")) { // re?
 				wiz_vector_item_type vec = get_item_in_user_type(&utTemp, &EMPTY_STR);
 				const int n = size_wiz_vector_item_type(&vec);
@@ -3570,30 +3742,32 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 						wiz_string _condition = make_wiz_string_from_other_wiz_string(condistr);
 						//if (_varName == "" || _varName == " " || _varName == "_") { 
 						wiz_string _condition2 = replace_wiz_string(&_condition, &SP_STR1, &SP_STR2, builder);
-					    //}
+						//}
 						//else
 						//	_condition = wiz::wiz_string::replace(_condition, "~~", _varName); //
-						
+
 						condition cond;
-						
+
 						free_wiz_string(&_condition);
 
 						_condition = ToBool4(get_wiz_vector_any(&finded.second, i), global, &_condition2, excuteData, builder);
 
 						free_wiz_string(&_condition2);
 
-						
+
 						init_in_condition(&cond, &_condition, get_wiz_vector_any(&finded.second, i), global, builder);
 
 						while (next_in_condition(&cond));
 
-						if (size_wiz_stack_wiz_string(now_in_condition(&cond)) != 1 || 
+						if (size_wiz_stack_wiz_string(now_in_condition(&cond)) != 1 ||
 							equal_wiz_string(&TRUE_STR, get_wiz_stack_wiz_string(now_in_condition(&cond), 0)))
 						{
-							free_in_condition(&cond);
+							clear_now_condition(&cond);
 
+							free_in_condition(&cond);
 							continue;
 						}
+						clear_now_condition(&cond);
 
 						free_in_condition(&cond);
 					}
@@ -3602,7 +3776,8 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 
 					wiz_vector_item_type temp = get_item_in_user_type(&utTemp, &EMPTY_STR);
 					for (j = 0; j < n; ++j) {
-						add_item_in_user_type(get_wiz_vector_any(&finded.second, i), &EMPTY_STR, &get_wiz_vector_item_type(&temp, j)->value);
+						wiz_string tempStr = make_wiz_string_from_other_wiz_string(&get_wiz_vector_item_type(&temp, j)->value);
+						add_item_in_user_type(get_wiz_vector_any(&finded.second, i), &EMPTY_STR, &tempStr);
 					}
 					free_wiz_vector_item_type(&temp);
 					isTrue = 1;
@@ -3615,8 +3790,8 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 				int chkInt = 0;
 
 				init_wiz_vector_wiz_string(&strVec, 1);
-				
-				if (size_wiz_string(&_varName) >= 3 && get_cstr_wiz_string(&_varName)[0] == '[' 
+
+				if (size_wiz_string(&_varName) >= 3 && get_cstr_wiz_string(&_varName)[0] == '['
 					&& get_cstr_wiz_string(&_varName)[size_wiz_string(&_varName) - 1] == ']')
 				{
 					wiz_string_tokenizer tokenizer2;
@@ -3630,7 +3805,7 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 					push_back_wiz_vector_wiz_string(&temp, &RIGHT_STR);
 
 					init_wiz_string_tokenizer(&tokenizer2, &_varName, &temp, builder, 1);
-					
+
 					while (has_more_tokens_wiz_string_tokenizer(&tokenizer2))
 					{
 						push_back_wiz_vector_wiz_string(&strVec, next_token_wiz_string_tokenizer(&tokenizer2));
@@ -3644,7 +3819,7 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 					free_wiz_string_tokenizer(&tokenizer2);
 				}
 
-				if (size_wiz_vector_wiz_string(&strVec) == 2 && is_integer(get_wiz_vector_wiz_string(&strVec, 0)) 
+				if (size_wiz_vector_wiz_string(&strVec) == 2 && is_integer(get_wiz_vector_wiz_string(&strVec, 0))
 					&& is_integer(get_wiz_vector_wiz_string(&strVec, 1))) {
 					chkInt = 1;
 					a = atoll(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, 0)));
@@ -3655,6 +3830,7 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 				for (x = Min; x <= Max; ++x) {
 					if (size_wiz_vector_wiz_string(&strVec) == 2 && chkInt)
 					{
+						free_wiz_string(&_varName);
 						_varName = wiz_ll_to_string(x); // wiz_ll_to_wiz_string?
 					}
 					else {}
@@ -3685,9 +3861,11 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 								0 != strcmp("TRUE", get_cstr_wiz_string(get_wiz_stack_wiz_string(now_in_condition(&cond), 0))))
 
 							{
+								clear_now_condition(&cond);
 								free_in_condition(&cond);
 								continue;
 							}
+							clear_now_condition(&cond);
 							free_in_condition(&cond);
 						}
 						if (starts_with_wiz_string(&_varName, &IT_STR)) {
@@ -3708,7 +3886,7 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 					// prevent from infinity loop.
 					if (x == Max) { break; }
 				}
-				
+
 				// free all strVec
 				for (i = 0; i < size_wiz_vector_wiz_string(&strVec); ++i) {
 					free_wiz_string(get_wiz_vector_wiz_string(&strVec, i));
@@ -3716,7 +3894,217 @@ int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* v
 				free_wiz_vector_wiz_string(&strVec);
 			}
 		}
-		
+
+
+		free_wiz_string(&SP_STR1);
+		free_wiz_string(&SP_STR2);
+		free_wiz_vector_any(&finded.second);
+		free_wiz_string(&EMPTY_STR);
+		free_wiz_string_tokenizer(&tokenizer);
+		free_user_type_in_user_type(&utTemp);
+		free_wiz_string(&_varName);
+
+		free_wiz_string(&IT_STR); // $it
+		free_wiz_string(&LEFT_STR); // [
+		free_wiz_string(&SP_STR3); // ~
+		free_wiz_string(&RIGHT_STR); // ]
+		free_wiz_string(&DIVIDE_STR);
+
+		return isTrue;
+	}
+	else {
+		return 0;
+	}
+
+}
+
+int add_user_type_in_load_data(user_type* global, wiz_string* position, wiz_string* var, wiz_string* data, wiz_string* condistr, ExcuteData* excuteData, wiz_string_builder* builder)
+{
+	pair_int_and_wiz_vector_any finded = find_user_type_in_user_type(global, position, builder);
+	int isTrue = 0;
+	int i, j;
+
+	if (finded.first) {
+		wiz_string SP_STR1 = make_wiz_string("~~", 2);
+		wiz_string SP_STR2 = make_wiz_string("^", 1);
+		wiz_string EMPTY_STR = make_wiz_string("", 0);
+		wiz_string TRUE_STR = make_wiz_string("TRUE", 4);
+		wiz_string IT_STR = make_wiz_string("$it", 3); // $it
+		wiz_string LEFT_STR = make_wiz_string("[", 1); // [
+		wiz_string SP_STR3 = make_wiz_string("~", 1); // ~
+		wiz_string RIGHT_STR = make_wiz_string("]", 1); // ]
+		wiz_string DIVIDE_STR = make_wiz_string("/", 1);
+		wiz_string_tokenizer tokenizer;
+		user_type utTemp;
+		wiz_string _varName = make_wiz_string_from_other_wiz_string(var);
+
+
+
+		if (empty_wiz_string(&_varName)) {
+			free_wiz_string(&_varName); _varName = make_wiz_string(" ", 1);
+		}
+
+		{
+			wiz_vector_wiz_string temp;
+
+			init_wiz_vector_wiz_string(&temp, 1);
+			push_back_wiz_vector_wiz_string(&temp, &DIVIDE_STR);
+			init_wiz_string_tokenizer(&tokenizer, &_varName, &temp, builder, 1);
+			free_wiz_vector_wiz_string(&temp);
+		}
+		utTemp = load_data_from_string_in_load_data(data);
+
+		while (has_more_tokens_wiz_string_tokenizer(&tokenizer)) {
+			free_wiz_string(&_varName);
+			_varName = *next_token_wiz_string_tokenizer(&tokenizer);
+			/// todo - if varName is "" then data : val val val ... 
+			if (0 == strcmp(get_cstr_wiz_string(&_varName), "") || 0 == strcmp(get_cstr_wiz_string(&_varName), " ")
+				|| 0 == strcmp(get_cstr_wiz_string(&_varName), "_")) { // re
+
+				for (i = 0; i < size_wiz_vector_any(&finded.second); ++i) {
+					if (0 == empty_wiz_string(condistr)) {
+						wiz_string _condition = make_wiz_string_from_other_wiz_string(condistr);
+						//if (_varName == "" || _varName == " " || _varName == "_") { 
+						wiz_string _condition2 = replace_wiz_string(&_condition, &SP_STR1, &SP_STR2, builder);
+						//}
+						//else
+						//	_condition = wiz::wiz_string::replace(_condition, "~~", _varName); //
+
+						condition cond;
+
+						free_wiz_string(&_condition);
+
+						_condition = ToBool4(get_wiz_vector_any(&finded.second, i), global, &_condition2, excuteData, builder);
+
+						free_wiz_string(&_condition2);
+
+
+						init_in_condition(&cond, &_condition, get_wiz_vector_any(&finded.second, i), global, builder);
+
+						while (next_in_condition(&cond));
+
+						if (size_wiz_stack_wiz_string(now_in_condition(&cond)) != 1 ||
+							equal_wiz_string(&TRUE_STR, get_wiz_stack_wiz_string(now_in_condition(&cond), 0)))
+						{
+							clear_now_condition(&cond);
+							free_in_condition(&cond);
+
+							continue;
+						}
+						clear_now_condition(&cond);
+						free_in_condition(&cond);
+					}
+					
+					free_wiz_string(&utTemp.name);
+					utTemp.name = make_wiz_string_from_other_wiz_string(&_varName);
+					add_user_type_item_in_user_type2((user_type*)get_wiz_vector_any(&finded.second, i), &utTemp);
+					utTemp = load_data_from_string_in_load_data(data);
+					isTrue = 1;
+				}
+			}
+			else {
+				wiz_vector_wiz_string strVec;
+				long long int a = 0, b = 0, Min = 0, Max = 0;
+				long long x;
+				int chkInt = 0;
+
+				init_wiz_vector_wiz_string(&strVec, 1);
+
+				if (size_wiz_string(&_varName) >= 3 && get_cstr_wiz_string(&_varName)[0] == '['
+					&& get_cstr_wiz_string(&_varName)[size_wiz_string(&_varName) - 1] == ']')
+				{
+					wiz_string_tokenizer tokenizer2;
+					wiz_vector_wiz_string temp;
+
+					init_wiz_vector_wiz_string(&temp, 1);
+
+					//vector<wiz_string>{ "[", "~", "]" },
+					push_back_wiz_vector_wiz_string(&temp, &LEFT_STR);
+					push_back_wiz_vector_wiz_string(&temp, &SP_STR3);
+					push_back_wiz_vector_wiz_string(&temp, &RIGHT_STR);
+
+					init_wiz_string_tokenizer(&tokenizer2, &_varName, &temp, builder, 1);
+
+					while (has_more_tokens_wiz_string_tokenizer(&tokenizer2))
+					{
+						push_back_wiz_vector_wiz_string(&strVec, next_token_wiz_string_tokenizer(&tokenizer2));
+					}
+
+					for (i = 0; i < size_wiz_vector_wiz_string(&temp); ++i) {
+						free_wiz_string(get_wiz_vector_wiz_string(&temp, i));
+					}
+					free_wiz_vector_wiz_string(&temp);
+
+					free_wiz_string_tokenizer(&tokenizer2);
+				}
+
+				if (size_wiz_vector_wiz_string(&strVec) == 2 && is_integer(get_wiz_vector_wiz_string(&strVec, 0))
+					&& is_integer(get_wiz_vector_wiz_string(&strVec, 1))) {
+					chkInt = 1;
+					a = atoll(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, 0)));
+					b = atoll(get_cstr_wiz_string(get_wiz_vector_wiz_string(&strVec, 1)));
+					Min = min(a, b);
+					Max = max(a, b);
+				}
+				for (x = Min; x <= Max; ++x) {
+					if (size_wiz_vector_wiz_string(&strVec) == 2 && chkInt)
+					{
+						free_wiz_string(&_varName);
+						_varName = wiz_ll_to_string(x); // wiz_ll_to_wiz_string?
+					}
+					else {}
+
+					for (i = 0; i < size_wiz_vector_any(&finded.second); ++i) {
+						if (0 == empty_wiz_string(condistr)) {
+							wiz_string _condition = make_wiz_string_from_other_wiz_string(condistr);
+							wiz_string _condition2;
+							condition cond;
+							if (empty_wiz_string(&_varName)) {
+								_condition2 = replace_wiz_string(&_condition, &SP_STR1, &SP_STR2, builder);
+							}
+							else {
+								_condition2 = replace_wiz_string(&_condition, &SP_STR1, &_varName, builder); //
+							}
+							free_wiz_string(&_condition);
+							_condition = ToBool4(get_wiz_vector_any(&finded.second, i), global, &_condition2, excuteData, builder);
+							free_wiz_string(&_condition2);
+
+
+							init_in_condition(&cond, &_condition, get_wiz_vector_any(&finded.second, i), global, builder);
+
+							free_wiz_string(&_condition);
+
+							while (next_in_condition(&cond));
+
+							if (size_wiz_stack_wiz_string(now_in_condition(&cond)) != 1 ||
+								0 != strcmp("TRUE", get_cstr_wiz_string(get_wiz_stack_wiz_string(now_in_condition(&cond), 0))))
+
+							{
+								clear_now_condition(&cond);
+								free_in_condition(&cond);
+								continue;
+							}
+							clear_now_condition(&cond);
+							free_in_condition(&cond);
+						}
+
+						free_wiz_string(&utTemp.name);
+						utTemp.name = make_wiz_string_from_other_wiz_string(&_varName);
+						add_user_type_item_in_user_type((user_type*)get_wiz_vector_any(&finded.second, i), &utTemp);
+						isTrue = 1;
+					}
+
+					// prevent from infinity loop.
+					if (x == Max) { break; }
+				}
+
+				// free all strVec
+				for (i = 0; i < size_wiz_vector_wiz_string(&strVec); ++i) {
+					free_wiz_string(get_wiz_vector_wiz_string(&strVec, i));
+				}
+				free_wiz_vector_wiz_string(&strVec);
+			}
+		}
 
 		free_wiz_string(&SP_STR1);
 		free_wiz_string(&SP_STR2);

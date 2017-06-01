@@ -69,6 +69,8 @@ int add_data_in_load_data(user_type* global, wiz_string* position, wiz_string* d
 
 // insert
 // add_no_name_user_type
+int add_user_type_in_load_data(user_type* global, wiz_string* position, wiz_string* var, wiz_string* data, wiz_string* condition, ExcuteData* excuteData, wiz_string_builder* builder);
+
 // set_data (by_name)
 int set_data_in_load_data(user_type* global, wiz_string* position, wiz_string* varName, wiz_string* data, wiz_string* condition, ExcuteData* excuteData, wiz_string_builder* builder);
 // set_data_by_index

@@ -37,6 +37,7 @@ wiz_string make_wiz_string(const char* cstr, const size_t size)
 {
 	wiz_string temp;
 
+
 	init_wiz_string(&temp, cstr, size);
 
 	return temp;
@@ -426,14 +427,14 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 
 	if (size_wiz_string(str1) > 2 && get_cstr_wiz_string(str1)[0] == back_wiz_string(str1) && get_cstr_wiz_string(str1)[0] == '\"')
 	{
-		temp1 = substr_wiz_string(str1, 1, size_wiz_string(str1) - 1);	
+		temp1 = substr_wiz_string(str1, 1, size_wiz_string(str1));	
 	}
 	else {
 		temp1 = make_wiz_string_from_other_wiz_string(str1);
 	}
 	if (size_wiz_string(str2) > 2 && get_cstr_wiz_string(str2)[0] == back_wiz_string(str1) && get_cstr_wiz_string(str2)[0] == '\"')
 	{
-		temp2 = substr_wiz_string(str2, 1, size_wiz_string(str2) - 1);
+		temp2 = substr_wiz_string(str2, 1, size_wiz_string(str2));
 	}
 	else {
 		temp2 = make_wiz_string_from_other_wiz_string(str2);
@@ -450,7 +451,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 
 	if (TYPE_WIZ_STRING == type1 || type == 1)
 	{
-		int comparision = strcmp(get_cstr_wiz_string(&temp1), get_cstr_wiz_string(&temp2));
+		int comparision = strcmp(get_cstr_wiz_string(str1), get_cstr_wiz_string(str2));
 		
 		free_wiz_string(&temp1);
 		free_wiz_string(&temp2);
@@ -491,8 +492,8 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				clear_wiz_string_builder(builder);
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&x), size_wiz_string(&x));
 
-				while (size_wiz_string(&x) < size_wiz_string(&y)) {
-					append_wiz_string_builder(builder, "FALSE", 1);
+				while (size_wiz_string_builder(builder) < size_wiz_string(&y)) {
+					append_wiz_string_builder(builder, "0", 1);
 				}
 				free_wiz_string(&x);
 				x = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
@@ -501,8 +502,8 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				clear_wiz_string_builder(builder);
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&y), size_wiz_string(&y));
 
-				while (size_wiz_string(&y) < size_wiz_string(&x)) {
-					append_wiz_string_builder(builder, "FALSE", 1);
+				while (size_wiz_string_builder(builder) < size_wiz_string(&x)) {
+					append_wiz_string_builder(builder, "0", 1);
 				}
 				free_wiz_string(&y);
 				y = make_wiz_string(str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
@@ -566,7 +567,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&x), size_wiz_string(&x));
 
 				while (size_wiz_string(&x) < size_wiz_string(&y)) {
-					append_wiz_string_builder(builder, "FALSE", 1);
+					append_wiz_string_builder(builder, "0", 1);
 				}
 				init_wiz_string(&x2, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 				chk = 1;
@@ -576,7 +577,7 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 				append_wiz_string_builder(builder, get_cstr_wiz_string(&y), size_wiz_string(&y));
 
 				while (size_wiz_string(&y) < size_wiz_string(&x)) {
-					append_wiz_string_builder(builder, "FALSE", 1);
+					append_wiz_string_builder(builder, "0", 1);
 				}
 				init_wiz_string(&y2, str_wiz_string_builder(builder, NULL), size_wiz_string_builder(builder));
 				chk = 2;
@@ -877,6 +878,9 @@ void clear_now_condition(condition* cond)
 
 	for (i = 0; i < size_wiz_stack_wiz_string(&cond->token_stack); ++i) {
 		free_wiz_string(get_wiz_stack_wiz_string(&cond->token_stack, i));
+	}
+	for (i = 0; i < size_wiz_vector_wiz_string(&cond->token_vec); ++i) {
+		free_wiz_string(get_wiz_vector_wiz_string(&cond->token_vec, i));
 	}
 }
 

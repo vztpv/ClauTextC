@@ -485,6 +485,7 @@ void free_in_condition(condition* cond)
 {
 	free_wiz_stack_wiz_string(&cond->token_stack);
 	free_wiz_vector_wiz_string(&cond->token_vec);
+	free_wiz_string(&cond->cond);
 }
 
 int next_in_condition(condition* cond)

@@ -366,14 +366,25 @@ void add_user_type_item_in_user_type(user_type* ut_this, user_type* item)
 	user_type temp;
 	int x = 2;
 	init_from_other_user_type_in_user_type(&temp, item); // deep copy!
-	free_user_type_in_user_type(item);
 
 	temp.parent = ut_this;
 
 	push_back_wiz_vector_int(&(ut_this->ilist), &x);
 
-	push_back_wiz_vector_any2(&(ut_this->user_type_list), (void*)&temp); // deep copy
+	push_back_wiz_vector_any2(&(ut_this->user_type_list), (void*)&temp); // deep copy!
+
 	free_user_type_in_user_type(&temp);
+}
+
+void add_user_type_item_in_user_type2(user_type* ut_this, user_type* item) // for test.
+{
+	int x = 2;
+
+	item->parent = ut_this;
+
+	push_back_wiz_vector_int(&(ut_this->ilist), &x);
+
+	shallow_push_back_wiz_vector_any2(&(ut_this->user_type_list), item); // deep copy!
 }
 void add_item_at_front_in_user_type(user_type* ut, wiz_string* name, wiz_string* item){ }
 void add_user_type_item_at_front_in_user_type(user_type* ut, user_type* item){ }

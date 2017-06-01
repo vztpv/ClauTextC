@@ -77,6 +77,7 @@ void insert_item_by_ilist_in_user_type(user_type* ut, size_t ilis_t_idx, wiz_str
 void insert_user_type_by_ilist_in_user_type(user_type* ut, int ilis_t_idx, user_type* item);
 void add_item_in_user_type(user_type* ut, wiz_string* name, wiz_string* item);
 void add_user_type_item_in_user_type(user_type* ut, user_type* item);
+void add_user_type_item_in_user_type2(user_type* ut, user_type* item);
 void add_item_at_front_in_user_type(user_type* ut, wiz_string* name, wiz_string* item);
 void add_user_type_item_at_front_in_user_type(user_type* ut, user_type* item);
 
