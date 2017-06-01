@@ -427,14 +427,14 @@ int compare_wiz_string_in_utility(wiz_string* str1, wiz_string* str2, wiz_string
 
 	if (size_wiz_string(str1) > 2 && get_cstr_wiz_string(str1)[0] == back_wiz_string(str1) && get_cstr_wiz_string(str1)[0] == '\"')
 	{
-		temp1 = substr_wiz_string(str1, 1, size_wiz_string(str1));	
+		temp1 = substr_wiz_string(str1, 1, size_wiz_string(str1) - 1);	
 	}
 	else {
 		temp1 = make_wiz_string_from_other_wiz_string(str1);
 	}
 	if (size_wiz_string(str2) > 2 && get_cstr_wiz_string(str2)[0] == back_wiz_string(str1) && get_cstr_wiz_string(str2)[0] == '\"')
 	{
-		temp2 = substr_wiz_string(str2, 1, size_wiz_string(str2));
+		temp2 = substr_wiz_string(str2, 1, size_wiz_string(str2) - 1);
 	}
 	else {
 		temp2 = make_wiz_string_from_other_wiz_string(str2);

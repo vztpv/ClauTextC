@@ -384,7 +384,7 @@ void add_user_type_item_in_user_type2(user_type* ut_this, user_type* item) // fo
 
 	push_back_wiz_vector_int(&(ut_this->ilist), &x);
 
-	shallow_push_back_wiz_vector_any2(&(ut_this->user_type_list), item); // deep copy!
+	push_back_wiz_vector_any2(&(ut_this->user_type_list), item); // deep copy!
 }
 void add_item_at_front_in_user_type(user_type* ut, wiz_string* name, wiz_string* item){ }
 void add_user_type_item_at_front_in_user_type(user_type* ut, user_type* item){ }

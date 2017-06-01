@@ -244,7 +244,7 @@ void reverse_wiz_string(wiz_string* str)
 	char ch;
 	size_t i;
 
-	for (i = 0; i <= str->len / 2; ++i) {
+	for (i = 0; i < str->len / 2; ++i) {
 		ch = get_cstr_wiz_string(str)[i];
 		get_cstr_wiz_string(str)[i] = get_cstr_wiz_string(str)[str->len - 1 - i];
 		get_cstr_wiz_string(str)[str->len - 1 - i] = ch;
