@@ -1797,7 +1797,6 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						wiz_string temp;
 						dir = get_item_list_in_user_type(get_user_type_list_in_user_type(val, 0), 0)->value;
 						temp = ToBool4(NULL, &global, &dir, &_excuteData, &builder);
-						free_wiz_string(&dir);
 						dir = temp;
 					}
 					else ///val->Ge
