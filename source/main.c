@@ -1665,7 +1665,7 @@ wiz_string excute_module(wiz_string* mainStr, user_type* _global, ExcuteData* ex
 						free_wiz_string(&dir.first);
 						free_wiz_string(&dir.second);
 						free_wiz_string(&temp);
-						free_wiz_string(&data);
+						//free_wiz_string(&data);
 					}
 					(*top_wiz_stack_size_t(&top_wiz_stack_event_info(&eventStack)->userType_idx))++;
 					break;
